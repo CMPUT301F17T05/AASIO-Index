@@ -1,16 +1,74 @@
 package com.cmput301.t05.habilect;
 
+import android.graphics.Bitmap;
 import android.location.Location;
 import android.media.Image;
+import android.util.Log;
 
 import java.util.Date;
+import java.util.StringTokenizer;
 
 /**
- * Created by ioltuszy on 10/19/17.
+ * @author ioltuszy
+ * @author amwhitta
+ * @version 1.2 10/21/17
  */
 
 class HabitEvent {
-    public HabitEvent(String comment, Image eventImage, Location location, Date occurenceDate) {
 
+    private String comment;
+    private Bitmap event_picture;
+    private Location location;
+    private Date completion_date;
+
+    // Constructor
+    public HabitEvent(String comment, Bitmap event_picture, Location location, Date completion_date) {
+        this.setComment(comment);
+        this.setEventPicture(event_picture);
+        this.setLocation(location);
+        this.setCompletionDate(completion_date);
+    }
+
+    // Getters
+    public String getComment() {
+        return comment;
+    }
+    public Bitmap getEventPicture() {
+        return event_picture;
+    }
+    public Location getLocation() {
+        return location;
+    }
+    public Date getCompletionDate() {
+        return completion_date;
+    }
+
+    // Setters
+    public void setComment(String comment) {
+        if (comment.length() > 20) {
+            throw new IllegalArgumentException();
+        } else {
+            this.comment = comment;
+        }
+    }
+    public void setEventPicture(Bitmap event_picture) {
+        if (event_picture != null) {
+            if (event_picture.getByteCount() >= 65536) {
+                throw new IllegalArgumentException();
+            } else {
+                this.event_picture = event_picture;
+            }
+        } else {
+            this.event_picture = null;
+        }
+    }
+    //TODO: error handling for setLocation
+    public void setLocation(Location location) {
+        this.location = location;
+    }
+
+    //TODO: error handling for setCompletionDate
+    public void setCompletionDate(Date completion_date) {
+        this.completion_date = completion_date;
     }
 }

@@ -21,7 +21,7 @@ public class HabitTypeTest extends ActivityInstrumentationTestCase2 {
     - title longer than 20 characters
     - title starting with quotations
     - title of special characters
-    */
+     */
     public void testTitle() {
         HabitType habit_type = new HabitType("title", "reason", new Date());
         String habit_type_title = habit_type.getTitle();
@@ -56,7 +56,7 @@ public class HabitTypeTest extends ActivityInstrumentationTestCase2 {
     - reason longer than 30 characters
     - reason starting with quotations
     - reason of special characters
-    */
+     */
     public void testReason() {
         HabitType habit_type = new HabitType("title", "reason", new Date());
         String habit_type_reason = habit_type.getReason();
@@ -95,7 +95,7 @@ public class HabitTypeTest extends ActivityInstrumentationTestCase2 {
     // having a DatePicker would eliminate invalid input, yes?
     - invalid date in the future?
     - invalid date in the past?
-    */
+     */
     public void testDate() {
         Calendar c = Calendar.getInstance();
         c.setTime(new Date());
@@ -115,7 +115,7 @@ public class HabitTypeTest extends ActivityInstrumentationTestCase2 {
     - shared has been set to false by default
     - changing shared to true
     - changing shared to false
-    */
+     */
     public void testShared() {
         HabitType habit_type = new HabitType("title", "reason", new Date());
         assertFalse(habit_type.getShared());
