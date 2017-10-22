@@ -10,10 +10,12 @@ import android.test.ActivityInstrumentationTestCase2;
 import android.util.Log;
 
 import java.io.InputStream;
+import java.util.Calendar;
 import java.util.Date;
 
 /**
  * @author amwhitta
+ * @version 1.1
  * @see <a href="https://stackoverflow.com/questions/37527603/how-to-use-files-in-instrumented-unit-tests">StackOverflow source for getBitmapFromTestAssets</a>
  */
 
@@ -21,6 +23,8 @@ public class HabitEventTest extends ActivityInstrumentationTestCase2 {
 
     private String TEST1_FILENAME = "test1.1.jpg";            // valid picture, 40000 bytes
     private String TEST2_FILENAME = "test2.1.jpg";            // invalid picture, 31961088 bytes
+    private double UNI_LATITUDE = 53.5232;
+    private double UNI_LONGITUDE = 113.5263;
 
     public HabitEventTest() {
         super(com.cmput301.t05.habilect.HabitEvent.class);
@@ -68,10 +72,9 @@ public class HabitEventTest extends ActivityInstrumentationTestCase2 {
     public void testEventPicture() {
         Bitmap test_pic_1 = getBitmapFromTestAssets(TEST1_FILENAME);
         Bitmap test_pic_2 = getBitmapFromTestAssets(TEST2_FILENAME);
-        Location uni_location = generateLocation();
 
         try {
-            HabitEvent habit_event = new HabitEvent("comment", test_pic_1, uni_location, new Date());
+            HabitEvent habit_event = new HabitEvent("comment", test_pic_1, null, new Date());
             Bitmap habit_event_picture = habit_event.getEventPicture();
             assertEquals("ERROR: pictures not equal", test_pic_1, habit_event_picture);
         } catch (IllegalArgumentException e) {
@@ -80,23 +83,67 @@ public class HabitEventTest extends ActivityInstrumentationTestCase2 {
         }
 
         try {
-            HabitEvent habit_event = new HabitEvent("comment", test_pic_2, uni_location, new Date());
+            HabitEvent habit_event = new HabitEvent("comment", test_pic_2, null, new Date());
         } catch (IllegalArgumentException e) {
             assertNotNull(e);
         }
 
-        HabitEvent habit_event = new HabitEvent("comment", null, uni_location, new Date());
+        HabitEvent habit_event = new HabitEvent("comment", null, null, new Date());
         Bitmap habit_event_picture = habit_event.getEventPicture();
         assertEquals("ERROR: no picture not accepted", null, habit_event_picture);
     }
 
-    //TODO: unit tests for location
-    //TODO: unit tests for date (if necessary)
+    /* Test Location
+    - valid location
+    - no location
+     */
+    public void testLocation() {
+        Location location = generateLocation(UNI_LATITUDE, UNI_LONGITUDE);
+        HabitEvent habit_event = new HabitEvent("comment", null, location, new Date());
+        assertEquals("ERROR: valid location not accepted", location, habit_event.getLocation());
 
+        habit_event = new HabitEvent("comment", null, null, new Date());
+        assertEquals("ERROR: no location not accepted", null, habit_event.getLocation());
+    }
+
+    /* Test Completion Date
+    - valid completion date in the past
+    - valid completion date (today's date)
+    - invalid completion date in the future
+    - invalid empty date
+     */
+    public void testCompletionDate() {
+        Calendar c = Calendar.getInstance();
+        c.setTime(new Date());
+        c.add(Calendar.DATE, -5);
+        HabitEvent habit_event = new HabitEvent("comment", null, null, c.getTime());
+        assertEquals("ERROR: valid date in the past not accepted", c.getTime(),
+                habit_event.getCompletionDate());
+
+        habit_event = new HabitEvent("comment", null, null, new Date());
+        assertEquals("ERROR: today's date not accepted", new Date(),
+                habit_event.getCompletionDate());
+
+        try {
+            c.setTime(new Date());
+            c.add(Calendar.DATE, 5);
+            habit_event = new HabitEvent("comment", null, null, c.getTime());
+        } catch (IllegalArgumentException e) {
+            assertNotNull(e);
+            Log.e("ERROR", "Completion date cannot be in the future");
+        }
+
+        try {
+            habit_event = new HabitEvent("comment", null, null, null);
+        } catch (IllegalArgumentException e) {
+            assertNotNull(e);
+            Log.e("ERROR", "Completion date cannot be null");
+        }
+    }
     /*
     read image files that are in the src/androidTest/assets directory
      */
-    public Bitmap getBitmapFromTestAssets(String filename) {
+    private Bitmap getBitmapFromTestAssets(String filename) {
         try {
             Context testContext = InstrumentationRegistry.getInstrumentation().getContext();
             AssetManager assetManager = testContext.getAssets();
@@ -111,10 +158,10 @@ public class HabitEventTest extends ActivityInstrumentationTestCase2 {
     /*
     generate a valid test location (the University of Alberta)
      */
-    public Location generateLocation() {
+    private Location generateLocation(double latitude, double longitude) {
         Location uni_location = new Location("provider");
-        uni_location.setLatitude(53.5232);
-        uni_location.setLongitude(113.5263);
+        uni_location.setLatitude(latitude);
+        uni_location.setLongitude(longitude);
         return uni_location;
     }
 }

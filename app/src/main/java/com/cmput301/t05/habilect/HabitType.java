@@ -34,19 +34,15 @@ public class HabitType {
     public String getTitle() {
         return this.title;
     }
-
     public String getReason() {
         return reason;
     }
-
     public Date getStartDate() {
         return this.start_date;
     }
-
     public boolean getShared() {
         return this.shared;
     }
-
     public List<UserProfile> getFollowers() {
         return this.followers;
     }
@@ -59,7 +55,6 @@ public class HabitType {
             this.title = title;
         }
     }
-
     public void setReason(String reason) {
         if (reason.length() == 0 || reason.length() > 30) {
             throw new IllegalArgumentException();
@@ -67,7 +62,6 @@ public class HabitType {
             this.reason = reason;
         }
     }
-
     public void setStartDate(Date date) {
         /* N/A, based on old assumption:
         if (date.before(Calendar.getInstance().getTime())) {
@@ -80,7 +74,6 @@ public class HabitType {
         }*/
         this.start_date = date;
     }
-
     public void setShared(boolean shared) {
         this.shared = shared;
     }
