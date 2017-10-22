@@ -20,47 +20,47 @@ public class HabitPlan {
         this.setHistory(history);
     }
 
-    public HabitType getHabitType(){
+    public HabitType getHabitType() {
         return this.habitType;
     }
 
-    public int[] getTargetFrequency(){
+    public int[] getTargetFrequency() {
         return this.targetFrequency;
     }
 
-    public boolean[] getTargetDays(){
+    public boolean[] getTargetDays() {
         return this.targetDays;
     }
 
-    public List<HabitEvent> getHistory(){
+    public List<HabitEvent> getHistory() {
         return this.history;
     }
 
-    public void setHabitType(HabitType habitType){
-        if(habitType == null){
+    public void setHabitType(HabitType habitType) {
+        if (habitType == null) {
             throw new IllegalArgumentException();
-        }else{
+        } else {
             this.habitType = habitType;
         }
     }
 
-    public void setTargetFrequency(int[] targetFrequency){
-        if(targetFrequency.length != 7){
+    public void setTargetFrequency(int[] targetFrequency) {
+        if (targetFrequency.length != 7) {
             throw new IllegalArgumentException();
-        }else{
+        } else {
             this.targetFrequency = targetFrequency;
         }
     }
 
-    public void setTargetDays(boolean[] targetDays){
-        if(targetDays.length != 7){
+    public void setTargetDays(boolean[] targetDays) {
+        if (targetDays.length != 7) {
             throw new IllegalArgumentException();
-        }else{
+        } else {
             this.targetDays = targetDays;
         }
     }
 
-    public void setHistory(List<HabitEvent> history){
+    public void setHistory(List<HabitEvent> history) {
         this.history = history;
     }
 }
