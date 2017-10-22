@@ -5,6 +5,7 @@ import android.location.Location;
 import android.media.Image;
 import android.util.Log;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.StringTokenizer;
 
@@ -62,13 +63,15 @@ class HabitEvent {
             this.event_picture = null;
         }
     }
-    //TODO: error handling for setLocation
+    //TODO: error handling for setLocation?
     public void setLocation(Location location) {
         this.location = location;
     }
-
-    //TODO: error handling for setCompletionDate
     public void setCompletionDate(Date completion_date) {
-        this.completion_date = completion_date;
+        if (completion_date == null || completion_date.after(Calendar.getInstance().getTime())) {
+            throw new IllegalArgumentException();
+        } else {
+            this.completion_date = completion_date;
+        }
     }
 }
