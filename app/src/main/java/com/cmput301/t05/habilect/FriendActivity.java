@@ -14,6 +14,8 @@ public class FriendActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friend);
 
+        setTitle("Habilect - Friend");
+
         friendViewPagerAdapter = new ViewPagerFriendAdapter(fragmentManager);
         ViewPager mFriendViewPager = (ViewPager) findViewById(R.id.friendViewPager);
         mFriendViewPager.setAdapter(friendViewPagerAdapter);

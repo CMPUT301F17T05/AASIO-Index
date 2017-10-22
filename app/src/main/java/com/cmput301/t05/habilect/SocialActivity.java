@@ -17,6 +17,8 @@ public class SocialActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_social);
 
+        setTitle("Habilect - Social");
+
         final Button viewFriendButton = (Button) findViewById(R.id.viewFriendButton);
         viewFriendButton.setOnClickListener(new View.OnClickListener() {
             @Override

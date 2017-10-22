@@ -14,6 +14,8 @@ public class HistoryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history);
 
+        setTitle("Habilect - History");
+
         historyViewPagerAdapter = new ViewPagerHistoryAdapter(fragmentManager);
         ViewPager mHistoryViewPager = (ViewPager) findViewById(R.id.historyViewPager);
         mHistoryViewPager.setAdapter(historyViewPagerAdapter);

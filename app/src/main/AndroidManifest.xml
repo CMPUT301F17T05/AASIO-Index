@@ -16,6 +16,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".HistoryActivity"/>
+        <activity android:name=".SocialActivity"/>
+        <activity android:name=".ProfileActivity"/>
+        <activity android:name=".FriendActivity"/>
     </application>
 
 </manifest>
