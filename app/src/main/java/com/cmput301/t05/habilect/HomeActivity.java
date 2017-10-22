@@ -35,5 +35,35 @@ public class HomeActivity extends FragmentActivity {
                 addHabitDialog.show(fragmentManager, "addHabitDialog");
             }
         });
+
+        final Button viewHabitButton = (Button) findViewById(R.id.viewHabitButton);
+        viewHabitButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final ViewHabitDialog viewHabitDialog = new ViewHabitDialog();
+                viewHabitDialog.setOnViewHabitListener(new OnViewHabitListener() {
+                    @Override
+                    public void OnDeleted() {
+                        // TODO: implement OnDeleted
+                    }
+
+                    @Override
+                    public void OnSaved() {
+                        // TODO: implement OnSaved
+                    }
+
+                    @Override
+                    public void OnFollowed() {
+                        // TODO: implement OnFollowed
+                    }
+
+                    @Override
+                    public void OnCancelled() {
+                        // TODO: implement OnCancelled
+                    }
+                });
+                viewHabitDialog.show(fragmentManager, "viewHabitDialog");
+            }
+        });
     }
 }
