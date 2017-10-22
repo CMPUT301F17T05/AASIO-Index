@@ -15,16 +15,16 @@ import android.widget.TextView;
 
 public class HomeActivity extends AppCompatActivity {
     FragmentManager fragmentManager = getSupportFragmentManager();
-    ViewPagerHomeAdapter homePagerAdapter;
+    ViewPagerHomeAdapter homeViewPagerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        homePagerAdapter = new ViewPagerHomeAdapter(fragmentManager);
+        homeViewPagerAdapter = new ViewPagerHomeAdapter(fragmentManager);
         ViewPager mHomeViewPager = (ViewPager) findViewById(R.id.homeViewPager);
-        mHomeViewPager.setAdapter(homePagerAdapter);
+        mHomeViewPager.setAdapter(homeViewPagerAdapter);
 
     }
 }
