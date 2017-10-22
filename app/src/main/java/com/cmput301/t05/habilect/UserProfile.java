@@ -1,6 +1,6 @@
 package com.cmput301.t05.habilect;
 
-import android.media.Image;
+import android.graphics.Bitmap;
 
 import java.util.List;
 import java.util.UUID;
@@ -11,14 +11,19 @@ import java.util.UUID;
 
 public class UserProfile {
     String displayName;
-    Image profilePicture;
+    Bitmap profilePicture;
     UUID identifier;
     List<HabitPlan> plans;
+
+    public UserProfile(String displayName, Bitmap profilePicture, List<HabitPlan> plans) {
+        this.setIdentifier(this.LookupUUID());
+    }
+
 
     public String getDisplayName() {
         return displayName;
     }
-    public Image getProfilePicture() {
+    public Bitmap getProfilePicture() {
         return profilePicture;
     }
     public UUID getIdentifier() {
@@ -30,7 +35,7 @@ public class UserProfile {
     public void setDisplayName(String displayName) {
         this.displayName = displayName;
     }
-    public void setProfilePicture(Image profilePicture) {
+    public void setProfilePicture(Bitmap profilePicture) {
         this.profilePicture = profilePicture;
     }
     public void setIdentifier(UUID identifier) {
@@ -38,10 +43,6 @@ public class UserProfile {
     }
     public void setPlans(List<HabitPlan> plans) {
         this.plans = plans;
-    }
-
-    public UserProfile(String displayName, Image profilePicture, List<HabitPlan> plans) {
-        this.setIdentifier(this.LookupUUID());
     }
 
     static UUID LookupUUID() {
