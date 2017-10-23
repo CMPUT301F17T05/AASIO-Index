@@ -1,7 +1,9 @@
 package com.cmput301.t05.habilect;
 
 /**
- * Created by ioltuszy on 10/19/17.
+ * @author ioltuszy
+ * @author rarog
+ * @version 1.0 22/10/2017
  */
 
 class FollowRequest {
@@ -9,8 +11,8 @@ class FollowRequest {
     private HabitType habitToBeFollowed;
 
     public FollowRequest(UserProfile prospectiveFollower, HabitType habitToBeFollowed) {
-        this.prospectiveFollower = prospectiveFollower;
-        this.habitToBeFollowed = habitToBeFollowed;
+        setProspectiveFollower(prospectiveFollower);
+        setHabitToBeFollowed(habitToBeFollowed);
     }
 
     public UserProfile getProspectiveFollower() {
