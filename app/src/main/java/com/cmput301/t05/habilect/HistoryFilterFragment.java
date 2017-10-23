@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 /**
- * Created by Ian on 2017-10-22.
+ * @author ioltuszy
  */
 
 public class HistoryFilterFragment extends Fragment {

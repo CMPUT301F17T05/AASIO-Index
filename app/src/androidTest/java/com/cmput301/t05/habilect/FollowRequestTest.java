@@ -6,7 +6,6 @@ import java.util.Date;
 
 /**
  * @author rarog
- * @version 1.0 22/10/2017
  */
 
 public class FollowRequestTest extends ActivityInstrumentationTestCase2 {

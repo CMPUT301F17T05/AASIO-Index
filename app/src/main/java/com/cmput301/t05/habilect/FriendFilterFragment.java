@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 /**
- * Created by Ian on 2017-10-22.
+ * @author ioltuszy
  */
 
 public class FriendFilterFragment extends Fragment {

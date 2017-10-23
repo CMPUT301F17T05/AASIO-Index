@@ -13,7 +13,7 @@ import com.robotium.solo.Solo;
 import static com.cmput301.t05.habilect.R.id.navigationHomeDrawer;
 
 /**
- * Created by Ian on 2017-10-22.
+ * @author ioltuszy
  */
 
 public class NavigationTest extends ActivityInstrumentationTestCase2<HomeActivity> {

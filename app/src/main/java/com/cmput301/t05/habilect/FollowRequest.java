@@ -3,7 +3,6 @@ package com.cmput301.t05.habilect;
 /**
  * @author ioltuszy
  * @author rarog
- * @version 1.0 22/10/2017
  */
 
 class FollowRequest {

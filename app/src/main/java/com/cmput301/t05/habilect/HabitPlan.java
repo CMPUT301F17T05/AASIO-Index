@@ -3,7 +3,8 @@ package com.cmput301.t05.habilect;
 import java.util.List;
 
 /**
- * Created by ioltuszy on 10/19/17.
+ * @author ioltuszy
+ * @author amwhitta
  */
 
 public class HabitPlan {

@@ -15,7 +15,6 @@ import java.util.Date;
 
 /**
  * @author amwhitta
- * @version 1.1
  * @see <a href="https://stackoverflow.com/questions/37527603/how-to-use-files-in-instrumented-unit-tests">StackOverflow source for getBitmapFromTestAssets</a>
  */
 

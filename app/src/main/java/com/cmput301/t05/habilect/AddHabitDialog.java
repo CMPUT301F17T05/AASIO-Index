@@ -9,6 +9,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+/**
+ * @author ioltuszy
+ */
+
 public class AddHabitDialog extends DialogFragment {
     private OnAddHabitListener onAddHabitListener;
     public void setOnAddHabitListener(OnAddHabitListener onAddHabitListener) {

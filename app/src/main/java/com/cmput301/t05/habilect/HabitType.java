@@ -10,7 +10,6 @@ import java.util.Locale;
 /**
  * @author ioltuszy
  * @author amwhitta
- * @version 1.2 10/21/17
  */
 
 public class HabitType {

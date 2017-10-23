@@ -7,7 +7,7 @@ import android.support.v4.view.PagerAdapter;
 import android.view.View;
 
 /**
- * Created by Ian on 2017-10-22.
+ * @author ioltuszy
  */
 
 public class ViewPagerHomeAdapter extends FragmentPagerAdapter {

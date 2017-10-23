@@ -8,6 +8,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+/**
+ * @author ioltuszy
+ */
+
 public class FollowRequestDialog extends DialogFragment {
     private OnFollowRequestListener onFollowRequestListener;
     public void setOnFollowRequestListener(OnFollowRequestListener onFollowRequestListener) {

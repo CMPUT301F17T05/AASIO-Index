@@ -17,6 +17,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+/**
+ * @author ioltuszy
+ */
+
 public class HomeActivity extends AppCompatActivity {
     Activity currentActivity = this;
 

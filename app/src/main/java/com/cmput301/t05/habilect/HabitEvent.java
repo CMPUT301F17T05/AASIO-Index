@@ -12,7 +12,6 @@ import java.util.StringTokenizer;
 /**
  * @author ioltuszy
  * @author amwhitta
- * @version 1.2 10/21/17
  */
 
 class HabitEvent {

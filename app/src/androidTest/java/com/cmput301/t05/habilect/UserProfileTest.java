@@ -13,7 +13,6 @@ import java.util.Arrays;
 
 /**
  * @author rarog
- * @version 1.0 22/10/17
  */
 
 public class UserProfileTest extends ActivityInstrumentationTestCase2  {

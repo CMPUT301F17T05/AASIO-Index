@@ -7,7 +7,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Created by Steven C on 10/22/2017.
+ * @author sychan1
  */
 
 public class HabitPlanTest extends ActivityInstrumentationTestCase2 {

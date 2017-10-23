@@ -11,6 +11,10 @@ import android.widget.Button;
 
 import java.util.ArrayList;
 
+/**
+ * @author ioltuszy
+ */
+
 public class ViewHabitDialog extends DialogFragment {
     FragmentManager fragmentManager;
 

@@ -6,7 +6,8 @@ import java.util.List;
 import java.util.UUID;
 
 /**
- * Created by ioltuszy on 10/19/17.
+ * @author ioltuszy
+ * @author amwhitta
  */
 
 public class UserProfile {

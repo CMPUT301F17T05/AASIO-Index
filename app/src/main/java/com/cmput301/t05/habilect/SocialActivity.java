@@ -9,6 +9,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 
+/**
+ * @author ioltuszy
+ */
+
 public class SocialActivity extends AppCompatActivity {
     Activity currentActivity = this;
 
