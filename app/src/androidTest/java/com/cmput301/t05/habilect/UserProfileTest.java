@@ -29,12 +29,13 @@ public class UserProfileTest extends ActivityInstrumentationTestCase2  {
     - name longer than 256 characters
     - names with numbers, '_" or '-' are ok
      */
-    void testDisplayName() {
+    public void testDisplayName() {
         UserProfile profile = new UserProfile("UserName", null, null);
         assertEquals("ERROR: valid display name was rejected", "UserName", profile.getDisplayName());
 
         profile.setDisplayName("Has accepted characters _ - _- 1 1234");
-        assertEquals("ERROR: valid display name was rejected", "UserName", profile.getDisplayName());
+        assertEquals("ERROR: valid display name was rejected", "Has accepted characters _ - _- 1 1234", profile.getDisplayName());
+        assertEquals("ERROR: valid display name was rejected", "Has accepted characters _ - _- 1 1234", profile.getDisplayName());
 
         try {
             profile.setDisplayName("");
@@ -57,7 +58,7 @@ public class UserProfileTest extends ActivityInstrumentationTestCase2  {
     - valid image
     - must be shorter than 65536 bytes
      */
-    void testDisplayImage() {
+    public void testDisplayImage() {
         Bitmap testPicture1 = getBitmapFromTestAssets(TEST1_FILENAME);
         Bitmap testPicture2 = getBitmapFromTestAssets(TEST2_FILENAME);
 

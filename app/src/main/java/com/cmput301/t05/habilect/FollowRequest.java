@@ -1,16 +1,31 @@
 package com.cmput301.t05.habilect;
 
-import android.location.Location;
-import android.media.Image;
-
-import java.util.Date;
-
 /**
  * Created by ioltuszy on 10/19/17.
  */
 
 class FollowRequest {
-    public FollowRequest(UserProfile prospectiveFollower, HabitType habitToBeFollowed) {
+    private UserProfile prospectiveFollower;
+    private HabitType habitToBeFollowed;
 
+    public FollowRequest(UserProfile prospectiveFollower, HabitType habitToBeFollowed) {
+        this.prospectiveFollower = prospectiveFollower;
+        this.habitToBeFollowed = habitToBeFollowed;
+    }
+
+    public UserProfile getProspectiveFollower() {
+        return prospectiveFollower;
+    }
+
+    public HabitType getHabitToBeFollowed() {
+        return habitToBeFollowed;
+    }
+
+    public void setProspectiveFollower(UserProfile prospectiveFollower) {
+        this.prospectiveFollower = prospectiveFollower;
+    }
+
+    public void setHabitToBeFollowed(HabitType habitToBeFollowed) {
+        this.habitToBeFollowed = habitToBeFollowed;
     }
 }

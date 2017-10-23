@@ -17,6 +17,8 @@ public class UserProfile {
 
     public UserProfile(String displayName, Bitmap profilePicture, List<HabitPlan> plans) {
         this.setIdentifier(this.LookupUUID());
+        this.profilePicture = profilePicture;
+        this.displayName = displayName;
     }
 
 
