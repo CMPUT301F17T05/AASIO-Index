@@ -73,6 +73,26 @@ public class HomePrimaryFragment extends Fragment {
             }
         });
 
+        final Button addHabitEventButton = rootView.findViewById(R.id.addHabitEvent);
+        addHabitEventButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final AddHabitEventDialog addHabitEventDialog = new AddHabitEventDialog();
+                addHabitEventDialog.setOnAddHabitEventListener(new OnAddHabitEventListener() {
+                    @Override
+                    public void OnAdded() {
+                        // TODO: implement OnAdded
+                    }
+
+                    @Override
+                    public void OnCancelled() {
+                        // TODO: implement OnCancelled
+                    }
+                });
+                addHabitEventDialog.show(fragmentManager, "addHabitEventDialog");
+            }
+        });
+
         return rootView;
     }
 }

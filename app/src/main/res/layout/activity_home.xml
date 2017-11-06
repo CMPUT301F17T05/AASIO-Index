@@ -24,6 +24,7 @@
     android:layout_height="match_parent"
     android:background="#111"
     android:orientation="vertical">
+
     <Button
         android:id="@+id/navigateHistory"
         android:layout_width="240dp"
@@ -41,6 +42,7 @@
         android:layout_width="240dp"
         android:layout_height="wrap_content"
         android:text="Profile (Activity)" />
+
 </LinearLayout>
 
 </android.support.v4.widget.DrawerLayout>
