@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Habilect</string>
+    <string name="habit_type">Habit Type</string>
 </resources>
