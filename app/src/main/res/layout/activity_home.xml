@@ -24,6 +24,13 @@
     android:layout_height="match_parent"
     android:background="#111"
     android:orientation="vertical">
+
+    <Button
+        android:id="@+id/navigateHabitTypes"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Habit Types (Activity)" />
+
     <Button
         android:id="@+id/navigateHistory"
         android:layout_width="240dp"

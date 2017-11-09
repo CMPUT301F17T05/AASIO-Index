@@ -1,13 +1,20 @@
 package com.cmput301.t05.habilect;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.support.v4.app.DialogFragment ;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.DatePicker;
+import android.widget.EditText;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
 
 /**
  * @author ioltuszy
@@ -15,6 +22,14 @@ import android.widget.Button;
 
 public class AddHabitDialog extends DialogFragment {
     private OnAddHabitListener onAddHabitListener;
+    private EditText habitTitleText;
+    private EditText habitReasonText;
+    //TODO: add variable for start date
+    private DatePicker habitStartDate;
+    private CheckBox checkMonday, checkTuesday, checkWednesday,
+            checkThursday, checkFriday, checkSaturday, checkSunday;
+    private boolean[] weekly_plan = {true,true,true,true,true,true,true};
+
     public void setOnAddHabitListener(OnAddHabitListener onAddHabitListener) {
         this.onAddHabitListener = onAddHabitListener;
     }
@@ -35,21 +50,102 @@ public class AddHabitDialog extends DialogFragment {
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.dialog_addhabit, null);
         dialog.setContentView(view);
+
+        habitTitleText = (EditText) dialog.findViewById(R.id.enterHabitTypeTitle);
+        habitReasonText = (EditText) dialog.findViewById(R.id.enterHabitTypeReason);
+        habitStartDate = (DatePicker) dialog.findViewById(R.id.datePickerStartDate);
+        checkMonday = (CheckBox) dialog.findViewById(R.id.checkBoxMonday);
+        checkTuesday = (CheckBox) dialog.findViewById(R.id.checkBoxTuesday);
+        checkWednesday = (CheckBox) dialog.findViewById(R.id.checkBoxWednesday);
+        checkThursday = (CheckBox) dialog.findViewById(R.id.checkBoxThursday);
+        checkFriday = (CheckBox) dialog.findViewById(R.id.checkBoxFriday);
+        checkSaturday = (CheckBox) dialog.findViewById(R.id.checkBoxSaturday);
+        checkSunday = (CheckBox) dialog.findViewById(R.id.checkBoxSunday);
+
+        ArrayList<CheckBox> checkboxes = new ArrayList<>();
+        checkboxes.add(checkMonday);
+        checkboxes.add(checkTuesday);
+        checkboxes.add(checkWednesday);
+        checkboxes.add(checkThursday);
+        checkboxes.add(checkFriday);
+        checkboxes.add(checkSaturday);
+        checkboxes.add(checkSunday);
+        setListeners(checkboxes);
+
         ((Button)dialog.findViewById(R.id.add_button))
             .setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    onAddHabitListener.OnAdded();
-                    dialog.dismiss();
+                    String title = habitTitleText.getText().toString();
+                    String reason = habitReasonText.getText().toString();
+                    Date start_date = new Date(habitStartDate.getYear(), habitStartDate.getMonth(),
+                            habitStartDate.getDayOfMonth());
+                    try {
+                        onAddHabitListener.OnAdded(title, reason, start_date, weekly_plan);
+                        dialog.dismiss();
+                    } catch (IllegalArgumentException e) {
+                        if (title.length() == 0 || title.length() > 20) {
+                            habitTitleText.setError("This field cannot be blank, and cannot be greater than 20 characters");
+                        }
+                        if (reason.length() == 0 || reason.length() > 30) {
+                            habitReasonText.setError("This field cannot be blank, and cannot be greater than 30 characters");
+                        }
+                    }
                 }
             });
-        ((Button)dialog.findViewById(R.id.cancel_button)).setOnClickListener(new View.OnClickListener() {
+        ((Button)dialog.findViewById(R.id.cancel_button))
+                .setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 onAddHabitListener.OnCancelled();
                 dialog.dismiss();
             }
         });
+
         return dialog;
+    }
+
+    /*
+     * @see <a href="https://developer.android.com/guide/topics/ui/controls/checkbox.html">Android Developers -- Checkboxes</a>
+     */
+    public void onCheckboxClicked(View view) {
+        boolean checked = ((CheckBox) view).isChecked();
+        // Check which checkbox was clicked
+        Log.d("Debugging", "in onCheckboxClicked");
+        switch(view.getId()) {
+            case R.id.checkBoxMonday:
+                weekly_plan[0] = checked;
+                break;
+            case R.id.checkBoxTuesday:
+                weekly_plan[1] = checked;
+                break;
+            case R.id.checkBoxWednesday:
+                weekly_plan[2] = checked;
+                break;
+            case R.id.checkBoxThursday:
+                weekly_plan[3] = checked;
+                break;
+            case R.id.checkBoxFriday:
+                weekly_plan[4] = checked;
+                break;
+            case R.id.checkBoxSaturday:
+                weekly_plan[5] = checked;
+                break;
+            case R.id.checkBoxSunday:
+                weekly_plan[6] = checked;
+                break;
+        }
+        Log.d("Debugging", "plan:"+ Arrays.toString(weekly_plan));
+    }
+
+    public void setListeners(ArrayList<CheckBox> checkboxes) {
+        for (CheckBox c : checkboxes) {
+            c.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onCheckboxClicked(view);
+                }
+            });
+        }
     }
 }

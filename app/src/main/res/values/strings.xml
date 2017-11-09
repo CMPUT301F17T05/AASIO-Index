@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">Habilect</string>
+    <string name="add_habit_title_hint">Enter title:</string>
+    <string name="add_habit_reason_hint">Enter reason:</string>
+    <string name="monday">Monday</string>
+    <string name="tuesday">Tuesday</string>
+    <string name="wednesday">Wednesday</string>
+    <string name="thursday">Thursday</string>
+    <string name="friday">Friday</string>
+    <string name="saturday">Saturday</string>
+    <string name="sunday">Sunday</string>
 </resources>
