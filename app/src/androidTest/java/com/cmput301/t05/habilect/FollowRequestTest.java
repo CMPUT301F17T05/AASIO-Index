@@ -17,7 +17,7 @@ public class FollowRequestTest extends ActivityInstrumentationTestCase2 {
     - user profile of follower must not be null
      */
     public void testProspectiveFollower() {
-        UserProfile profile = new UserProfile("TestProfile", null, null);
+        UserProfile profile = new UserProfile(getActivity(), "TestProfile", null, null);
         HabitType habit = new HabitType("Habit", "Reason", new Date());
         FollowRequest request = new FollowRequest(profile, habit);
 
@@ -36,7 +36,7 @@ public class FollowRequestTest extends ActivityInstrumentationTestCase2 {
     - habit to be followed must not be null
      */
     public void testHabitToBeFollowed() {
-        UserProfile profile = new UserProfile("TestProfile", null, null);
+        UserProfile profile = new UserProfile(getActivity(), "TestProfile", null, null);
         HabitType habit = new HabitType("Habit", "Reason", new Date());
         FollowRequest request = new FollowRequest(profile, habit);
 

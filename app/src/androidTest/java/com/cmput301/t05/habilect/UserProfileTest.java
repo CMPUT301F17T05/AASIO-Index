@@ -29,7 +29,7 @@ public class UserProfileTest extends ActivityInstrumentationTestCase2  {
     - names with numbers, '_" or '-' are ok
      */
     public void testDisplayName() {
-        UserProfile profile = new UserProfile("UserName", null, null);
+        UserProfile profile = new UserProfile(getActivity(), "UserName", null, null);
         assertEquals("ERROR: valid display name was rejected", "UserName", profile.getDisplayName());
 
         profile.setDisplayName("Has accepted characters _ - _- 1 1234");
@@ -61,7 +61,7 @@ public class UserProfileTest extends ActivityInstrumentationTestCase2  {
         Bitmap testPicture1 = getBitmapFromTestAssets(TEST1_FILENAME);
         Bitmap testPicture2 = getBitmapFromTestAssets(TEST2_FILENAME);
 
-        UserProfile profile = new UserProfile("ProfileName", null, null);
+        UserProfile profile = new UserProfile(getActivity(), "ProfileName", null, null);
 
         try {
             profile.setProfilePicture(testPicture1);
