@@ -4,13 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:paddingBottom="24dp">
 
     <TextView
         android:id="@+id/addHabitEventDialogTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TESTING TEXT"
         android:textColor="@color/black"
         android:textSize="@dimen/font_size_large"
         android:textStyle="bold"
@@ -35,11 +35,11 @@
         android:layout_height="wrap_content"
         android:layout_marginRight="24dp"
         app:layout_constraintTop_toBottomOf="@+id/addHabitEventDialogTitle"
-        android:layout_above="@+id/imageButton2"
+        android:layout_above="@+id/habitEventImageButton"
         android:layout_alignParentEnd="true" />
 
     <ImageButton
-        android:id="@+id/imageButton2"
+        android:id="@+id/habitEventImageButton"
         android:layout_width="257dp"
         android:layout_height="212dp"
         android:background="@color/white"
@@ -55,8 +55,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Enable Location"
-        android:layout_below="@+id/imageButton2"
-        android:layout_alignStart="@+id/imageButton2"
+        android:layout_below="@+id/habitEventImageButton"
+        android:layout_alignStart="@+id/habitEventImageButton"
         android:layout_marginTop="16dp" />
 
     <CheckBox
@@ -64,7 +64,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/textView2"
-        android:layout_alignEnd="@+id/imageButton2" />
+        android:layout_alignEnd="@+id/habitEventImageButton" />
 
     <EditText
         android:id="@+id/editText"
@@ -73,8 +73,9 @@
         android:ems="10"
         android:hint="Add Comment..."
         android:inputType="text"
-        android:layout_marginTop="16dp"
         android:layout_below="@+id/checkBox"
-        android:layout_alignStart="@+id/textView2" />
+        android:layout_alignStart="@+id/textView2"
+        android:layout_marginTop="16dp"
+        android:layout_alignEnd="@+id/checkBox" />
 
 </RelativeLayout>
