@@ -19,6 +19,10 @@ android {
     }
     productFlavors {
     }
+
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+    }
 }
 
 dependencies {
@@ -26,8 +30,9 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    androidTestCompile('com.jayway.android.robotium:robotium-solo:5.2.1')
+    androidTestCompile 'com.jayway.android.robotium:robotium-solo:5.6.3'
     compile 'com.android.support:appcompat-v7:26.+'
+    compile 'io.searchbox:jest:2.4.0'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     testCompile 'junit:junit:4.12'
 }
