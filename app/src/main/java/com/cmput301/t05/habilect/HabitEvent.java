@@ -20,13 +20,15 @@ class HabitEvent {
     private Bitmap event_picture;
     private Location location;
     private Date completion_date;
+    private String habitType;
 
     // Constructor
-    public HabitEvent(String comment, Bitmap event_picture, Location location, Date completion_date) {
+    public HabitEvent(String comment, Bitmap event_picture, Location location, Date completion_date, String habitType) {
         this.setComment(comment);
         this.setEventPicture(event_picture);
         this.setLocation(location);
         this.setCompletionDate(completion_date);
+        this.setHabitType(habitType);
     }
 
     // Getters
@@ -42,6 +44,7 @@ class HabitEvent {
     public Date getCompletionDate() {
         return completion_date;
     }
+    public String getHabitType() { return habitType; }
 
     // Setters
     public void setComment(String comment) {
@@ -62,6 +65,11 @@ class HabitEvent {
             this.event_picture = null;
         }
     }
+
+    public void setHabitType(String habitType) {
+        this.habitType = habitType;
+    }
+
     //TODO: error handling for setLocation?
     public void setLocation(Location location) {
         this.location = location;

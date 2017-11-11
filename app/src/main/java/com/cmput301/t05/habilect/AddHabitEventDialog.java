@@ -32,6 +32,7 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * @author rarog
@@ -145,13 +146,13 @@ public class AddHabitEventDialog extends DialogFragment {
         commentText.addTextChangedListener(commentTextWatcher);
 
         String title = getTitleFromBundle();
-        ArrayList<String> habits = getHabitTypeFromBundle();
+        ArrayList<String> habits = getHabitTypesFromBundle();
 
         ListAdapter listAdapter = new ArrayAdapter<>(context,
                 R.layout.habit_type_spinner_layout,
                 R.id.habitTypeSpinnerTextView, habits);
 
-        Spinner spinner = view.findViewById(R.id.addHabitEventSpinner);
+        final Spinner spinner = view.findViewById(R.id.addHabitEventSpinner);
         spinner.setAdapter((SpinnerAdapter) listAdapter);
 
         TextView eventTitle = view.findViewById(R.id.addHabitEventDialogTitle);
@@ -161,7 +162,9 @@ public class AddHabitEventDialog extends DialogFragment {
         createButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                String habitType = spinner.getSelectedItem().toString();
+                HabitEvent habitEvent = new HabitEvent(commentText.getText().toString(), eventBitmap, mLastLocation, new Date(), habitType);
+                dialog.dismiss();
             }
         });
 
@@ -181,7 +184,9 @@ public class AddHabitEventDialog extends DialogFragment {
                 ? "" : getArguments().getString("Title");
     }
 
-    private ArrayList<String> getHabitTypeFromBundle() {
+
+    // TODO: Right now for simplicity, habit events only know the title of habit types, might want to change that
+    private ArrayList<String> getHabitTypesFromBundle() {
         ArrayList<String> habits = (ArrayList<String>) getArguments().get("Habit Type");
         if(habits != null) {
             return habits;
@@ -256,7 +261,7 @@ public class AddHabitEventDialog extends DialogFragment {
                 getLastLocation();
             } else {
                 // Permission denied.
-                // TODO: Consider implementing notification
+                // TODO: Can't test this right now due to bug mentioned above
                 // Notify the user via a SnackBar that they have rejected a core permission for the
                 // app, which makes the Activity useless. In a real app, core permissions would
                 // typically be best requested during a welcome-screen flow.
