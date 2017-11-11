@@ -68,7 +68,7 @@
         android:layout_alignEnd="@+id/habitEventImageButton" />
 
     <EditText
-        android:id="@+id/editText"
+        android:id="@+id/addEventCommentText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -87,7 +87,7 @@
         android:layout_height="wrap_content"
         android:text="Create"
         android:layout_alignParentBottom="true"
-        android:layout_alignEnd="@+id/editText" />
+        android:layout_alignEnd="@+id/addEventCommentText" />
 
     <Button
         style="@style/Widget.AppCompat.Button.Borderless.Colored"
@@ -98,5 +98,14 @@
         android:text="Cancel"
         android:layout_alignParentBottom="true"
         android:layout_toStartOf="@+id/addEventCreateButton" />
+
+    <TextView
+        android:id="@+id/addEventCommentWarning"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/addEventCommentText"
+        android:layout_below="@+id/checkBox"
+        android:text="Comment cannot be more than 20 characters!"
+        android:textColor="@color/red"/>
 
 </RelativeLayout>

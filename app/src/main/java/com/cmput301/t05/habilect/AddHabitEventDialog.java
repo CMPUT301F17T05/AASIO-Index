@@ -3,20 +3,16 @@ package com.cmput301.t05.habilect;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.ContextWrapper;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.location.Location;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Looper;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.content.FileProvider;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,30 +22,16 @@ import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationCallback;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.LocationSettingsRequest;
-import com.google.android.gms.location.SettingsClient;
-import com.google.android.gms.nearby.connection.Strategy;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
-
-import static android.app.Activity.RESULT_OK;
 
 /**
  * @author rarog
@@ -63,6 +45,9 @@ public class AddHabitEventDialog extends DialogFragment {
     private static final String TAG = "Add event dialog";
     private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 34;
     Context context;
+    TextView commentText;
+    TextView commentWarning;
+    Button createButton;
 
     /**
      * Provides the entry point to the Fused Location Provider API.
@@ -88,10 +73,48 @@ public class AddHabitEventDialog extends DialogFragment {
                 ViewGroup.LayoutParams.WRAP_CONTENT
         );
 
+        // if user does not have location permissions set, will ask to enable them
         if (!checkPermissions()) {
             requestPermissions();
         } else {
             getLastLocation();
+        }
+    }
+
+    /* idea to disable button until required editText fields filled
+    taken from
+    https://stackoverflow.com/questions/20682865/disable-button-when-edit-text-fields-empty
+    */
+    /**
+     * This TextWatcher implementation calls method to check required fields whenever a
+     * required field has its text edited, used to disable create button until all required
+     * fields are filled
+     */
+    private TextWatcher commentTextWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+        @Override
+        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            checkCommentLength();
+        }
+
+        @Override
+        public void afterTextChanged(Editable editable) {
+
+        }
+    };
+
+    private void checkCommentLength() {
+        String commentField = commentText.getText().toString();
+        if(commentField.length() <= 20) {
+            createButton.setEnabled(true);
+            commentWarning.setVisibility(View.INVISIBLE);
+
+        }
+        else {
+            createButton.setEnabled(false);
+            commentWarning.setVisibility(View.VISIBLE);
         }
     }
 
@@ -112,14 +135,21 @@ public class AddHabitEventDialog extends DialogFragment {
         eventImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                dispatchTakePictureIntent("test.jpg");
+
             }
         });
+
+        commentText = view.findViewById(R.id.addEventCommentText);
+        commentWarning = view.findViewById(R.id.addEventCommentWarning);
+        commentWarning.setVisibility(View.INVISIBLE);
+        commentText.addTextChangedListener(commentTextWatcher);
 
         String title = getTitleFromBundle();
         ArrayList<String> habits = getHabitTypeFromBundle();
 
-        ListAdapter listAdapter = new ArrayAdapter<>(context, R.layout.habit_type_spinner_layout, R.id.habitTypeSpinnerTextView, habits);
+        ListAdapter listAdapter = new ArrayAdapter<>(context,
+                R.layout.habit_type_spinner_layout,
+                R.id.habitTypeSpinnerTextView, habits);
 
         Spinner spinner = view.findViewById(R.id.addHabitEventSpinner);
         spinner.setAdapter((SpinnerAdapter) listAdapter);
@@ -127,7 +157,7 @@ public class AddHabitEventDialog extends DialogFragment {
         TextView eventTitle = view.findViewById(R.id.addHabitEventDialogTitle);
         eventTitle.setText("Add " + title + " event");
 
-        Button createButton = view.findViewById(R.id.addEventCreateButton);
+        createButton = view.findViewById(R.id.addEventCreateButton);
         createButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -159,23 +189,6 @@ public class AddHabitEventDialog extends DialogFragment {
         return new ArrayList<>();
     }
 
-    private void dispatchTakePictureIntent(String targetFilename) {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (takePictureIntent.resolveActivity(getDialog().getContext().getPackageManager()) != null) {
-            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-        }
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            Bundle extras = data.getExtras();
-            eventBitmap = (Bitmap) extras.get("data");
-            eventImage.setImageBitmap(eventBitmap);
-            eventImage.setScaleType(ImageView.ScaleType.FIT_XY);
-        }
-    }
-
     @SuppressWarnings("MissingPermission")
     private void getLastLocation() {
         mFusedLocationClient.getLastLocation()
@@ -191,6 +204,8 @@ public class AddHabitEventDialog extends DialogFragment {
                 });
     }
 
+
+    //TODO: onRequestPermissionsResult not currently called if app requests permission because this is DialogFragment, either fix bug or ask for permission on main activity
     /**
      * Return the current state of the permissions needed.
      */
@@ -241,7 +256,7 @@ public class AddHabitEventDialog extends DialogFragment {
                 getLastLocation();
             } else {
                 // Permission denied.
-
+                // TODO: Consider implementing notification
                 // Notify the user via a SnackBar that they have rejected a core permission for the
                 // app, which makes the Activity useless. In a real app, core permissions would
                 // typically be best requested during a welcome-screen flow.
@@ -251,6 +266,8 @@ public class AddHabitEventDialog extends DialogFragment {
                 // again" prompts). Therefore, a user interface affordance is typically implemented
                 // when permissions are denied. Otherwise, your app could appear unresponsive to
                 // touches or interactions which have required permissions.
+                Snackbar snackbar = Snackbar.make(getView(), "Test", Snackbar.LENGTH_SHORT);
+                snackbar.show();
             }
         }
     }
