@@ -83,6 +83,7 @@ public class HomePrimaryFragment extends Fragment {
             }
         });
 
+
         final Button addHabitEventButton = rootView.findViewById(R.id.addHabitEvent);
         addHabitEventButton.setOnClickListener(new View.OnClickListener() {
             @Override

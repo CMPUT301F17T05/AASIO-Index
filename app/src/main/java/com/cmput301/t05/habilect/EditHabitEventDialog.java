@@ -38,8 +38,8 @@ import java.util.Date;
  * @author rarog
  */
 
-public class AddHabitEventDialog extends DialogFragment {
-    private OnAddHabitEventListener onAddHabitEventListener;
+public class EditHabitEventDialog extends DialogFragment {
+    private OnEditHabitEventListener onEditHabitEventListener;
     private ImageButton eventImage;
     private Bitmap eventBitmap;
     static final int REQUEST_IMAGE_CAPTURE = 1;
@@ -61,8 +61,8 @@ public class AddHabitEventDialog extends DialogFragment {
     protected Location mLastLocation;
 
 
-    public void setOnAddHabitEventListener(OnAddHabitEventListener onAddHabitEventListener) {
-        this.onAddHabitEventListener = onAddHabitEventListener;
+    public void setOnEditHabitEventListener(OnEditHabitEventListener onEditHabitEventListener) {
+        this.onEditHabitEventListener = onEditHabitEventListener;
     }
 
     @Override
@@ -125,14 +125,14 @@ public class AddHabitEventDialog extends DialogFragment {
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         LayoutInflater inflater = getActivity().getLayoutInflater();
-        View view = inflater.inflate(R.layout.dialog_add_habit_event, null);
+        View view = inflater.inflate(R.layout.dialog_edit_habit_event, null);
         dialog.setContentView(view);
 
         context = getContext();
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(context);
 
-        eventImage = view.findViewById(R.id.addHabitEventImageButton);
+        eventImage = view.findViewById(R.id.editHabitEventImageButton);
         eventImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -140,8 +140,8 @@ public class AddHabitEventDialog extends DialogFragment {
             }
         });
 
-        commentText = view.findViewById(R.id.addEventCommentText);
-        commentWarning = view.findViewById(R.id.addEventCommentWarning);
+        commentText = view.findViewById(R.id.editEventCommentText);
+        commentWarning = view.findViewById(R.id.editEventCommentWarning);
         commentWarning.setVisibility(View.INVISIBLE);
         commentText.addTextChangedListener(commentTextWatcher);
 
@@ -152,13 +152,13 @@ public class AddHabitEventDialog extends DialogFragment {
                 R.layout.habit_type_spinner_layout,
                 R.id.habitTypeSpinnerTextView, habits);
 
-        final Spinner spinner = view.findViewById(R.id.addHabitEventSpinner);
+        final Spinner spinner = view.findViewById(R.id.editHabitEventSpinner);
         spinner.setAdapter((SpinnerAdapter) listAdapter);
 
-        TextView eventTitle = view.findViewById(R.id.addHabitEventDialogTitle);
+        TextView eventTitle = view.findViewById(R.id.editHabitEventDialogTitle);
         eventTitle.setText("Add " + title + " event");
 
-        createButton = view.findViewById(R.id.addEventCreateButton);
+        createButton = view.findViewById(R.id.editEventCreateButton);
         createButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -168,7 +168,7 @@ public class AddHabitEventDialog extends DialogFragment {
             }
         });
 
-        Button cancelButton = view.findViewById(R.id.addEventCancelButton);
+        Button cancelButton = view.findViewById(R.id.editEventCancelButton);
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
