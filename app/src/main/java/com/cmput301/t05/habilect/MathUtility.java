@@ -18,6 +18,7 @@ public final class MathUtility {
 
         final long startTime = System.currentTimeMillis();
         for (int i=0; i<steps; i++) {
+            final int finalI = i;
             Runnable myRunnable = new Runnable() {
                 @Override
                 public void run() {
@@ -30,7 +31,11 @@ public final class MathUtility {
                         Message msg = new Message();
                         msg.obj = new long[] {startTime, totalDuration};
                         handler.sendMessage(msg);
-
+                        if (finalI == steps-1) {
+                            Message finishedMsg = new Message();
+                            msg.obj = null;
+                            handler.sendMessage(msg);
+                        }
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
