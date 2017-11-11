@@ -98,7 +98,7 @@ public class HomePrimaryFragment extends Fragment {
                 });
                 addHabitEventDialog.show(fragmentManager, "addHabitEventDialog");
                 Bundle eventTitle = new Bundle();
-                eventTitle.putString("Title", "TEST");
+                //eventTitle.putString("Title", "TEST");
                 addHabitEventDialog.setArguments(eventTitle);
             }
         });

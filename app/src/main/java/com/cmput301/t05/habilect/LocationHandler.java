@@ -1,32 +1,14 @@
 package com.cmput301.t05.habilect;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.content.Context;
-import android.content.ContextWrapper;
-import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.location.Location;
-import android.net.Uri;
-import android.os.Bundle;
 import android.os.Looper;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.content.FileProvider;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -40,117 +22,40 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 
-import java.io.File;
-import java.io.IOException;
-
-import static android.app.Activity.RESULT_OK;
+import java.util.Locale;
+import java.util.concurrent.Executor;
 
 /**
- * @author rarog
+ * Created by Oliver on 10/11/2017.
  */
 
-public class AddHabitEventDialog extends DialogFragment {
-    private OnAddHabitEventListener onAddHabitEventListener;
-    private ImageButton eventImage;
-    private Bitmap eventBitmap;
-    static final int REQUEST_IMAGE_CAPTURE = 1;
-    private Location location;
-    private LocationHandler locationHandler;
-    private static final String TAG = "Add event dialog";
+public class LocationHandler implements ActivityCompat.OnRequestPermissionsResultCallback {
+    private static final int REQUEST_FINE_LOCATION = 1;
+    private static final String TAG = "Location Handler";
     private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 34;
+
+    private FusedLocationProviderClient mFusedLocationClient;
+    Location location;
     Context context;
 
-    /**
-     * Provides the entry point to the Fused Location Provider API.
-     */
-    private FusedLocationProviderClient mFusedLocationClient;
-
-    /**
-     * Represents a geographical location.
-     */
-    protected Location mLastLocation;
-
-
-    public void setOnAddHabitEventListener(OnAddHabitEventListener onAddHabitEventListener) {
-        this.onAddHabitEventListener = onAddHabitEventListener;
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        Dialog dialog = getDialog();
-        dialog.getWindow().setLayout(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-        );
-
-        if (!checkPermissions()) {
-            requestPermissions();
-        } else {
-            getLastLocation();
-        }
-    }
-
-    @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
-        final Dialog dialog = new Dialog(getActivity());
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
-        LayoutInflater inflater = getActivity().getLayoutInflater();
-        View view = inflater.inflate(R.layout.dialog_add_habit_event, null);
-        dialog.setContentView(view);
-
-        context = getContext();
-
+    LocationHandler(Context context) {
+        this.context = context;
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(context);
-
-
-        eventImage = view.findViewById(R.id.habitEventImageButton);
-        eventImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dispatchTakePictureIntent("test.jpg");
-            }
-        });
-
-        String title = getTitleFromBundle();
-
-        TextView eventTitle = (TextView) view.findViewById(R.id.addHabitEventDialogTitle);
-        eventTitle.setText("Add " + title + " event");
-
-        return dialog;
+        getLastLocation();
     }
 
-    private String getTitleFromBundle() {
-        return getArguments().getString("Title") == null
-                ? "" : getArguments().getString("Title");
-    }
-
-    private void dispatchTakePictureIntent(String targetFilename) {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (takePictureIntent.resolveActivity(getDialog().getContext().getPackageManager()) != null) {
-            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-        }
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            Bundle extras = data.getExtras();
-            eventBitmap = (Bitmap) extras.get("data");
-            eventImage.setImageBitmap(eventBitmap);
-            eventImage.setScaleType(ImageView.ScaleType.FIT_XY);
-        }
+    public Location getLocation() {
+        return location;
     }
 
     @SuppressWarnings("MissingPermission")
     private void getLastLocation() {
         mFusedLocationClient.getLastLocation()
-                .addOnCompleteListener((Activity) context, new OnCompleteListener<Location>() {
+                .addOnCompleteListener(new OnCompleteListener<Location>() {
                     @Override
                     public void onComplete(@NonNull Task<Location> task) {
                         if (task.isSuccessful() && task.getResult() != null) {
-                            mLastLocation = task.getResult();
+                            location = task.getResult();
                         } else {
                             Log.w(TAG, "getLastLocation:exception", task.getException());
                         }
@@ -182,6 +87,7 @@ public class AddHabitEventDialog extends DialogFragment {
         // request previously, but didn't check the "Don't ask again" checkbox.
         if (shouldProvideRationale) {
             Log.i(TAG, "Displaying permission rationale to provide additional context.");
+
         } else {
             Log.i(TAG, "Requesting permission");
             // Request permission. It's possible this can be auto answered if device policy
@@ -222,3 +128,38 @@ public class AddHabitEventDialog extends DialogFragment {
         }
     }
 }
+// Trigger new location updates at interval
+    /*protected void startLocationUpdates(final Context context) {
+        // Create the location request to start receiving updates
+        mLocationRequest = new LocationRequest();
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        mLocationRequest.setInterval(UPDATE_INTERVAL);
+        mLocationRequest.setFastestInterval(FASTEST_INTERVAL);
+
+        // Create LocationSettingsRequest object using location request
+        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder();
+        builder.addLocationRequest(mLocationRequest);
+        LocationSettingsRequest locationSettingsRequest = builder.build();
+
+        // Check whether location settings are satisfied
+        // https://developers.google.com/android/reference/com/google/android/gms/location/SettingsClient
+        SettingsClient settingsClient = LocationServices.getSettingsClient(context);
+        settingsClient.checkLocationSettings(locationSettingsRequest);
+
+        // new Google API SDK v11 uses getFusedLocationProviderClient(this)
+        if (ActivityCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions((Activity) context,
+                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                    REQUEST_FINE_LOCATION);
+            return;
+        }
+
+        LocationServices.getFusedLocationProviderClient(context).requestLocationUpdates(mLocationRequest, new LocationCallback() {
+                    @Override
+                    public void onLocationResult(LocationResult locationResult) {
+                        // do work here
+                        getLastLocation(context);
+                    }
+                },
+                Looper.myLooper());
+    } */
