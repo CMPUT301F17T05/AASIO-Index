@@ -23,9 +23,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ListAdapter;
+import android.widget.Spinner;
+import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -35,6 +39,7 @@ import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.SettingsClient;
+import com.google.android.gms.nearby.connection.Strategy;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -42,6 +47,7 @@ import com.google.android.gms.tasks.Task;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -54,8 +60,6 @@ public class AddHabitEventDialog extends DialogFragment {
     private ImageButton eventImage;
     private Bitmap eventBitmap;
     static final int REQUEST_IMAGE_CAPTURE = 1;
-    private Location location;
-    private LocationHandler locationHandler;
     private static final String TAG = "Add event dialog";
     private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 34;
     Context context;
@@ -104,7 +108,6 @@ public class AddHabitEventDialog extends DialogFragment {
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(context);
 
-
         eventImage = view.findViewById(R.id.habitEventImageButton);
         eventImage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -114,9 +117,31 @@ public class AddHabitEventDialog extends DialogFragment {
         });
 
         String title = getTitleFromBundle();
+        ArrayList<String> habits = getHabitTypeFromBundle();
 
-        TextView eventTitle = (TextView) view.findViewById(R.id.addHabitEventDialogTitle);
+        ListAdapter listAdapter = new ArrayAdapter<>(context, R.layout.habit_type_spinner_layout, R.id.habitTypeSpinnerTextView, habits);
+
+        Spinner spinner = view.findViewById(R.id.addHabitEventSpinner);
+        spinner.setAdapter((SpinnerAdapter) listAdapter);
+
+        TextView eventTitle = view.findViewById(R.id.addHabitEventDialogTitle);
         eventTitle.setText("Add " + title + " event");
+
+        Button createButton = view.findViewById(R.id.addEventCreateButton);
+        createButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
+        Button cancelButton = view.findViewById(R.id.addEventCancelButton);
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
 
         return dialog;
     }
@@ -124,6 +149,14 @@ public class AddHabitEventDialog extends DialogFragment {
     private String getTitleFromBundle() {
         return getArguments().getString("Title") == null
                 ? "" : getArguments().getString("Title");
+    }
+
+    private ArrayList<String> getHabitTypeFromBundle() {
+        ArrayList<String> habits = (ArrayList<String>) getArguments().get("Habit Type");
+        if(habits != null) {
+            return habits;
+        }
+        return new ArrayList<>();
     }
 
     private void dispatchTakePictureIntent(String targetFilename) {

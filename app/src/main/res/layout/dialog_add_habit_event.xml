@@ -25,6 +25,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/habit_type"
+        android:textSize="@dimen/font_size_medium"
         android:layout_below="@+id/addHabitEventDialogTitle"
         android:layout_alignStart="@+id/addHabitEventDialogTitle"
         android:layout_marginTop="27dp" />
@@ -77,5 +78,25 @@
         android:layout_alignStart="@+id/textView2"
         android:layout_marginTop="16dp"
         android:layout_alignEnd="@+id/checkBox" />
+
+    <Button
+        style="@style/Widget.AppCompat.Button.Borderless.Colored"
+        android:background="@android:color/transparent"
+        android:id="@+id/addEventCreateButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Create"
+        android:layout_alignParentBottom="true"
+        android:layout_alignEnd="@+id/editText" />
+
+    <Button
+        style="@style/Widget.AppCompat.Button.Borderless.Colored"
+        android:background="@android:color/transparent"
+        android:id="@+id/addEventCancelButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Cancel"
+        android:layout_alignParentBottom="true"
+        android:layout_toStartOf="@+id/addEventCreateButton" />
 
 </RelativeLayout>
