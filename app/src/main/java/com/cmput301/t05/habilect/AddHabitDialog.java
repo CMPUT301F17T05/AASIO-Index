@@ -83,11 +83,16 @@ public class AddHabitDialog extends DialogFragment {
                         onAddHabitListener.OnAddedOrEdited(title, reason, start_date, weekly_plan);
                         dialog.dismiss();
                     } catch (IllegalArgumentException e) {
-                        if (title.length() == 0 || title.length() > 20) {
+                        if (e.getMessage() == "title") {
+                        //if (title.length() == 0 || title.length() > 20) {
                             habitTitleText.setError("This field cannot be blank, and cannot be greater than 20 characters");
                         }
-                        if (reason.length() == 0 || reason.length() > 30) {
+                        if (e.getMessage() == "reason") {
+                        //if (reason.length() == 0 || reason.length() > 30) {
                             habitReasonText.setError("This field cannot be blank, and cannot be greater than 30 characters");
+                        }
+                        if (e.getMessage() == "plan") {
+                            //TODO: implement an error dialog
                         }
                     }
                 }

@@ -12,6 +12,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -281,11 +282,15 @@ public class HabitTypeActivity extends AppCompatActivity {
                             try {
                                 onAddHabitListener.OnAddedOrEdited(title, reason, start_date, weekly_plan);
                             } catch (IllegalArgumentException e) {
-                                if (title.length() > 20) {
+                                if (e.getMessage() == "title") {
                                     newTitle.setError("This field cannot be greater than 20 characters");
                                 }
-                                if (reason.length() > 30) {
+                                if (e.getMessage() == "reason") {
                                     newReason.setError("This field cannot be greater than 30 characters");
+                                }
+                                if (e.getMessage() == "plan") {
+                                    //TODO: implement an error dialog
+                                    Log.d("Debugging", "no days selected");
                                 }
                             }
                         }
@@ -294,13 +299,13 @@ public class HabitTypeActivity extends AppCompatActivity {
         }
 
         public void setCheckboxes() {
-            newMonday.setChecked(weekly_plan[0]);
-            newTuesday.setChecked(weekly_plan[1]);
-            newWednesday.setChecked(weekly_plan[2]);
-            newThursday.setChecked(weekly_plan[3]);
-            newFriday.setChecked(weekly_plan[4]);
-            newSaturday.setChecked(weekly_plan[5]);
-            newSunday.setChecked(weekly_plan[6]);
+            newMonday.setChecked(habit_type.getWeeklyPlan()[0]);
+            newTuesday.setChecked(habit_type.getWeeklyPlan()[1]);
+            newWednesday.setChecked(habit_type.getWeeklyPlan()[2]);
+            newThursday.setChecked(habit_type.getWeeklyPlan()[3]);
+            newFriday.setChecked(habit_type.getWeeklyPlan()[4]);
+            newSaturday.setChecked(habit_type.getWeeklyPlan()[5]);
+            newSunday.setChecked(habit_type.getWeeklyPlan()[6]);
         }
 
         /**

@@ -17,8 +17,9 @@ public class FollowRequestTest extends ActivityInstrumentationTestCase2 {
     - user profile of follower must not be null
      */
     public void testProspectiveFollower() {
+        boolean[] plan = {true, true, true, true, true, true, true};
         UserProfile profile = new UserProfile("TestProfile", null, null);
-        HabitType habit = new HabitType("Habit", "Reason", new Date());
+        HabitType habit = new HabitType("Habit", "Reason", new Date(), plan);
         FollowRequest request = new FollowRequest(profile, habit);
 
         assertEquals("ERROR: valid prospectiveFollower not set in request",
@@ -36,8 +37,9 @@ public class FollowRequestTest extends ActivityInstrumentationTestCase2 {
     - habit to be followed must not be null
      */
     public void testHabitToBeFollowed() {
+        boolean[] plan = {true, true, true, true, true, true, true};
         UserProfile profile = new UserProfile("TestProfile", null, null);
-        HabitType habit = new HabitType("Habit", "Reason", new Date());
+        HabitType habit = new HabitType("Habit", "Reason", new Date(), plan);
         FollowRequest request = new FollowRequest(profile, habit);
 
         assertEquals("ERROR: valid habitToBeFollowed not set in request",

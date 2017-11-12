@@ -20,7 +20,8 @@ public class HabitPlanTest extends ActivityInstrumentationTestCase2 {
     - cannot be null
      */
     public void testHabitType() {
-        HabitType habitType = new HabitType("title", "reason", new Date());
+        boolean[] plan = {true, true, true, true, true, true, true};
+        HabitType habitType = new HabitType("title", "reason", new Date(), plan);
         HabitPlan habitPlan = new HabitPlan(habitType, new int[]{1, 2, 3, 0, 0, 0, 0},
                 new boolean[]{true, true, true, false, false, false, false}, new ArrayList<HabitEvent>());
 
@@ -37,8 +38,9 @@ public class HabitPlanTest extends ActivityInstrumentationTestCase2 {
     - must be length of 7 (days in a week)
      */
     public void testtargetFrequency() {
+        boolean[] plan = {true, true, true, true, true, true, true};
         int[] targetFrequency = new int[]{1, 2, 3, 0, 0, 0, 0};
-        HabitPlan habitPlan = new HabitPlan(new HabitType("title", "reason", new Date()), targetFrequency,
+        HabitPlan habitPlan = new HabitPlan(new HabitType("title", "reason", new Date(), plan), targetFrequency,
                 new boolean[]{true, true, true, false, false, false, false}, new ArrayList<HabitEvent>());
 
         assertEquals("ERROR: targetFrequency must be of length 7!", targetFrequency, habitPlan.getTargetFrequency());
@@ -54,8 +56,9 @@ public class HabitPlanTest extends ActivityInstrumentationTestCase2 {
     - must be length of 7 (days in a week)
      */
     public void testtargetDays() {
+        boolean[] plan = {true, true, true, true, true, true, true};
         boolean[] targetDays = new boolean[]{true, true, true, false, false, false, false};
-        HabitPlan habitPlan = new HabitPlan(new HabitType("title", "reason", new Date()), new int[]{1, 2, 3, 0, 0, 0, 0},
+        HabitPlan habitPlan = new HabitPlan(new HabitType("title", "reason", new Date(), plan), new int[]{1, 2, 3, 0, 0, 0, 0},
                 targetDays, new ArrayList<HabitEvent>());
 
         assertEquals("ERROR: targetDays must be of length 7!", targetDays, habitPlan.getTargetDays());

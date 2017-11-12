@@ -81,7 +81,7 @@ public class HabitType extends Observable implements Serializable {
     }
     public void setReason(String reason) {
         if (reason.length() == 0 || reason.length() > 30) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("reason");
         } else {
             this.reason = reason;
         }
@@ -106,7 +106,7 @@ public class HabitType extends Observable implements Serializable {
             }
         }
         if (count_true == 0) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("plan");
         } else {
             this.weekly_plan = weekly_plan;
         }
