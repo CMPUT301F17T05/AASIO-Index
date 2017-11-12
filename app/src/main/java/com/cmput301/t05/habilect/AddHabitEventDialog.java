@@ -5,8 +5,16 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.SurfaceTexture;
+import android.hardware.camera2.CameraCaptureSession;
+import android.hardware.camera2.CaptureFailure;
+import android.hardware.camera2.CaptureRequest;
+import android.hardware.camera2.TotalCaptureResult;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -15,6 +23,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -50,6 +59,76 @@ public class AddHabitEventDialog extends DialogFragment {
     TextView commentWarning;
     Button createButton;
 
+    Camera camera;
+    boolean profileImageViewDebounce = false;
+    private TextureView cameraTextureView;
+
+    TextureView.SurfaceTextureListener cameraPreviewSurfaceTextureListener = new TextureView.SurfaceTextureListener() {
+        @Override
+        public void onSurfaceTextureAvailable(SurfaceTexture surfaceTexture, int width, int height) {
+            camera.setup(context, width, height);
+            camera.open(context);
+        }
+
+        @Override
+        public void onSurfaceTextureSizeChanged(SurfaceTexture surfaceTexture, int i, int i1) {
+
+        }
+
+        @Override
+        public boolean onSurfaceTextureDestroyed(SurfaceTexture surfaceTexture) {
+            return false;
+        }
+
+        @Override
+        public void onSurfaceTextureUpdated(SurfaceTexture surfaceTexture) {
+
+        }
+    };
+
+    CameraCaptureSession.CaptureCallback cameraCaptureSessionCallback = new CameraCaptureSession.CaptureCallback() {
+        /*@Override
+        public void onCaptureStarted(CameraCaptureSession session, CaptureRequest request, long timestamp, long frameNumber) {
+            Handler responseHandler = new Handler(Looper.getMainLooper()) {
+                @Override
+                public void handleMessage(Message params) {
+                    cameraTextureView.setAlpha(0f+0.2f*MathUtility.EasingOut(System.currentTimeMillis() - ((long[])params.obj)[0], ((long[])params.obj)[1], 3));
+                }
+            };
+            MathUtility.Animate(100, 500, responseHandler);
+        }*/
+
+        @Override
+        public void onCaptureCompleted(CameraCaptureSession session, @NonNull CaptureRequest request, TotalCaptureResult result) {
+            switch (camera.getCameraState()) {
+                case Camera.STATE_PREVIEWING:
+                    break;
+                case Camera.STATE_CAPTURING:
+                    camera.retrieveImage(context);
+                    if (!profileImageViewDebounce) {
+                        profileImageViewDebounce = true;
+                        Handler responseHandler = new Handler(Looper.getMainLooper()) {
+                            @Override
+                            public void handleMessage(Message params) {
+                                if (params.obj==null)
+                                {
+                                    profileImageViewDebounce = false;
+                                }
+                                else {
+                                    cameraTextureView.setAlpha(1f-0.8f*MathUtility.EasingOut(System.currentTimeMillis() - ((long[])params.obj)[0], ((long[])params.obj)[1], 3));
+                                }
+                            }
+                        };
+                        MathUtility.Animate(100, 500, responseHandler);
+                    }
+            }
+        }
+        @Override
+        public void onCaptureFailed(CameraCaptureSession session, @NonNull CaptureRequest request, CaptureFailure failure) {
+
+        }
+    };
+
     /**
      * Provides the entry point to the Fused Location Provider API.
      */
@@ -59,6 +138,7 @@ public class AddHabitEventDialog extends DialogFragment {
      * Represents a geographical location.
      */
     protected Location mLastLocation;
+
 
 
     public void setOnAddHabitEventListener(OnAddHabitEventListener onAddHabitEventListener) {
@@ -132,12 +212,44 @@ public class AddHabitEventDialog extends DialogFragment {
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(context);
 
+        cameraTextureView = view.findViewById(R.id.addEventCameraPreviewTextureView);
+        camera = new Camera(cameraTextureView, cameraCaptureSessionCallback, eventImage);
+
+        final ImageButton captureButton = view.findViewById(R.id.addEventCaptureButton);
+        captureButton.setVisibility(ImageButton.INVISIBLE);
+
         eventImage = view.findViewById(R.id.addHabitEventImageButton);
         eventImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                captureButton.setVisibility(ImageButton.VISIBLE);
+                eventImage.setVisibility(ImageButton.INVISIBLE);
+                if (!profileImageViewDebounce) {
+                    profileImageViewDebounce = true;
+                    Handler responseHandler = new Handler(Looper.getMainLooper()) {
+                        @Override
+                        public void handleMessage(Message params) {
+                            if (params.obj==null) {
+                                profileImageViewDebounce = false;
+                            }
+                            else {
+                                cameraTextureView.setAlpha(0.2f+0.8f*MathUtility.EasingOut(System.currentTimeMillis() - ((long[])params.obj)[0], ((long[])params.obj)[1], 3));
+                            }
+                        }
+                    };
+                    MathUtility.Animate(100, 500, responseHandler);
+                }
             }
+        });
+
+        captureButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                    public void onClick(View view) {
+                    // set camera's auto-focus lock
+                    camera.takePhoto();
+                    eventImage.setVisibility(ImageButton.VISIBLE);
+                    captureButton.setVisibility(ImageButton.INVISIBLE);
+                }
         });
 
         commentText = view.findViewById(R.id.addEventCommentText);
@@ -177,6 +289,23 @@ public class AddHabitEventDialog extends DialogFragment {
         });
 
         return dialog;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (!cameraTextureView.isAvailable()) {
+            cameraTextureView.setSurfaceTextureListener(cameraPreviewSurfaceTextureListener);
+        } else {
+            camera.setup(context, cameraTextureView.getWidth(), cameraTextureView.getHeight());
+            camera.open(context);
+        }
+    }
+
+    @Override
+    public void onPause() {
+        camera.close();
+        super.onPause();
     }
 
     private String getTitleFromBundle() {
