@@ -1,3 +1,4 @@
+/*
 package com.cmput301.t05.habilect;
 
 import android.os.AsyncTask;
@@ -6,14 +7,15 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
+*/
 /**
  * Created by Andrea on 07-11-17.
- */
+ *//*
+
 
 public class ElasticsearchHabitTypeController {
-/*    private static JestDroidClient client;
+    private static JestDroidClient client;
 
-    // TODO we need a function which adds habit types to elastic search
     public static class AddHabitTypeTask extends AsyncTask<HabitType, Void, Void> {
 
         @Override
@@ -45,8 +47,11 @@ public class ElasticsearchHabitTypeController {
 
             ArrayList<HabitType> habits = new ArrayList<HabitType>();
             Log.d("Debugging", "Search Params: " + search_parameters[0]);
-
-            String query = "{\"query\" : { \"term\" : { \"message\" : \"" + search_parameters[0] + "\"} } }";
+            if (search_parameters[0] == null) {
+                String query = "{\"query\" : { \"match_all\" : {} } }";
+            } else {
+                String query = "{\"query\" : { \"term\" : { \"message\" : \"" + search_parameters[0] + "\"} } }";
+            }
 
             Search search = new Search.Builder(query)
                     .addIndex("testing")
@@ -81,5 +86,6 @@ public class ElasticsearchHabitTypeController {
             factory.setDroidClientConfig(config);
             client = (JestDroidClient) factory.getObject();
         }
-    }*/
+    }
 }
+*/

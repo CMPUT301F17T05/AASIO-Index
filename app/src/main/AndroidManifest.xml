@@ -20,7 +20,11 @@
         <activity android:name=".SocialActivity" />
         <activity android:name=".ProfileActivity" />
         <activity android:name=".FriendActivity" />
-        <activity android:name=".ViewHabitTypesActivity"></activity>
+        <activity android:name=".ViewHabitTypesActivity" />
+        <activity
+            android:name=".HabitTypeActivity"
+            android:label="@string/title_activity_view_habit_type"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

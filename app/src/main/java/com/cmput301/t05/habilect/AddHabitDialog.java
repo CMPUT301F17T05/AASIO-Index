@@ -3,7 +3,6 @@ package com.cmput301.t05.habilect;
 import android.app.Dialog;
 import android.support.v4.app.DialogFragment ;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,11 +12,11 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 
 /**
  * @author ioltuszy
+ * @author amwhitta
  */
 
 public class AddHabitDialog extends DialogFragment {
@@ -51,16 +50,16 @@ public class AddHabitDialog extends DialogFragment {
         View view = inflater.inflate(R.layout.dialog_addhabit, null);
         dialog.setContentView(view);
 
-        habitTitleText = (EditText) dialog.findViewById(R.id.enterHabitTypeTitle);
-        habitReasonText = (EditText) dialog.findViewById(R.id.enterHabitTypeReason);
-        habitStartDate = (DatePicker) dialog.findViewById(R.id.datePickerStartDate);
-        checkMonday = (CheckBox) dialog.findViewById(R.id.checkBoxMonday);
-        checkTuesday = (CheckBox) dialog.findViewById(R.id.checkBoxTuesday);
-        checkWednesday = (CheckBox) dialog.findViewById(R.id.checkBoxWednesday);
-        checkThursday = (CheckBox) dialog.findViewById(R.id.checkBoxThursday);
-        checkFriday = (CheckBox) dialog.findViewById(R.id.checkBoxFriday);
-        checkSaturday = (CheckBox) dialog.findViewById(R.id.checkBoxSaturday);
-        checkSunday = (CheckBox) dialog.findViewById(R.id.checkBoxSunday);
+        habitTitleText = dialog.findViewById(R.id.enterHabitTypeTitle);
+        habitReasonText = dialog.findViewById(R.id.enterHabitTypeReason);
+        habitStartDate = dialog.findViewById(R.id.datePickerStartDate);
+        checkMonday = dialog.findViewById(R.id.checkBoxMonday);
+        checkTuesday = dialog.findViewById(R.id.checkBoxTuesday);
+        checkWednesday = dialog.findViewById(R.id.checkBoxWednesday);
+        checkThursday = dialog.findViewById(R.id.checkBoxThursday);
+        checkFriday = dialog.findViewById(R.id.checkBoxFriday);
+        checkSaturday = dialog.findViewById(R.id.checkBoxSaturday);
+        checkSunday = dialog.findViewById(R.id.checkBoxSunday);
 
         ArrayList<CheckBox> checkboxes = new ArrayList<>();
         checkboxes.add(checkMonday);
@@ -81,7 +80,7 @@ public class AddHabitDialog extends DialogFragment {
                     Date start_date = new Date(habitStartDate.getYear(), habitStartDate.getMonth(),
                             habitStartDate.getDayOfMonth());
                     try {
-                        onAddHabitListener.OnAdded(title, reason, start_date, weekly_plan);
+                        onAddHabitListener.OnAddedOrEdited(title, reason, start_date, weekly_plan);
                         dialog.dismiss();
                     } catch (IllegalArgumentException e) {
                         if (title.length() == 0 || title.length() > 20) {
@@ -105,13 +104,12 @@ public class AddHabitDialog extends DialogFragment {
         return dialog;
     }
 
-    /*
+    /**
      * @see <a href="https://developer.android.com/guide/topics/ui/controls/checkbox.html">Android Developers -- Checkboxes</a>
      */
     public void onCheckboxClicked(View view) {
         boolean checked = ((CheckBox) view).isChecked();
         // Check which checkbox was clicked
-        Log.d("Debugging", "in onCheckboxClicked");
         switch(view.getId()) {
             case R.id.checkBoxMonday:
                 weekly_plan[0] = checked;
@@ -135,9 +133,13 @@ public class AddHabitDialog extends DialogFragment {
                 weekly_plan[6] = checked;
                 break;
         }
-        Log.d("Debugging", "plan:"+ Arrays.toString(weekly_plan));
+        //Log.d("Debugging", "plan:"+ Arrays.toString(weekly_plan));
     }
 
+    /**
+     * @author amwhitta
+     * @param checkboxes is an ArrayList of CheckBox objects in the view that need listeners
+     */
     public void setListeners(ArrayList<CheckBox> checkboxes) {
         for (CheckBox c : checkboxes) {
             c.setOnClickListener(new View.OnClickListener() {

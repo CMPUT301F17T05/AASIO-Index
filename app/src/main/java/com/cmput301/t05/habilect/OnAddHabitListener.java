@@ -7,6 +7,6 @@ import java.util.Date;
  */
 
 public interface OnAddHabitListener {
-    void OnAdded(String title, String reason, Date start_date, boolean[] weekly_plan);
+    void OnAddedOrEdited(String title, String reason, Date start_date, boolean[] weekly_plan);
     void OnCancelled();
 }

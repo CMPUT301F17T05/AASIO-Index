@@ -1,6 +1,8 @@
 package com.cmput301.t05.habilect;
 
 import android.util.Log;
+
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -13,7 +15,7 @@ import java.util.Observable;
  * @author amwhitta
  */
 
-public class HabitType {
+public class HabitType extends Observable implements Serializable {
 
     private String title;
     private String reason;
@@ -21,6 +23,7 @@ public class HabitType {
     private boolean[] weekly_plan;
     private boolean shared;
     private List<UserProfile> followers;
+    private Date recent_habit_event;
 
     // Constructor
     public HabitType(String title, String reason, Date start_date, boolean[] weekly_plan) {
@@ -43,6 +46,24 @@ public class HabitType {
         return this.start_date;
     }
     public boolean[] getWeeklyPlan() { return weekly_plan; }
+    public String getWeeklyPlanString() {
+        String plan = "Every ";
+        int count = 0;
+        for (int i = 0; i < weekly_plan.length; ++i) {
+            if (weekly_plan[i]) {
+                if (i == 0) { plan = plan + "Monday, "; ++count; }
+                else if (i == 1) { plan = plan + "Tuesday, "; ++count; }
+                else if (i == 2) { plan = plan + "Wednesday, "; ++count; }
+                else if (i == 3) { plan = plan + "Thursday, "; ++count; }
+                else if (i == 4) { plan = plan + "Friday, "; ++count; }
+                else if (i == 5) { plan = plan + "Saturday, "; ++count; }
+                else if (i == 6) { plan = plan + "Sunday, "; ++count; }
+            }
+        }
+        if (count == 7) { plan = "Every day"; }
+        else { plan = plan.substring(0, plan.length() - 2); }
+        return plan;
+    }
     public boolean getShared() {
         return this.shared;
     }
@@ -53,7 +74,7 @@ public class HabitType {
     // Setters
     public void setTitle(String title) {
         if (title.length() == 0 || title.length() > 20) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("title");
         } else {
             this.title = title;
         }
@@ -77,10 +98,23 @@ public class HabitType {
         }*/
         this.start_date = date;
     }
-    public void setWeeklyPlan(boolean[] weekly_plan) { this.weekly_plan = weekly_plan; }
+    public void setWeeklyPlan(boolean[] weekly_plan) {
+        int count_true = 0;
+        for (boolean b : weekly_plan) {
+            if (b) {
+                ++count_true;
+            }
+        }
+        if (count_true == 0) {
+            throw new IllegalArgumentException();
+        } else {
+            this.weekly_plan = weekly_plan;
+        }
+    }
     public void setShared(boolean shared) {
         this.shared = shared;
     }
+    public void setRecentHabitEvent(Date date) { this.recent_habit_event = date; }
 
     // Behaviours
     public int totalEventOpportunities() {
@@ -115,5 +149,14 @@ public class HabitType {
             start.add(Calendar.DATE, 1);
         }
         return count;
+    }
+    public void notifyViews() {
+        this.setChanged();
+        this.notifyObservers();
+    }
+
+    @Override
+    public String toString() {
+        return this.getTitle();
     }
 }

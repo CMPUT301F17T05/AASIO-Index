@@ -32,7 +32,7 @@ public class HomePrimaryFragment extends Fragment {
                 final AddHabitDialog addHabitDialog = new AddHabitDialog();
                 addHabitDialog.setOnAddHabitListener(new OnAddHabitListener() {
                     @Override
-                    public void OnAdded(String title, String reason, Date start_date, boolean[] weekly_plan) {
+                    public void OnAddedOrEdited(String title, String reason, Date start_date, boolean[] weekly_plan) {
                         try {
                             HabitType habit_type = new HabitType(title, reason, start_date, weekly_plan);
                         } catch (IllegalArgumentException e) {
@@ -42,7 +42,6 @@ public class HomePrimaryFragment extends Fragment {
                         new ElasticsearchHabitTypeController.AddHabitTypeTask();
                         addHabitTypeTask.execute(habit_type);*/
                     }
-
                     @Override
                     public void OnCancelled() {
                         // TODO: implement OnCancelled
