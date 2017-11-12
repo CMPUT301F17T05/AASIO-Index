@@ -40,8 +40,7 @@ public class WebService {
     }
 
     public static String getDocumentIdFromUserProfile(UserProfile userProfile) {
-        String query = "{\n" + " \"query\": { \"term\": {\"identifier\":\"" + "123" + "\"} }\n" + "}";
-//        String query = "{\n" + " \"query\": { \"term\": {\"identifier\":\"" + userProfile.getIdentifier() + "\"} }\n" + "}";
+        String query = "{\n" + " \"query\": { \"term\": {\"identifier\":\"" + userProfile.getIdentifier() + "\"} }\n" + "}";
 
         Search search = new Search.Builder(query)
                 .addIndex("user")
@@ -134,36 +133,5 @@ public class WebService {
             return null;
         }
     }
-    //endregion
-
-    //region HabitType services
-//    public static class AddHabitTypeTask extends AsyncTask<Object, Void, Void> {
-//
-//        @Override
-//        protected Void doInBackground(Object... params) {
-//            verifySettings();
-//
-//            UserProfile userProfile = (UserProfile) params[0];
-//            HabitType habitType = (HabitType) params[1];
-//
-//            try {
-//                String documentId = getDocumentIdFromUserProfile(userProfile);
-//                if (documentId != null) {
-//                    Index index = new Index.Builder(userProfile).index("user").type(documentId).build();
-//                    DocumentResult resultUpdate = client.execute(index);
-//                    if (resultUpdate.isSucceeded()) {
-//                        Log.i("Success", "Success updating");
-//                    } else {
-//                        Log.i("Error", "Error updating");
-//                    }
-//                } else {
-//                    Log.i("Error", "");
-//                }
-//            } catch (Exception e) {
-//                Log.i("Error", "");
-//            }
-//            return null;
-//        }
-//    }
     //endregion
 }
