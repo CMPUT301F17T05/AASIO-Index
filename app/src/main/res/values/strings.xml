@@ -1,4 +1,19 @@
 <resources>
     <string name="app_name">Habilect</string>
+    <string name="add_habit_title_hint">Enter title:</string>
+    <string name="add_habit_reason_hint">Enter reason:</string>
+    <string name="monday">Monday</string>
+    <string name="tuesday">Tuesday</string>
+    <string name="wednesday">Wednesday</string>
+    <string name="thursday">Thursday</string>
+    <string name="friday">Friday</string>
+    <string name="saturday">Saturday</string>
+    <string name="sunday">Sunday</string>
+    <string name="title_activity_view_habit_type">ViewHabitTypeActivity</string>
+    <string name="action_settings">Settings</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+    <string name="habit_type_details_tab">Details</string>
+    <string name="habit_type_options_tab">Options</string>
+    <string name="save">Save</string>
     <string name="habit_type">Habit Type</string>
 </resources>

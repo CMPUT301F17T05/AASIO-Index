@@ -38,26 +38,26 @@ public class HabitEventTest extends ActivityInstrumentationTestCase2 {
      */
     public void testComment() {
 
-        HabitEvent habit_event = new HabitEvent("comment", null, null, new Date());
+        HabitEvent habit_event = new HabitEvent("comment", null, null, new Date(), "title");
         String habit_event_comment = habit_event.getComment();
         assertEquals("ERROR: valid comment not accepted", "comment", habit_event_comment);
 
-        habit_event = new HabitEvent("", null, null, new Date());
+        habit_event = new HabitEvent("", null, null, new Date(), "title");
         habit_event_comment = habit_event.getComment();
         assertEquals("ERROR: valid empty comment not accepted", "", habit_event_comment);
 
         try {
             habit_event = new HabitEvent("thiscommentislongerthan20characters", null,
-                    null, new Date());
+                    null, new Date(), "title");
         } catch (IllegalArgumentException e) {
             assertNotNull(e);
         }
 
-        habit_event = new HabitEvent("\"comment\"", null, null, new Date());
+        habit_event = new HabitEvent("\"comment\"", null, null, new Date(), "title");
         habit_event_comment = habit_event.getComment();
         assertEquals("ERROR: valid comment with quotes not accepted", "\"comment\"", habit_event_comment);
 
-        habit_event = new HabitEvent("@#'()*$)<>.,~`", null, null, new Date());
+        habit_event = new HabitEvent("@#'()*$)<>.,~`", null, null, new Date(), "title");
         habit_event_comment = habit_event.getComment();
         assertEquals("ERROR: valid comment with special characters not accepted", "@#'()*$)<>.,~`",
                 habit_event_comment);
@@ -73,7 +73,7 @@ public class HabitEventTest extends ActivityInstrumentationTestCase2 {
         Bitmap test_pic_2 = getBitmapFromTestAssets(TEST2_FILENAME);
 
         try {
-            HabitEvent habit_event = new HabitEvent("comment", test_pic_1, null, new Date());
+            HabitEvent habit_event = new HabitEvent("comment", test_pic_1, null, new Date(), "title");
             Bitmap habit_event_picture = habit_event.getEventPicture();
             assertEquals("ERROR: pictures not equal", test_pic_1, habit_event_picture);
         } catch (IllegalArgumentException e) {
@@ -82,12 +82,12 @@ public class HabitEventTest extends ActivityInstrumentationTestCase2 {
         }
 
         try {
-            HabitEvent habit_event = new HabitEvent("comment", test_pic_2, null, new Date());
+            HabitEvent habit_event = new HabitEvent("comment", test_pic_2, null, new Date(), "title");
         } catch (IllegalArgumentException e) {
             assertNotNull(e);
         }
 
-        HabitEvent habit_event = new HabitEvent("comment", null, null, new Date());
+        HabitEvent habit_event = new HabitEvent("comment", null, null, new Date(), "title");
         Bitmap habit_event_picture = habit_event.getEventPicture();
         assertEquals("ERROR: no picture not accepted", null, habit_event_picture);
     }
@@ -98,10 +98,10 @@ public class HabitEventTest extends ActivityInstrumentationTestCase2 {
      */
     public void testLocation() {
         Location location = generateLocation(UNI_LATITUDE, UNI_LONGITUDE);
-        HabitEvent habit_event = new HabitEvent("comment", null, location, new Date());
+        HabitEvent habit_event = new HabitEvent("comment", null, location, new Date(), "title");
         assertEquals("ERROR: valid location not accepted", location, habit_event.getLocation());
 
-        habit_event = new HabitEvent("comment", null, null, new Date());
+        habit_event = new HabitEvent("comment", null, null, new Date(), "title");
         assertEquals("ERROR: no location not accepted", null, habit_event.getLocation());
     }
 
@@ -115,25 +115,25 @@ public class HabitEventTest extends ActivityInstrumentationTestCase2 {
         Calendar c = Calendar.getInstance();
         c.setTime(new Date());
         c.add(Calendar.DATE, -5);
-        HabitEvent habit_event = new HabitEvent("comment", null, null, c.getTime());
+        HabitEvent habit_event = new HabitEvent("comment", null, null, c.getTime(), "title");
         assertEquals("ERROR: valid date in the past not accepted", c.getTime(),
                 habit_event.getCompletionDate());
 
-        habit_event = new HabitEvent("comment", null, null, new Date());
+        habit_event = new HabitEvent("comment", null, null, new Date(), "title");
         assertEquals("ERROR: today's date not accepted", new Date(),
                 habit_event.getCompletionDate());
 
         try {
             c.setTime(new Date());
             c.add(Calendar.DATE, 5);
-            habit_event = new HabitEvent("comment", null, null, c.getTime());
+            habit_event = new HabitEvent("comment", null, null, c.getTime(), "title");
         } catch (IllegalArgumentException e) {
             assertNotNull(e);
             Log.e("ERROR", "Completion date cannot be in the future");
         }
 
         try {
-            habit_event = new HabitEvent("comment", null, null, null);
+            habit_event = new HabitEvent("comment", null, null, null, "title");
         } catch (IllegalArgumentException e) {
             assertNotNull(e);
             Log.e("ERROR", "Completion date cannot be null");

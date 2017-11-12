@@ -2,7 +2,79 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:weightSum="1">
+
+    <EditText
+        android:id="@+id/enterHabitTypeTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="@string/add_habit_title_hint"
+        android:inputType="textPersonName" />
+
+    <EditText
+        android:id="@+id/enterHabitTypeReason"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="@string/add_habit_reason_hint"
+        android:inputType="textPersonName" />
+
+    <DatePicker
+        android:id="@+id/datePickerStartDate"
+        android:layout_width="wrap_content"
+        android:layout_height="102dp"
+        android:datePickerMode="spinner" />
+
+    <CheckBox
+        android:id="@+id/checkBoxMonday"
+        android:checked="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/monday" />
+
+    <CheckBox
+        android:id="@+id/checkBoxTuesday"
+        android:checked="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/tuesday" />
+
+    <CheckBox
+        android:id="@+id/checkBoxWednesday"
+        android:checked="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/wednesday" />
+
+    <CheckBox
+        android:id="@+id/checkBoxThursday"
+        android:checked="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/thursday" />
+
+    <CheckBox
+        android:id="@+id/checkBoxFriday"
+        android:checked="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/friday" />
+
+    <CheckBox
+        android:id="@+id/checkBoxSaturday"
+        android:checked="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/saturday" />
+
+    <CheckBox
+        android:id="@+id/checkBoxSunday"
+        android:checked="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/sunday" />
 
     <Button
         android:id="@+id/add_button"
@@ -15,4 +87,5 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Cancel" />
+
 </LinearLayout>
