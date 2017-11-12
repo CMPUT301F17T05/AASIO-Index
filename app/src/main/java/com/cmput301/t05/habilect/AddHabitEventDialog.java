@@ -3,6 +3,7 @@ package com.cmput301.t05.habilect;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -44,6 +45,7 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -52,6 +54,18 @@ import java.util.Date;
 import java.util.Locale;
 
 /**
+ * This dialog facilitates the creation of habit events. If creating an event outside of a habit type
+ * you must pass an ArrayList of String with the titles of all possible habit types in a bundle
+ * with the tag 'Habit Type'. If you are creating an event from a specific Habit Type, you must still
+ * pass the Habit Title in an ArrayList of String. When the user presses create the following tags are
+ * passed back to the calling Activity, they are all Strings.
+ *
+ * comment - the comment the user left with the event. Always less than 20 characters
+ * date -  the date the event was created in form yyyy_mm_dd
+ * latitude - String of the latitude of the user location, if enable otherwise null
+ * longitude - String of the longitude of the user location, if enable otherwise null
+ * filePath - the name of the file where the image bitmap is stored
+ * habitType - the associated HabitType title of the event
  * @author rarog
  */
 
@@ -97,17 +111,6 @@ public class AddHabitEventDialog extends DialogFragment {
     };
 
     CameraCaptureSession.CaptureCallback cameraCaptureSessionCallback = new CameraCaptureSession.CaptureCallback() {
-        /*@Override
-        public void onCaptureStarted(CameraCaptureSession session, CaptureRequest request, long timestamp, long frameNumber) {
-            Handler responseHandler = new Handler(Looper.getMainLooper()) {
-                @Override
-                public void handleMessage(Message params) {
-                    cameraTextureView.setAlpha(0f+0.2f*MathUtility.EasingOut(System.currentTimeMillis() - ((long[])params.obj)[0], ((long[])params.obj)[1], 3));
-                }
-            };
-            MathUtility.Animate(100, 500, responseHandler);
-        }*/
-
         @Override
         public void onCaptureCompleted(CameraCaptureSession session, @NonNull CaptureRequest request, TotalCaptureResult result) {
             switch (camera.getCameraState()) {
@@ -231,7 +234,6 @@ public class AddHabitEventDialog extends DialogFragment {
         final ImageButton captureButton = view.findViewById(R.id.addEventCaptureButton);
         captureButton.setVisibility(ImageButton.INVISIBLE);
 
-
         eventImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -352,19 +354,21 @@ public class AddHabitEventDialog extends DialogFragment {
 
         return intent;
     }
-    // https://stackoverflow.com/questions/649154/save-bitmap-to-location
+    // https://stackoverflow.com/questions/17674634/saving-and-reading-bitmaps-images-from-internal-memory-in-android
     private void saveImageInFile(String filePath) {
-        FileOutputStream out = null;
+        ContextWrapper cw = new ContextWrapper(context.getApplicationContext());
+        File directory = cw.getDir("eventImages", Context.MODE_PRIVATE);
+        File mypath=new File(directory, filePath);
+
+        FileOutputStream fos = null;
         try {
-            out = new FileOutputStream(filePath);
-            eventBitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
+            fos = new FileOutputStream(mypath);
+            eventBitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
             try {
-                if (out != null) {
-                    out.close();
-                }
+                fos.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }

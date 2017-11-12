@@ -44,6 +44,17 @@ import java.util.ArrayList;
 import java.util.Date;
 
 /**
+ * This dialog facilitates the editing of habit events. When editing you must pass all
+ * the relevant HabitEvent information to the dialog in a bundle. That is the comment, date,
+ * location, latitude, longitude, habitType and file name of the image. When the user presses
+ * create the following tags are passed back to the calling Activity, they are all Strings.
+ *
+ * comment - the comment the user left with the event. Always less than 20 characters
+ * date -  the date the event was created in form yyyy_mm_dd
+ * latitude - String of the latitude of the user location, if enable otherwise null
+ * longitude - String of the longitude of the user location, if enable otherwise null
+ * filePath - the name of the file where the image bitmap is stored
+ * habitType - the associated HabitType title of the event
  * @author rarog
  */
 

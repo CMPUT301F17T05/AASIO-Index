@@ -101,17 +101,6 @@ public class HomePrimaryFragment extends Fragment {
                     }
                 });
                 addHabitEventDialog.show(fragmentManager, "addHabitEventDialog");
-                Bundle eventTitle = new Bundle();
-                HabitType h1 = new HabitType("Title 1", "Reason 1", new Date());
-                HabitType h2 = new HabitType("Title 2", "Reason 2", new Date());
-                HabitType h3 = new HabitType("Title 3", "Reason 3", new Date());
-                ArrayList<String> hList = new ArrayList<>();
-                hList.add(h1.getTitle());
-                hList.add(h2.getTitle());
-                hList.add(h3.getTitle());
-                eventTitle.putStringArrayList("Habit Type", hList);
-                eventTitle.putString("Title", "TEST");
-                addHabitEventDialog.setArguments(eventTitle);
             }
         });
 
