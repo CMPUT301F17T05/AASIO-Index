@@ -2,6 +2,7 @@ package com.cmput301.t05.habilect;
 
 import android.util.Log;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -19,6 +20,7 @@ public class HabitType {
     private Date start_date;
     private boolean shared;
     private List<UserProfile> followers;
+    private List<HabitEvent> habitEvents = new ArrayList<>();;
 
     // Constructor
     public HabitType(String title, String reason, Date startDate) {
@@ -75,5 +77,13 @@ public class HabitType {
     }
     public void setShared(boolean shared) {
         this.shared = shared;
+    }
+
+    public void addHabitEvent(HabitEvent habitEvent){
+        this.habitEvents.add(habitEvent);
+    }
+
+    public void removeHabitEvent(HabitEvent habitEvent){
+        this.habitEvents.remove(habitEvent);
     }
 }
