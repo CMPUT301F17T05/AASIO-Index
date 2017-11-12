@@ -3,6 +3,7 @@ package com.cmput301.t05.habilect;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.SurfaceTexture;
@@ -31,6 +32,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.ListAdapter;
 import android.widget.Spinner;
@@ -41,8 +43,13 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Locale;
 
 /**
  * @author rarog
@@ -59,9 +66,11 @@ public class AddHabitEventDialog extends DialogFragment {
     TextView commentText;
     TextView commentWarning;
     Button createButton;
+    Spinner spinner;
+    CheckBox checkBox;
 
     Camera camera;
-    boolean profileImageViewDebounce = false;
+    boolean addEventImageViewDebounce = false;
     private TextureView cameraTextureView;
 
     TextureView.SurfaceTextureListener cameraPreviewSurfaceTextureListener = new TextureView.SurfaceTextureListener() {
@@ -106,14 +115,14 @@ public class AddHabitEventDialog extends DialogFragment {
                     break;
                 case Camera.STATE_CAPTURING:
                     camera.retrieveImage(context);
-                    if (!profileImageViewDebounce) {
-                        profileImageViewDebounce = true;
+                    if (!addEventImageViewDebounce) {
+                        addEventImageViewDebounce = true;
                         Handler responseHandler = new Handler(Looper.getMainLooper()) {
                             @Override
                             public void handleMessage(Message params) {
                                 if (params.obj==null)
                                 {
-                                    profileImageViewDebounce = false;
+                                    addEventImageViewDebounce = false;
                                 }
                                 else {
                                     cameraTextureView.setAlpha(1f-0.8f*MathUtility.EasingOut(System.currentTimeMillis() - ((long[])params.obj)[0], ((long[])params.obj)[1], 3));
@@ -205,7 +214,7 @@ public class AddHabitEventDialog extends DialogFragment {
         final Dialog dialog = new Dialog(getActivity());
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
-        LayoutInflater inflater = getActivity().getLayoutInflater();
+        final LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.dialog_add_habit_event, null);
         dialog.setContentView(view);
 
@@ -213,6 +222,8 @@ public class AddHabitEventDialog extends DialogFragment {
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(context);
         eventImage = view.findViewById(R.id.addHabitEventImageButton);
+
+        checkBox = view.findViewById(R.id.addHabitEventCheckBox);
 
         cameraTextureView = view.findViewById(R.id.addEventCameraPreviewTextureView);
         camera = new Camera(cameraTextureView, cameraCaptureSessionCallback, eventImage);
@@ -226,13 +237,13 @@ public class AddHabitEventDialog extends DialogFragment {
             public void onClick(View view) {
                 captureButton.setVisibility(ImageButton.VISIBLE);
                 eventImage.setVisibility(ImageButton.INVISIBLE);
-                if (!profileImageViewDebounce) {
-                    profileImageViewDebounce = true;
+                if (!addEventImageViewDebounce) {
+                    addEventImageViewDebounce = true;
                     Handler responseHandler = new Handler(Looper.getMainLooper()) {
                         @Override
                         public void handleMessage(Message params) {
                             if (params.obj==null) {
-                                profileImageViewDebounce = false;
+                                addEventImageViewDebounce = false;
                             }
                             else {
                                 cameraTextureView.setAlpha(0.2f+0.8f*MathUtility.EasingOut(System.currentTimeMillis() - ((long[])params.obj)[0], ((long[])params.obj)[1], 3));
@@ -267,7 +278,7 @@ public class AddHabitEventDialog extends DialogFragment {
                 R.layout.habit_type_spinner_layout,
                 R.id.habitTypeSpinnerTextView, habits);
 
-        final Spinner spinner = view.findViewById(R.id.addHabitEventSpinner);
+        spinner = view.findViewById(R.id.addHabitEventSpinner);
         spinner.setAdapter((SpinnerAdapter) listAdapter);
 
         TextView eventTitle = view.findViewById(R.id.addHabitEventDialogTitle);
@@ -277,8 +288,7 @@ public class AddHabitEventDialog extends DialogFragment {
         createButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String habitType = spinner.getSelectedItem().toString();
-                HabitEvent habitEvent = new HabitEvent(commentText.getText().toString(), eventBitmap, mLastLocation, new Date(), habitType);
+                Intent intent = createHabitEventIntent();
                 dialog.dismiss();
             }
         });
@@ -311,6 +321,56 @@ public class AddHabitEventDialog extends DialogFragment {
         super.onPause();
     }
 
+    // TODO: Probably want some error checking...
+    private Intent createHabitEventIntent() {
+        Intent intent = new Intent();
+        String latitude;
+        String longitude;
+        if(checkBox.isChecked()) {
+            latitude = String.valueOf(mLastLocation.getLatitude());
+            longitude = String.valueOf(mLastLocation.getLongitude());
+        }
+        else {
+            latitude = null;
+            longitude = null;
+        }
+        String comment = commentText.getText().toString();
+        String date = new SimpleDateFormat("yyyy_MM_dd", Locale.ENGLISH).format(new Date());
+        String habitType = spinner.getSelectedItem().toString();
+        String filePath = habitType.replace(" ", "_") + "_" + date;
+
+        if(eventBitmap != null) {
+            saveImageInFile(filePath);
+            intent.putExtra("filePath", filePath);
+        }
+
+        intent.putExtra("comment", comment);
+        intent.putExtra("date", date);
+        intent.putExtra("latitude", latitude);
+        intent.putExtra("longitude", longitude);
+        intent.putExtra("habitType", habitType);
+
+        return intent;
+    }
+    // https://stackoverflow.com/questions/649154/save-bitmap-to-location
+    private void saveImageInFile(String filePath) {
+        FileOutputStream out = null;
+        try {
+            out = new FileOutputStream(filePath);
+            eventBitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (out != null) {
+                    out.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     private String getTitleFromBundle() {
         return getArguments().getString("Title") == null
                 ? "" : getArguments().getString("Title");
@@ -326,6 +386,8 @@ public class AddHabitEventDialog extends DialogFragment {
         return new ArrayList<>();
     }
 
+
+    // TODO: seems to be a bug where it can't get location unless you open an app like google maps
     @SuppressWarnings("MissingPermission")
     private void getLastLocation() {
         mFusedLocationClient.getLastLocation()

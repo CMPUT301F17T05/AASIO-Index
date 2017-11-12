@@ -75,7 +75,7 @@ public class EditHabitEventDialog extends DialogFragment {
     }
 
     Camera camera;
-    boolean profileImageViewDebounce = false;
+    boolean editEventImageViewDebounce = false;
     private TextureView cameraTextureView;
 
     TextureView.SurfaceTextureListener cameraPreviewSurfaceTextureListener = new TextureView.SurfaceTextureListener() {
@@ -120,14 +120,14 @@ public class EditHabitEventDialog extends DialogFragment {
                     break;
                 case Camera.STATE_CAPTURING:
                     camera.retrieveImage(context);
-                    if (!profileImageViewDebounce) {
-                        profileImageViewDebounce = true;
+                    if (!editEventImageViewDebounce) {
+                        editEventImageViewDebounce = true;
                         Handler responseHandler = new Handler(Looper.getMainLooper()) {
                             @Override
                             public void handleMessage(Message params) {
                                 if (params.obj==null)
                                 {
-                                    profileImageViewDebounce = false;
+                                    editEventImageViewDebounce = false;
                                 }
                                 else {
                                     cameraTextureView.setAlpha(1f-0.8f*MathUtility.EasingOut(System.currentTimeMillis() - ((long[])params.obj)[0], ((long[])params.obj)[1], 3));
@@ -225,13 +225,13 @@ public class EditHabitEventDialog extends DialogFragment {
             public void onClick(View view) {
                 captureButton.setVisibility(ImageButton.VISIBLE);
                 eventImage.setVisibility(ImageButton.INVISIBLE);
-                if (!profileImageViewDebounce) {
-                    profileImageViewDebounce = true;
+                if (!editEventImageViewDebounce) {
+                    editEventImageViewDebounce = true;
                     Handler responseHandler = new Handler(Looper.getMainLooper()) {
                         @Override
                         public void handleMessage(Message params) {
                             if (params.obj==null) {
-                                profileImageViewDebounce = false;
+                                editEventImageViewDebounce = false;
                             }
                             else {
                                 cameraTextureView.setAlpha(0.2f+0.8f*MathUtility.EasingOut(System.currentTimeMillis() - ((long[])params.obj)[0], ((long[])params.obj)[1], 3));
@@ -307,6 +307,7 @@ public class EditHabitEventDialog extends DialogFragment {
         return new ArrayList<>();
     }
 
+    // TODO: seems to be a bug where it can't get location unless you open an app like google maps
     @SuppressWarnings("MissingPermission")
     private void getLastLocation() {
         mFusedLocationClient.getLastLocation()

@@ -71,7 +71,7 @@
         android:layout_marginTop="16dp" />
 
     <CheckBox
-        android:id="@+id/checkBox"
+        android:id="@+id/addHabitEventCheckBox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/textView2"
@@ -84,10 +84,10 @@
         android:ems="10"
         android:hint="Add Comment..."
         android:inputType="text"
-        android:layout_below="@+id/checkBox"
+        android:layout_below="@+id/addHabitEventCheckBox"
         android:layout_alignStart="@+id/textView2"
         android:layout_marginTop="16dp"
-        android:layout_alignEnd="@+id/checkBox" />
+        android:layout_alignEnd="@+id/addHabitEventCheckBox" />
 
     <Button
         style="@style/Widget.AppCompat.Button.Borderless.Colored"
@@ -114,7 +114,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignStart="@+id/addEventCommentText"
-        android:layout_below="@+id/checkBox"
+        android:layout_below="@+id/addHabitEventCheckBox"
         android:text="Comment cannot be more than 20 characters!"
         android:textColor="@color/red"/>
 
