@@ -1,19 +1,14 @@
 package com.cmput301.t05.habilect;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.Matrix;
 import android.graphics.SurfaceTexture;
 import android.graphics.Typeface;
 import android.hardware.camera2.CameraCaptureSession;
 import android.hardware.camera2.CaptureFailure;
 import android.hardware.camera2.CaptureRequest;
-import android.hardware.camera2.CaptureResult;
 import android.hardware.camera2.TotalCaptureResult;
-import android.media.Image;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Message;
 import android.support.annotation.NonNull;
@@ -21,16 +16,9 @@ import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.TextureView;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.LinearInterpolator;
-import android.view.animation.RotateAnimation;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import static java.lang.Thread.sleep;
 
 /**
  * @author ioltuszy
@@ -75,46 +63,33 @@ public class ProfileActivity extends AppCompatActivity {
     Button captureButton;
 
     boolean profileImageViewDebounce = false;
-
     CameraCaptureSession.CaptureCallback cameraCaptureSessionCallback = new CameraCaptureSession.CaptureCallback() {
-        /*@Override
-        public void onCaptureStarted(CameraCaptureSession session, CaptureRequest request, long timestamp, long frameNumber) {
-            Handler responseHandler = new Handler(Looper.getMainLooper()) {
-                @Override
-                public void handleMessage(Message params) {
-                    cameraTextureView.setAlpha(0f+0.2f*MathUtility.EasingOut(System.currentTimeMillis() - ((long[])params.obj)[0], ((long[])params.obj)[1], 3));
-                }
-            };
-            MathUtility.Animate(100, 500, responseHandler);
-        }*/
-
         @Override
         public void onCaptureCompleted(CameraCaptureSession session, @NonNull CaptureRequest request, TotalCaptureResult result) {
-                switch (camera.getCameraState()) {
-                    case Camera.STATE_PREVIEWING:
-                        break;
-                    case Camera.STATE_CAPTURING:
-                        camera.retrieveImage(context);
-                        if (!profileImageViewDebounce) {
-                            profileImageViewDebounce = true;
-                            Handler responseHandler = new Handler(Looper.getMainLooper()) {
-                                @Override
-                                public void handleMessage(Message params) {
-                                    if (params.obj==null)
-                                    {
-                                        profileImageViewDebounce = false;
-                                    }
-                                    else {
-                                        cameraTextureView.setAlpha(1f-0.8f*MathUtility.EasingOut(System.currentTimeMillis() - ((long[])params.obj)[0], ((long[])params.obj)[1], 3));
-                                        mainConstraint.setAlpha(0f+1f*MathUtility.EasingOut(System.currentTimeMillis() - ((long[])params.obj)[0], ((long[])params.obj)[1], 3));
-                                        secondaryConstraint.setAlpha(1f-1f*MathUtility.EasingOut(System.currentTimeMillis() - ((long[])params.obj)[0], ((long[])params.obj)[1], 3));
-                                    }
+            switch (camera.getCameraState()) {
+                case Camera.STATE_PREVIEWING:
+                    break;
+                case Camera.STATE_CAPTURING:
+                    camera.retrieveImage(context);
+                    if (!profileImageViewDebounce) {
+                        profileImageViewDebounce = true;
+                        Handler responseHandler = new Handler(Looper.getMainLooper()) {
+                            @Override
+                            public void handleMessage(Message params) {
+                                if (params.obj == null) {
+                                    profileImageViewDebounce = false;
+                                } else {
+                                    cameraTextureView.setAlpha(1f - 0.8f * MathUtility.EasingOut(System.currentTimeMillis() - ((long[]) params.obj)[0], ((long[]) params.obj)[1], 3));
+                                    mainConstraint.setAlpha(0f + 1f * MathUtility.EasingOut(System.currentTimeMillis() - ((long[]) params.obj)[0], ((long[]) params.obj)[1], 3));
+                                    secondaryConstraint.setAlpha(1f - 1f * MathUtility.EasingOut(System.currentTimeMillis() - ((long[]) params.obj)[0], ((long[]) params.obj)[1], 3));
                                 }
-                            };
-                            MathUtility.Animate(100, 500, responseHandler);
-                        }
-                }
+                            }
+                        };
+                        MathUtility.Animate(100, 500, responseHandler);
+                    }
+            }
         }
+
         @Override
         public void onCaptureFailed(CameraCaptureSession session, @NonNull CaptureRequest request, CaptureFailure failure) {
 
@@ -125,6 +100,8 @@ public class ProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+
+        setTitle("Habilect - Social");
 
         mainConstraint = (ConstraintLayout) findViewById(R.id.mainConstraint);
         secondaryConstraint = (ConstraintLayout) findViewById(R.id.secondaryConstraint);
@@ -149,14 +126,12 @@ public class ProfileActivity extends AppCompatActivity {
                     Handler responseHandler = new Handler(Looper.getMainLooper()) {
                         @Override
                         public void handleMessage(Message params) {
-                            if (params.obj==null)
-                            {
+                            if (params.obj == null) {
                                 profileImageViewDebounce = false;
-                            }
-                            else {
-                                cameraTextureView.setAlpha(0.2f+0.8f*MathUtility.EasingOut(System.currentTimeMillis() - ((long[])params.obj)[0], ((long[])params.obj)[1], 3));
-                                mainConstraint.setAlpha(1f-1f*MathUtility.EasingOut(System.currentTimeMillis() - ((long[])params.obj)[0], ((long[])params.obj)[1], 3));
-                                secondaryConstraint.setAlpha(0f+1f*MathUtility.EasingOut(System.currentTimeMillis() - ((long[])params.obj)[0], ((long[])params.obj)[1], 3));
+                            } else {
+                                cameraTextureView.setAlpha(0.2f + 0.8f * MathUtility.EasingOut(System.currentTimeMillis() - ((long[]) params.obj)[0], ((long[]) params.obj)[1], 3));
+                                mainConstraint.setAlpha(1f - 1f * MathUtility.EasingOut(System.currentTimeMillis() - ((long[]) params.obj)[0], ((long[]) params.obj)[1], 3));
+                                secondaryConstraint.setAlpha(0f + 1f * MathUtility.EasingOut(System.currentTimeMillis() - ((long[]) params.obj)[0], ((long[]) params.obj)[1], 3));
                             }
                         }
                     };

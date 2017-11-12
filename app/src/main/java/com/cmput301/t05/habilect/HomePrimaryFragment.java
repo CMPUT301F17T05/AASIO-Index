@@ -1,22 +1,12 @@
 package com.cmput301.t05.habilect;
 
-import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.os.Parcelable;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-
-import java.util.ArrayList;
-import java.util.Date;
-
-import static android.app.Activity.RESULT_OK;
-import static com.cmput301.t05.habilect.AddHabitEventDialog.REQUEST_IMAGE_CAPTURE;
 
 /**
  * @author ioltuszy
@@ -103,9 +93,6 @@ public class HomePrimaryFragment extends Fragment {
                 addHabitEventDialog.show(fragmentManager, "addHabitEventDialog");
             }
         });
-
-
-
 
 
         return rootView;

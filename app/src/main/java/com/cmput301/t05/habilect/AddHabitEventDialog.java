@@ -59,13 +59,14 @@ import java.util.Locale;
  * with the tag 'Habit Type'. If you are creating an event from a specific Habit Type, you must still
  * pass the Habit Title in an ArrayList of String. When the user presses create the following tags are
  * passed back to the calling Activity, they are all Strings.
- *
+ * <p>
  * comment - the comment the user left with the event. Always less than 20 characters
  * date -  the date the event was created in form yyyy_mm_dd
  * latitude - String of the latitude of the user location, if enable otherwise null
  * longitude - String of the longitude of the user location, if enable otherwise null
  * filePath - the name of the file where the image bitmap is stored
  * habitType - the associated HabitType title of the event
+ *
  * @author rarog
  */
 
@@ -123,12 +124,10 @@ public class AddHabitEventDialog extends DialogFragment {
                         Handler responseHandler = new Handler(Looper.getMainLooper()) {
                             @Override
                             public void handleMessage(Message params) {
-                                if (params.obj==null)
-                                {
+                                if (params.obj == null) {
                                     addEventImageViewDebounce = false;
-                                }
-                                else {
-                                    cameraTextureView.setAlpha(1f-0.8f*MathUtility.EasingOut(System.currentTimeMillis() - ((long[])params.obj)[0], ((long[])params.obj)[1], 3));
+                                } else {
+                                    cameraTextureView.setAlpha(1f - 0.8f * MathUtility.EasingOut(System.currentTimeMillis() - ((long[]) params.obj)[0], ((long[]) params.obj)[1], 3));
                                 }
                             }
                         };
@@ -136,6 +135,7 @@ public class AddHabitEventDialog extends DialogFragment {
                     }
             }
         }
+
         @Override
         public void onCaptureFailed(CameraCaptureSession session, @NonNull CaptureRequest request, CaptureFailure failure) {
 
@@ -151,7 +151,6 @@ public class AddHabitEventDialog extends DialogFragment {
      * Represents a geographical location.
      */
     protected Location mLastLocation;
-
 
 
     public void setOnAddHabitEventListener(OnAddHabitEventListener onAddHabitEventListener) {
@@ -186,7 +185,8 @@ public class AddHabitEventDialog extends DialogFragment {
      */
     private TextWatcher commentTextWatcher = new TextWatcher() {
         @Override
-        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        }
 
         @Override
         public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -201,12 +201,11 @@ public class AddHabitEventDialog extends DialogFragment {
 
     private void checkCommentLength() {
         String commentField = commentText.getText().toString();
-        if(commentField.length() <= 20) {
+        if (commentField.length() <= 20) {
             createButton.setEnabled(true);
             commentWarning.setVisibility(View.INVISIBLE);
 
-        }
-        else {
+        } else {
             createButton.setEnabled(false);
             commentWarning.setVisibility(View.VISIBLE);
         }
@@ -244,11 +243,10 @@ public class AddHabitEventDialog extends DialogFragment {
                     Handler responseHandler = new Handler(Looper.getMainLooper()) {
                         @Override
                         public void handleMessage(Message params) {
-                            if (params.obj==null) {
+                            if (params.obj == null) {
                                 addEventImageViewDebounce = false;
-                            }
-                            else {
-                                cameraTextureView.setAlpha(0.2f+0.8f*MathUtility.EasingOut(System.currentTimeMillis() - ((long[])params.obj)[0], ((long[])params.obj)[1], 3));
+                            } else {
+                                cameraTextureView.setAlpha(0.2f + 0.8f * MathUtility.EasingOut(System.currentTimeMillis() - ((long[]) params.obj)[0], ((long[]) params.obj)[1], 3));
                             }
                         }
                     };
@@ -258,14 +256,14 @@ public class AddHabitEventDialog extends DialogFragment {
         });
 
         captureButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                    public void onClick(View view) {
-                    // set camera's auto-focus lock
-                    camera.takePhoto();
-                    eventBitmap = ((BitmapDrawable)eventImage.getDrawable()).getBitmap();
-                    eventImage.setVisibility(ImageButton.VISIBLE);
-                    captureButton.setVisibility(ImageButton.INVISIBLE);
-                }
+            @Override
+            public void onClick(View view) {
+                // set camera's auto-focus lock
+                camera.takePhoto();
+                eventBitmap = ((BitmapDrawable) eventImage.getDrawable()).getBitmap();
+                eventImage.setVisibility(ImageButton.VISIBLE);
+                captureButton.setVisibility(ImageButton.INVISIBLE);
+            }
         });
 
         commentText = view.findViewById(R.id.addEventCommentText);
@@ -328,11 +326,10 @@ public class AddHabitEventDialog extends DialogFragment {
         Intent intent = new Intent();
         String latitude;
         String longitude;
-        if(checkBox.isChecked()) {
+        if (checkBox.isChecked()) {
             latitude = String.valueOf(mLastLocation.getLatitude());
             longitude = String.valueOf(mLastLocation.getLongitude());
-        }
-        else {
+        } else {
             latitude = null;
             longitude = null;
         }
@@ -341,7 +338,7 @@ public class AddHabitEventDialog extends DialogFragment {
         String habitType = spinner.getSelectedItem().toString();
         String filePath = habitType.replace(" ", "_") + "_" + date;
 
-        if(eventBitmap != null) {
+        if (eventBitmap != null) {
             saveImageInFile(filePath);
             intent.putExtra("filePath", filePath);
         }
@@ -354,11 +351,12 @@ public class AddHabitEventDialog extends DialogFragment {
 
         return intent;
     }
+
     // https://stackoverflow.com/questions/17674634/saving-and-reading-bitmaps-images-from-internal-memory-in-android
     private void saveImageInFile(String filePath) {
         ContextWrapper cw = new ContextWrapper(context.getApplicationContext());
         File directory = cw.getDir("eventImages", Context.MODE_PRIVATE);
-        File mypath=new File(directory, filePath);
+        File mypath = new File(directory, filePath);
 
         FileOutputStream fos = null;
         try {
@@ -384,7 +382,7 @@ public class AddHabitEventDialog extends DialogFragment {
     // TODO: Right now for simplicity, habit events only know the title of habit types, might want to change that
     private ArrayList<String> getHabitTypesFromBundle() {
         ArrayList<String> habits = (ArrayList<String>) getArguments().get("Habit Type");
-        if(habits != null) {
+        if (habits != null) {
             return habits;
         }
         return new ArrayList<>();
@@ -409,6 +407,7 @@ public class AddHabitEventDialog extends DialogFragment {
 
 
     //TODO: onRequestPermissionsResult not currently called if app requests permission because this is DialogFragment, either fix bug or ask for permission on main activity
+
     /**
      * Return the current state of the permissions needed.
      */
