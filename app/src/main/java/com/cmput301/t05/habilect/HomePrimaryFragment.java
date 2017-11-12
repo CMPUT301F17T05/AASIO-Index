@@ -11,9 +11,17 @@ import android.widget.Button;
 import java.util.Date;
 
 /**
+ * Shows a list of habit types that can be completed today, allows the user to navigate to
+ * another activity using the drawer, allows the user to create a new habit event or habit type
+ * using the FAB (to be implemented). ViewHabitDialog and OnViewHabitListener to be deleted or
+ * modified.
+ *
  * @author ioltuszy
+ * @author amwhitta
+ * @see HabitTypeListener
+ * @see HabitType
+ * @see HabitEvent
  */
-
 public class HomePrimaryFragment extends Fragment {
     FragmentManager fragmentManager;
 
@@ -30,17 +38,17 @@ public class HomePrimaryFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 final AddHabitDialog addHabitDialog = new AddHabitDialog();
-                addHabitDialog.setOnAddHabitListener(new OnAddHabitListener() {
+                addHabitDialog.setHabitTypeListener(new HabitTypeListener() {
                     @Override
                     public void OnAddedOrEdited(String title, String reason, Date start_date, boolean[] weekly_plan) {
                         try {
                             HabitType habit_type = new HabitType(title, reason, start_date, weekly_plan);
+                            /*ElasticsearchHabitTypeController.AddHabitTypeTask addHabitTypeTask =
+                        new ElasticsearchHabitTypeController.AddHabitTypeTask();
+                        addHabitTypeTask.execute(habit_type);*/
                         } catch (IllegalArgumentException e) {
                             throw e;
                         }
-                        /*ElasticsearchHabitTypeController.AddHabitTypeTask addHabitTypeTask =
-                        new ElasticsearchHabitTypeController.AddHabitTypeTask();
-                        addHabitTypeTask.execute(habit_type);*/
                     }
                     @Override
                     public void OnCancelled() {

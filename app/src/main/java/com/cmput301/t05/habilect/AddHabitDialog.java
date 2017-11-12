@@ -20,17 +20,16 @@ import java.util.Date;
  */
 
 public class AddHabitDialog extends DialogFragment {
-    private OnAddHabitListener onAddHabitListener;
+    private HabitTypeListener habitTypeListener;        // the controller for adding or editing
     private EditText habitTitleText;
     private EditText habitReasonText;
-    //TODO: add variable for start date
     private DatePicker habitStartDate;
-    private CheckBox checkMonday, checkTuesday, checkWednesday,
-            checkThursday, checkFriday, checkSaturday, checkSunday;
-    private boolean[] weekly_plan = {true,true,true,true,true,true,true};
+    //private CheckBox checkMonday, checkTuesday, checkWednesday,
+    //        checkThursday, checkFriday, checkSaturday, checkSunday;
+    private boolean[] weekly_plan = {true,true,true,true,true,true,true}; // initialize all checkboxes to checked
 
-    public void setOnAddHabitListener(OnAddHabitListener onAddHabitListener) {
-        this.onAddHabitListener = onAddHabitListener;
+    public void setHabitTypeListener(HabitTypeListener habitTypeListener) {
+        this.habitTypeListener = habitTypeListener;
     }
 
     @Override
@@ -43,6 +42,16 @@ public class AddHabitDialog extends DialogFragment {
         );
     }
 
+    /**
+     * ADD BUTTON: will retrieve the information from the view and pass it on
+     * to the habitTypeListener, which will try creating a new HabitType with the given
+     * information. If any errors are thrown, they will be caught here.
+     *
+     * CANCEL BUTTON: method has not been implemented in habitTypeListener yet
+     *
+     * @see HomePrimaryFragment
+     * @see HabitTypeListener
+     */
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         final Dialog dialog = new Dialog(getActivity());
@@ -53,13 +62,13 @@ public class AddHabitDialog extends DialogFragment {
         habitTitleText = dialog.findViewById(R.id.enterHabitTypeTitle);
         habitReasonText = dialog.findViewById(R.id.enterHabitTypeReason);
         habitStartDate = dialog.findViewById(R.id.datePickerStartDate);
-        checkMonday = dialog.findViewById(R.id.checkBoxMonday);
-        checkTuesday = dialog.findViewById(R.id.checkBoxTuesday);
-        checkWednesday = dialog.findViewById(R.id.checkBoxWednesday);
-        checkThursday = dialog.findViewById(R.id.checkBoxThursday);
-        checkFriday = dialog.findViewById(R.id.checkBoxFriday);
-        checkSaturday = dialog.findViewById(R.id.checkBoxSaturday);
-        checkSunday = dialog.findViewById(R.id.checkBoxSunday);
+        CheckBox checkMonday = dialog.findViewById(R.id.checkBoxMonday);
+        CheckBox checkTuesday = dialog.findViewById(R.id.checkBoxTuesday);
+        CheckBox checkWednesday = dialog.findViewById(R.id.checkBoxWednesday);
+        CheckBox checkThursday = dialog.findViewById(R.id.checkBoxThursday);
+        CheckBox checkFriday = dialog.findViewById(R.id.checkBoxFriday);
+        CheckBox checkSaturday = dialog.findViewById(R.id.checkBoxSaturday);
+        CheckBox checkSunday = dialog.findViewById(R.id.checkBoxSunday);
 
         ArrayList<CheckBox> checkboxes = new ArrayList<>();
         checkboxes.add(checkMonday);
@@ -80,28 +89,27 @@ public class AddHabitDialog extends DialogFragment {
                     Date start_date = new Date(habitStartDate.getYear(), habitStartDate.getMonth(),
                             habitStartDate.getDayOfMonth());
                     try {
-                        onAddHabitListener.OnAddedOrEdited(title, reason, start_date, weekly_plan);
+                        habitTypeListener.OnAddedOrEdited(title, reason, start_date, weekly_plan);
                         dialog.dismiss();
                     } catch (IllegalArgumentException e) {
-                        if (e.getMessage() == "title") {
-                        //if (title.length() == 0 || title.length() > 20) {
+                        if (e.getMessage().equals("title")) {
                             habitTitleText.setError("This field cannot be blank, and cannot be greater than 20 characters");
                         }
-                        if (e.getMessage() == "reason") {
-                        //if (reason.length() == 0 || reason.length() > 30) {
+                        if (e.getMessage().equals("reason")) {
                             habitReasonText.setError("This field cannot be blank, and cannot be greater than 30 characters");
                         }
-                        if (e.getMessage() == "plan") {
+                        if (e.getMessage().equals("plan")) {
                             //TODO: implement an error dialog
                         }
                     }
                 }
             });
+
         ((Button)dialog.findViewById(R.id.cancel_button))
                 .setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                onAddHabitListener.OnCancelled();
+                habitTypeListener.OnCancelled();
                 dialog.dismiss();
             }
         });
@@ -110,6 +118,9 @@ public class AddHabitDialog extends DialogFragment {
     }
 
     /**
+     * The method called by the OnClickListener of each CheckBox. Changes the boolean value of
+     * weekly_plan at the index that corresponds to the CheckBox that was clicked.
+     *
      * @see <a href="https://developer.android.com/guide/topics/ui/controls/checkbox.html">Android Developers -- Checkboxes</a>
      */
     public void onCheckboxClicked(View view) {
@@ -142,8 +153,10 @@ public class AddHabitDialog extends DialogFragment {
     }
 
     /**
-     * @author amwhitta
-     * @param checkboxes is an ArrayList of CheckBox objects in the view that need listeners
+     * Sets OnClickListeners for each CheckBox object in the ArrayList. The onClick method
+     * is overridden with the custom method onCheckboxClicked.
+     *
+     * @param checkboxes            an ArrayList of CheckBox objects in the view that need listeners
      */
     public void setListeners(ArrayList<CheckBox> checkboxes) {
         for (CheckBox c : checkboxes) {

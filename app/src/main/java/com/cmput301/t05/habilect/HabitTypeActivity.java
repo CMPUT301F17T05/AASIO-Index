@@ -3,7 +3,6 @@ package com.cmput301.t05.habilect;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
@@ -45,11 +44,14 @@ public class HabitTypeActivity extends AppCompatActivity {
      */
     private ViewPager mViewPager;
 
-    /**
-     * The habit type that has been clicked on for viewing
-     */
-    private static HabitType habit_type;
+    private static HabitType habit_type;      // The habit type that has been clicked on for viewing
 
+    /**
+     * sets up the activity and grabs the habit type that was passed in through a different
+     * activity
+     * @param savedInstanceState        non-persistent, dynamic data saved in the state of the app
+     * @see ViewHabitTypesActivity
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,10 +80,6 @@ public class HabitTypeActivity extends AppCompatActivity {
         });
 
         habit_type = (HabitType) getIntent().getSerializableExtra("ClickedHabitType");
-        //Date today = new Date();
-        //boolean[] plan = {true,false,true,false,true,false,true};
-        //habit_type = new HabitType("Workout", "To stay healthy", today, plan);
-
     }
 
 
@@ -111,10 +109,8 @@ public class HabitTypeActivity extends AppCompatActivity {
      * A placeholder fragment containing a simple view.
      */
     public static class PlaceholderFragment extends Fragment {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
+
+        // The fragment argument representing the section number for this fragment.
         private static final String ARG_SECTION_NUMBER = "section_number";
 
         public PlaceholderFragment() {
@@ -143,13 +139,12 @@ public class HabitTypeActivity extends AppCompatActivity {
     }
 
     /**
-     * A placeholder fragment containing a simple view.
+     * The fragment that displays all of the details of the habit type, including the
+     * statistics on how closely the user is following the habit type weekly plan.
      */
     public static class HabitDetailsFragment extends Fragment {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
+
+        // The fragment argument representing the section number for this fragment.
         private static final String ARG_SECTION_NUMBER = "section_number";
 
         public HabitDetailsFragment() {
@@ -167,6 +162,14 @@ public class HabitTypeActivity extends AppCompatActivity {
             return fragment;
         }
 
+        /**
+         * sets the TextViews with the details of the habit type.
+         *
+         * @param inflater
+         * @param container
+         * @param savedInstanceState
+         * @return the rootView
+         */
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
@@ -187,11 +190,13 @@ public class HabitTypeActivity extends AppCompatActivity {
     }
 
     /**
-     * A placeholder fragment containing a simple view.
+     * The fragment that allows the user to edit the details of the habit type
      */
     public static class EditHabitFragment extends Fragment {
 
-        private OnAddHabitListener onAddHabitListener;
+        // The fragment argument representing the section number for this fragment.
+        private static final String ARG_SECTION_NUMBER = "section_number";
+        private HabitTypeListener habitTypeListener;
         boolean[] weekly_plan = habit_type.getWeeklyPlan();
         CheckBox newMonday;
         CheckBox newTuesday;
@@ -200,11 +205,6 @@ public class HabitTypeActivity extends AppCompatActivity {
         CheckBox newFriday;
         CheckBox newSaturday;
         CheckBox newSunday;
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
-        private static final String ARG_SECTION_NUMBER = "section_number";
 
         public EditHabitFragment() {
         }
@@ -221,8 +221,8 @@ public class HabitTypeActivity extends AppCompatActivity {
             return fragment;
         }
 
-        public void setOnAddHabitListener(OnAddHabitListener onAddHabitListener) {
-            this.onAddHabitListener = onAddHabitListener;
+        public void setHabitTypeListener(HabitTypeListener habitTypeListener) {
+            this.habitTypeListener = habitTypeListener;
         }
 
         @Override
@@ -232,25 +232,6 @@ public class HabitTypeActivity extends AppCompatActivity {
             final EditText newTitle = rootView.findViewById(R.id.editTextEditHabitTypeTitle);
             final EditText newReason = rootView.findViewById(R.id.editTextEditHabitTypeReason);
             final DatePicker newStartDate = rootView.findViewById(R.id.datePickerEditHabitTypeStartDate);
-
-            this.setOnAddHabitListener(new OnAddHabitListener() {
-                @Override
-                public void OnAddedOrEdited(String title, String reason, Date start_date, boolean[] weekly_plan) {
-                    try {
-                        if (title.length() > 0) { habit_type.setTitle(title); }
-                        if (reason.length() > 0) { habit_type.setReason(reason); }
-                        habit_type.setStartDate(start_date);
-                        habit_type.setWeeklyPlan(weekly_plan);
-                    } catch (IllegalArgumentException e) {
-                        throw e;
-                    }
-                }
-                @Override
-                public void OnCancelled() {
-
-                }
-            });
-            //Button saveButton = rootView.findViewById(R.id.buttonSaveHabitTypeEdits);
 
             newMonday = rootView.findViewById(R.id.checkBoxEditMonday);
             newTuesday = rootView.findViewById(R.id.checkBoxEditTuesday);
@@ -271,6 +252,41 @@ public class HabitTypeActivity extends AppCompatActivity {
             checkboxes.add(newSunday);
             setListeners(checkboxes);
 
+            this.setHabitTypeListener(new HabitTypeListener() {
+                /**
+                 * Implements the method that will try adding the entered information to the
+                 * existing habit type. If an exception is thrown by the habit type's setters,
+                 * it will be caught and thrown to the view to deal with
+                 *
+                 * @param title                 a String 0 <= length <= 20
+                 * @param reason                a String 0 <= length <= 30
+                 * @param start_date            a Date specifying when the user
+                 *                              started the habit type
+                 * @param weekly_plan           a boolean array specifying the days of the week the
+                 *                              user plans on completing the habit type
+                 * @see HabitTypeListener
+                 */
+                @Override
+                public void OnAddedOrEdited(String title, String reason, Date start_date, boolean[] weekly_plan) {
+                    try {
+                        if (title.length() > 0) { habit_type.setTitle(title); }
+                        if (reason.length() > 0) { habit_type.setReason(reason); }
+                        habit_type.setStartDate(start_date);
+                        habit_type.setWeeklyPlan(weekly_plan);
+                    } catch (IllegalArgumentException e) {
+                        throw e;
+                    }
+                }
+
+                /**
+                 * hasn't been implemented yet -- might delete
+                 */
+                @Override
+                public void OnCancelled() {
+
+                }
+            });
+
             ((Button)rootView.findViewById(R.id.buttonSaveHabitTypeEdits))
                     .setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -280,16 +296,16 @@ public class HabitTypeActivity extends AppCompatActivity {
                             Date start_date = new Date(newStartDate.getYear(), newStartDate.getMonth(),
                                     newStartDate.getDayOfMonth());
                             try {
-                                onAddHabitListener.OnAddedOrEdited(title, reason, start_date, weekly_plan);
+                                habitTypeListener.OnAddedOrEdited(title, reason, start_date, weekly_plan);
                             } catch (IllegalArgumentException e) {
-                                if (e.getMessage() == "title") {
+                                if (e.getMessage().equals("title")) {
                                     newTitle.setError("This field cannot be greater than 20 characters");
                                 }
-                                if (e.getMessage() == "reason") {
+                                if (e.getMessage().equals("reason")) {
                                     newReason.setError("This field cannot be greater than 30 characters");
                                 }
-                                if (e.getMessage() == "plan") {
-                                    //TODO: implement an error dialog
+                                if (e.getMessage().equals("plan")) {
+                                    //TODO: implement an error dialog, fix outstanding issue where weekly plan is still edited
                                     Log.d("Debugging", "no days selected");
                                 }
                             }
@@ -298,6 +314,11 @@ public class HabitTypeActivity extends AppCompatActivity {
             return rootView;
         }
 
+        /**
+         * sets the CheckBoxes to the values in the habit type weekly plan
+         *
+         * @see HabitType
+         */
         public void setCheckboxes() {
             newMonday.setChecked(habit_type.getWeeklyPlan()[0]);
             newTuesday.setChecked(habit_type.getWeeklyPlan()[1]);
@@ -308,21 +329,11 @@ public class HabitTypeActivity extends AppCompatActivity {
             newSunday.setChecked(habit_type.getWeeklyPlan()[6]);
         }
 
+        //TODO: get rid of duplicate code
         /**
-         * @author amwhitta
-         * @param checkboxes is an ArrayList of CheckBox objects in the view that need listeners
-         */
-        public void setListeners(ArrayList<CheckBox> checkboxes) {
-            for (CheckBox c : checkboxes) {
-                c.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        onCheckboxClicked(view);
-                    }
-                });
-            }
-        }
-        /**
+         * The method called by the OnClickListener of each CheckBox. Changes the boolean value of
+         * weekly_plan at the index that corresponds to the CheckBox that was clicked.
+         *
          * @see <a href="https://developer.android.com/guide/topics/ui/controls/checkbox.html">Android Developers -- Checkboxes</a>
          */
         public void onCheckboxClicked(View view) {
@@ -353,16 +364,32 @@ public class HabitTypeActivity extends AppCompatActivity {
             }
             //Log.d("Debugging", "plan:"+ Arrays.toString(weekly_plan));
         }
+
+        //TODO: get rid of duplicate code
+        /**
+         * Sets OnClickListeners for each CheckBox object in the ArrayList. The onClick method
+         * is overridden with the custom method onCheckboxClicked.
+         *
+         * @param checkboxes        an ArrayList of CheckBox objects in the view that need listeners
+         */
+        public void setListeners(ArrayList<CheckBox> checkboxes) {
+            for (CheckBox c : checkboxes) {
+                c.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        onCheckboxClicked(view);
+                    }
+                });
+            }
+        }
     }
 
     /**
-     * A placeholder fragment containing a simple view.
+     * A fragment that allows the user to delete, set shared, or something else -- might delete
      */
     public static class HabitOptionsFragment extends Fragment {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
+
+        // The fragment argument representing the section number for this fragment.
         private static final String ARG_SECTION_NUMBER = "section_number";
 
         public HabitOptionsFragment() {
@@ -400,21 +427,19 @@ public class HabitTypeActivity extends AppCompatActivity {
             super(fm);
         }
 
+        //TODO: fix issue where details and edit fragments aren't updated upon changing tabs
         @Override
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
-            // Return a PlaceholderFragment (defined as a static inner class below).
+            // if something goes wrong, return placeholder
             if (position == 0) {
                 return new HabitDetailsFragment();
-                //return HabitDetailsFragment.newInstance(1);
             }
             else if (position == 1) {
                 return new EditHabitFragment();
-                //return EditHabitFragment.newInstance(2);
             }
             else if (position == 3) {
                 return new HabitOptionsFragment();
-                //return HabitOptionsFragment.newInstance(3);
             }
             else {
                 return PlaceholderFragment.newInstance(position + 1);

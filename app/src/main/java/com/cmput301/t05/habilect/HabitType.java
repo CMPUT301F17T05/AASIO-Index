@@ -11,10 +11,10 @@ import java.util.Locale;
 import java.util.Observable;
 
 /**
+ * This is the model for habit types.
  * @author ioltuszy
  * @author amwhitta
  */
-
 public class HabitType extends Observable implements Serializable {
 
     private String title;
@@ -25,7 +25,13 @@ public class HabitType extends Observable implements Serializable {
     private List<UserProfile> followers;
     private Date recent_habit_event;
 
-    // Constructor
+    /**
+     * The Constructor for HabitType
+     * @param title                 a String with 0 < length <= 20
+     * @param reason                a String with 0 < length <= 30
+     * @param start_date            a Date specifying when the user started the habit type
+     * @param weekly_plan           the days of the week that the user plans on doing the habit type
+     */
     public HabitType(String title, String reason, Date start_date, boolean[] weekly_plan) {
         this.setTitle(title);
         this.setReason(reason);
@@ -35,17 +41,20 @@ public class HabitType extends Observable implements Serializable {
         this.followers = null;
     }
 
-    // Getters
+    // GETTERS
+
     public String getTitle() {
         return this.title;
     }
     public String getReason() {
-        return reason;
+        return this.reason;
     }
     public Date getStartDate() {
         return this.start_date;
     }
-    public boolean[] getWeeklyPlan() { return weekly_plan; }
+    public boolean[] getWeeklyPlan() {
+        return this.weekly_plan;
+    }
     public String getWeeklyPlanString() {
         String plan = "Every ";
         int count = 0;
@@ -71,7 +80,14 @@ public class HabitType extends Observable implements Serializable {
         return this.followers;
     }
 
-    // Setters
+    // SETTERS
+
+    /**
+     * sets the habit type title. An IllegalArgumentException is thrown
+     * when the character length is out of range.
+     *
+     * @param title                 a String with 0 < length <= 20
+     */
     public void setTitle(String title) {
         if (title.length() == 0 || title.length() > 20) {
             throw new IllegalArgumentException("title");
@@ -79,6 +95,13 @@ public class HabitType extends Observable implements Serializable {
             this.title = title;
         }
     }
+
+    /**
+     * sets the habit type reason. An IllegalArgumentException is thrown
+     * when the character length is out of range
+     *
+     * @param reason                a String with 0 < length <= 30
+     */
     public void setReason(String reason) {
         if (reason.length() == 0 || reason.length() > 30) {
             throw new IllegalArgumentException("reason");
@@ -86,18 +109,22 @@ public class HabitType extends Observable implements Serializable {
             this.reason = reason;
         }
     }
+
+    /**
+     * sets the habit type start date.
+     * @param date                  a Date specifying when the user started the habit type
+     */
     public void setStartDate(Date date) {
-        /* N/A, based on old assumption:
-        if (date.before(Calendar.getInstance().getTime())) {
-            try {
-                throw new IllegalArgumentException();
-            }
-            catch (IllegalArgumentException e) {
-                Log.e("dateError", "Supplied start date has already passed");
-            }
-        }*/
         this.start_date = date;
     }
+
+    /**
+     * sets the habit type weekly plan. An IllegalArgumentException is thrown
+     * when there are no days checked.
+     *
+     * @param weekly_plan           a boolean array with index 0 corresponding to Monday and index
+     *                              6 corresponding to Sunday
+     */
     public void setWeeklyPlan(boolean[] weekly_plan) {
         int count_true = 0;
         for (boolean b : weekly_plan) {
@@ -111,12 +138,34 @@ public class HabitType extends Observable implements Serializable {
             this.weekly_plan = weekly_plan;
         }
     }
+
+    /**
+     * sets whether or not the user wants this habit type to be shared online
+     * @param shared                a boolean specifying shared or not
+     */
     public void setShared(boolean shared) {
         this.shared = shared;
     }
-    public void setRecentHabitEvent(Date date) { this.recent_habit_event = date; }
 
-    // Behaviours
+    /**
+     * sets the date of the most recent habit event created from this habit type
+     *
+     * @param date                  the Date when the habit event was created
+     */
+    public void setRecentHabitEvent(Date date) {
+        this.recent_habit_event = date;
+    }
+
+    // BEHAVIOURS
+
+    /**
+     * counts up the number of days in the habit type's weekly plan that have passed
+     * since the start date to determine how many times the user could have created a
+     * habit event if they were following their plan perfectly
+     *
+     * @return      an int specifying the number of total opportunities
+     *              to create a habit event
+     */
     public int totalEventOpportunities() {
         int count = 0;
         Calendar start = Calendar.getInstance();
@@ -125,36 +174,45 @@ public class HabitType extends Observable implements Serializable {
         while (start.before(today)) {
             switch (start.get(Calendar.DAY_OF_WEEK)) {
                 case Calendar.MONDAY:
-                    if (weekly_plan[0]) { ++count; }
+                    if (this.weekly_plan[0]) { ++count; }
                     break;
                 case Calendar.TUESDAY:
-                    if (weekly_plan[1]) { ++count; }
+                    if (this.weekly_plan[1]) { ++count; }
                     break;
                 case Calendar.WEDNESDAY:
-                    if (weekly_plan[2]) { ++count; }
+                    if (this.weekly_plan[2]) { ++count; }
                     break;
                 case Calendar.THURSDAY:
-                    if (weekly_plan[3]) { ++count; }
+                    if (this.weekly_plan[3]) { ++count; }
                     break;
                 case Calendar.FRIDAY:
-                    if (weekly_plan[4]) { ++count; }
+                    if (this.weekly_plan[4]) { ++count; }
                     break;
                 case Calendar.SATURDAY:
-                    if (weekly_plan[5]) { ++count; }
+                    if (this.weekly_plan[5]) { ++count; }
                     break;
                 case Calendar.SUNDAY:
-                    if (weekly_plan[6]) { ++count; }
+                    if (this.weekly_plan[6]) { ++count; }
                     break;
             }
             start.add(Calendar.DATE, 1);
         }
         return count;
     }
+
+    /**
+     * lets the Observers of this habit type know that it has been created, edited, or deleted
+     */
     public void notifyViews() {
         this.setChanged();
         this.notifyObservers();
     }
 
+    /**
+     * specifies the way habit types should be presented in views such as ListView
+     *
+     * @return      the title of the habit type (for now, until we decide what is necessary)
+     */
     @Override
     public String toString() {
         return this.getTitle();

@@ -16,6 +16,13 @@ public class ViewHabitTypesActivity extends AppCompatActivity {
     private ListView habitTypeList;
     private ArrayList<HabitType> habit_types;
 
+    /**
+     * Passes a habit type to the HabitTypeActivity if it is clicked on in the ListView
+     *
+     * @param savedInstanceState
+     * @see HabitType
+     * @see HabitTypeActivity
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,6 +41,12 @@ public class ViewHabitTypesActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * gets all of the user's habit types locally or from elasticsearch (to be implemented) and
+     * puts them in the ListView
+     *
+     * @see HabitType
+     */
     @Override
     protected void onStart() {
         super.onStart();
