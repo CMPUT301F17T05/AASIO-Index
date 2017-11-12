@@ -29,7 +29,7 @@ public final class MathUtility {
                     }
                     try {
                         Message msg = new Message();
-                        msg.obj = new long[] {startTime, totalDuration};
+                        msg.obj = new long[] {startTime, totalDuration, finalI};
                         handler.sendMessage(msg);
                         if (finalI == steps-1) {
                             Message finishedMsg = new Message();

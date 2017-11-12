@@ -16,25 +16,26 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
-        android:id="@+id/backgroundImageView"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:alpha="0.9"
-        android:background="@color/colorPrimary"
-        android:scaleType="fitXY"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <android.support.constraint.ConstraintLayout
+        android:id="@+id/mainConstraint"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/backgroundImageView"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:alpha="0.9"
+            android:background="@color/colorPrimary"
+            android:scaleType="fitXY"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
             android:id="@+id/bandImageView"
@@ -52,6 +53,7 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginTop="16dp"
+            android:alpha="1"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintLeft_toLeftOf="@+id/rightImageViewGuide"
@@ -64,6 +66,7 @@
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_marginTop="8dp"
+            android:alpha="1"
             android:text="First Last"
             android:textColor="@android:color/black"
             android:textSize="18sp"
@@ -80,6 +83,7 @@
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
             android:layout_marginTop="40dp"
+            android:alpha="1"
             android:paddingEnd="8dp"
             android:paddingStart="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -107,17 +111,28 @@
             tools:layout_editor_absoluteX="288dp"
             tools:layout_editor_absoluteY="25dp" />
 
+    </android.support.constraint.ConstraintLayout>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/secondaryConstraint"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:alpha="0"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
         <Button
             android:id="@+id/captureButton"
             android:layout_width="96dp"
             android:layout_height="96dp"
             android:layout_marginBottom="16dp"
-            android:alpha="0"
+            android:alpha="0.75"
             android:background="@drawable/ic_camera_black_24dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintLeft_toLeftOf="parent" />
-
     </android.support.constraint.ConstraintLayout>
 
 

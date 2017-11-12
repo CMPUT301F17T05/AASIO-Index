@@ -1,6 +1,8 @@
 package com.cmput301.t05.habilect;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Matrix;
 import android.graphics.SurfaceTexture;
 import android.graphics.Typeface;
 import android.hardware.camera2.CameraCaptureSession;
@@ -62,6 +64,9 @@ public class ProfileActivity extends AppCompatActivity {
         }
     };
 
+    ConstraintLayout mainConstraint;
+    ConstraintLayout secondaryConstraint;
+
     TextureView cameraTextureView;
     TextView displayNameTextView;
     ImageView backgroundImageView;
@@ -72,22 +77,42 @@ public class ProfileActivity extends AppCompatActivity {
     boolean profileImageViewDebounce = false;
 
     CameraCaptureSession.CaptureCallback cameraCaptureSessionCallback = new CameraCaptureSession.CaptureCallback() {
-        @Override
-        public void onCaptureStarted(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, long timestamp, long frameNumber) {
-            super.onCaptureStarted(session, request, timestamp, frameNumber);
-            if (camera.getSessionStartTime() == 0) {
-                camera.setSessionStartTime(timestamp);
-            }
-            camera.getCameraTextureView().setAlpha(MathUtility.EasingOut(timestamp - camera.getSessionStartTime(), 1000000000, 3));
-        }
+        /*@Override
+        public void onCaptureStarted(CameraCaptureSession session, CaptureRequest request, long timestamp, long frameNumber) {
+            Handler responseHandler = new Handler(Looper.getMainLooper()) {
+                @Override
+                public void handleMessage(Message params) {
+                    cameraTextureView.setAlpha(0f+0.2f*MathUtility.EasingOut(System.currentTimeMillis() - ((long[])params.obj)[0], ((long[])params.obj)[1], 3));
+                }
+            };
+            MathUtility.Animate(100, 500, responseHandler);
+        }*/
+
         @Override
         public void onCaptureCompleted(CameraCaptureSession session, @NonNull CaptureRequest request, TotalCaptureResult result) {
-                switch (camera.getState()) {
-                    case Camera.STATE_PREVIEW:
+                switch (camera.getCameraState()) {
+                    case Camera.STATE_PREVIEWING:
                         break;
-                    case Camera.STATE_LOCKED:
-                        camera.captureStill(context);
-                        camera.getCameraImage().close();
+                    case Camera.STATE_CAPTURING:
+                        camera.retrieveImage(context);
+                        if (!profileImageViewDebounce) {
+                            profileImageViewDebounce = true;
+                            Handler responseHandler = new Handler(Looper.getMainLooper()) {
+                                @Override
+                                public void handleMessage(Message params) {
+                                    if (params.obj==null)
+                                    {
+                                        profileImageViewDebounce = false;
+                                    }
+                                    else {
+                                        cameraTextureView.setAlpha(1f-0.8f*MathUtility.EasingOut(System.currentTimeMillis() - ((long[])params.obj)[0], ((long[])params.obj)[1], 3));
+                                        mainConstraint.setAlpha(0f+1f*MathUtility.EasingOut(System.currentTimeMillis() - ((long[])params.obj)[0], ((long[])params.obj)[1], 3));
+                                        secondaryConstraint.setAlpha(1f-1f*MathUtility.EasingOut(System.currentTimeMillis() - ((long[])params.obj)[0], ((long[])params.obj)[1], 3));
+                                    }
+                                }
+                            };
+                            MathUtility.Animate(100, 500, responseHandler);
+                        }
                 }
         }
         @Override
@@ -101,14 +126,17 @@ public class ProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
-        cameraTextureView = (TextureView) findViewById(R.id.cameraPreviewTextureView);
-        camera = new Camera(cameraTextureView, cameraCaptureSessionCallback);
+        mainConstraint = (ConstraintLayout) findViewById(R.id.mainConstraint);
+        secondaryConstraint = (ConstraintLayout) findViewById(R.id.secondaryConstraint);
 
+        cameraTextureView = (TextureView) findViewById(R.id.cameraPreviewTextureView);
         displayNameTextView = (TextView) findViewById(R.id.displayNameTextView);
         backgroundImageView = (ImageView) findViewById(R.id.backgroundImageView);
         bandImageView = (ImageView) findViewById(R.id.bandImageView);
         profileImageView = (ImageView) findViewById(R.id.profileImageView);
         captureButton = (Button) findViewById(R.id.captureButton);
+
+        camera = new Camera(cameraTextureView, cameraCaptureSessionCallback, profileImageView);
 
         Typeface openSansFont = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Montserrat-Bold.ttf");
         displayNameTextView.setTypeface(openSansFont);
@@ -126,11 +154,9 @@ public class ProfileActivity extends AppCompatActivity {
                                 profileImageViewDebounce = false;
                             }
                             else {
-                                displayNameTextView.setAlpha(1f-1f*MathUtility.EasingOut(System.currentTimeMillis() - ((long[])params.obj)[0], ((long[])params.obj)[1], 3));
-                                backgroundImageView.setAlpha(0.9f-0.9f*MathUtility.EasingOut(System.currentTimeMillis() - ((long[])params.obj)[0], ((long[])params.obj)[1], 3));
-                                bandImageView.setAlpha(0.5f-0.5f*MathUtility.EasingOut(System.currentTimeMillis() - ((long[])params.obj)[0], ((long[])params.obj)[1], 3));
-                                profileImageView.setAlpha(1f-1f*MathUtility.EasingOut(System.currentTimeMillis() - ((long[])params.obj)[0], ((long[])params.obj)[1], 3));
-                                captureButton.setAlpha(0f+0.75f*MathUtility.EasingOut(System.currentTimeMillis() - ((long[])params.obj)[0], ((long[])params.obj)[1], 3));
+                                cameraTextureView.setAlpha(0.2f+0.8f*MathUtility.EasingOut(System.currentTimeMillis() - ((long[])params.obj)[0], ((long[])params.obj)[1], 3));
+                                mainConstraint.setAlpha(1f-1f*MathUtility.EasingOut(System.currentTimeMillis() - ((long[])params.obj)[0], ((long[])params.obj)[1], 3));
+                                secondaryConstraint.setAlpha(0f+1f*MathUtility.EasingOut(System.currentTimeMillis() - ((long[])params.obj)[0], ((long[])params.obj)[1], 3));
                             }
                         }
                     };
@@ -143,7 +169,7 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 // set camera's auto-focus lock
-                camera.lockFocus();
+                camera.takePhoto();
             }
         });
     }
@@ -154,7 +180,7 @@ public class ProfileActivity extends AppCompatActivity {
         if (!cameraTextureView.isAvailable()) {
             cameraTextureView.setSurfaceTextureListener(cameraPreviewSurfaceTextureListener);
         } else {
-            camera.setup(this, cameraTextureView.getWidth(), cameraTextureView.getHeight());
+            camera.setup(ProfileActivity.this, cameraTextureView.getWidth(), cameraTextureView.getHeight());
             camera.open(this);
         }
     }
