@@ -122,7 +122,8 @@
         android:id="@+id/addEventCaptureButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:srcCompat="@mipmap/ic_add_photo"
+        app:srcCompat="@mipmap/capture_button"
+        android:background="@null"
         android:layout_alignBottom="@+id/addEventCameraPreviewTextureView"
         android:layout_centerHorizontal="true" />
 

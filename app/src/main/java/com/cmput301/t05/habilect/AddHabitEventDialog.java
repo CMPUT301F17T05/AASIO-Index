@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.SurfaceTexture;
+import android.graphics.drawable.BitmapDrawable;
 import android.hardware.camera2.CameraCaptureSession;
 import android.hardware.camera2.CaptureFailure;
 import android.hardware.camera2.CaptureRequest;
@@ -211,6 +212,7 @@ public class AddHabitEventDialog extends DialogFragment {
         context = getContext();
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(context);
+        eventImage = view.findViewById(R.id.addHabitEventImageButton);
 
         cameraTextureView = view.findViewById(R.id.addEventCameraPreviewTextureView);
         camera = new Camera(cameraTextureView, cameraCaptureSessionCallback, eventImage);
@@ -218,7 +220,7 @@ public class AddHabitEventDialog extends DialogFragment {
         final ImageButton captureButton = view.findViewById(R.id.addEventCaptureButton);
         captureButton.setVisibility(ImageButton.INVISIBLE);
 
-        eventImage = view.findViewById(R.id.addHabitEventImageButton);
+
         eventImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -247,6 +249,7 @@ public class AddHabitEventDialog extends DialogFragment {
                     public void onClick(View view) {
                     // set camera's auto-focus lock
                     camera.takePhoto();
+                    eventBitmap = ((BitmapDrawable)eventImage.getDrawable()).getBitmap();
                     eventImage.setVisibility(ImageButton.VISIBLE);
                     captureButton.setVisibility(ImageButton.INVISIBLE);
                 }

@@ -39,6 +39,16 @@
         android:layout_above="@+id/editHabitEventImageButton"
         android:layout_alignParentEnd="true" />
 
+    <TextureView
+        android:id="@+id/editEventCameraPreviewTextureView"
+        android:layout_width="257dp"
+        android:layout_height="212dp"
+        android:alpha="0"
+        android:layout_marginTop="24dp"
+        android:layout_below="@+id/editHabitEventDialogHabitTypeText"
+        android:layout_alignStart="@+id/editHabitEventDialogHabitTypeText"
+        android:layout_alignEnd="@+id/editHabitEventSpinner" />
+
     <ImageButton
         android:id="@+id/editHabitEventImageButton"
         android:layout_width="257dp"
@@ -107,5 +117,14 @@
         android:layout_below="@+id/editHabitEventCheckBox"
         android:text="Comment cannot be more than 20 characters!"
         android:textColor="@color/red"/>
+
+    <ImageButton
+        android:id="@+id/editEventCaptureButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@mipmap/capture_button"
+        android:background="@null"
+        android:layout_alignBottom="@+id/editEventCameraPreviewTextureView"
+        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>
