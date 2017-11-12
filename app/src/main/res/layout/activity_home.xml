@@ -28,6 +28,18 @@
         android:showDividers="middle|end">
 
         <Button
+            android:id="@+id/navigateHabitTypes"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:drawablePadding="0dp"
+            android:drawableStart="@drawable/social"
+            android:paddingEnd="32dp"
+            android:paddingStart="16dp"
+            android:text="View Habit Types (Activity)" />
+
+        <Button
             android:id="@+id/navigateSocial"
             style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_width="match_parent"

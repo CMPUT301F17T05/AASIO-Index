@@ -15,13 +15,7 @@ buildscript {
 allprojects {
     repositories {
         jcenter()
-<<<<<<< HEAD
         google()
-=======
-        maven {
-            url 'https://maven.google.com'
-        }
->>>>>>> origin/MergedTypeAndEvent
     }
 }
 

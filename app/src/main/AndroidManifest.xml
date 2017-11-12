@@ -12,7 +12,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.AppCompat.NoActionBar">
+        android:theme="@style/AppTheme">
         <activity android:name=".HomeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,14 +23,11 @@
         <activity android:name=".SocialActivity" />
         <activity android:name=".ProfileActivity" />
         <activity android:name=".FriendActivity" />
-<<<<<<< HEAD
-=======
         <activity android:name=".ViewHabitTypesActivity" />
         <activity
             android:name=".HabitTypeActivity"
             android:label="@string/title_activity_view_habit_type"
             android:theme="@style/AppTheme.NoActionBar"></activity>
->>>>>>> origin/MergedTypeAndEvent
     </application>
 
 </manifest>

@@ -31,13 +31,6 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     androidTestCompile 'com.jayway.android.robotium:robotium-solo:5.6.3'
-<<<<<<< HEAD
-    compile 'com.android.support:appcompat-v7:26.+'
-    compile 'io.searchbox:jest:2.4.0'
-    compile 'com.android.support.constraint:constraint-layout:1.0.2'
-    testCompile 'junit:junit:4.12'
-}
-=======
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:26.1.0'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
@@ -45,4 +38,3 @@ dependencies {
     compile 'com.google.android.gms:play-services-location:11.6.0'
     compile 'com.android.support:design:26.1.0'
 }
->>>>>>> origin/MergedTypeAndEvent
