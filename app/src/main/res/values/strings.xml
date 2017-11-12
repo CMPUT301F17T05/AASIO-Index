@@ -15,4 +15,5 @@
     <string name="habit_type_details_tab">Details</string>
     <string name="habit_type_options_tab">Options</string>
     <string name="save">Save</string>
+    <string name="habit_type">Habit Type</string>
 </resources>

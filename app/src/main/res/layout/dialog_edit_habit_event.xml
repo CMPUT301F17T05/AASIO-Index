@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="24dp">
+
+    <TextView
+        android:id="@+id/editHabitEventDialogTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"
+        android:textSize="@dimen/font_size_large"
+        android:textStyle="bold"
+        android:layout_marginLeft="24dp"
+        android:layout_marginTop="24dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="25dp" />
+
+    <TextView
+        android:id="@+id/editHabitEventDialogHabitTypeText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/habit_type"
+        android:textSize="@dimen/font_size_medium"
+        android:layout_below="@+id/editHabitEventDialogTitle"
+        android:layout_alignStart="@+id/editHabitEventDialogTitle"
+        android:layout_marginTop="27dp" />
+
+    <Spinner
+        android:id="@+id/editHabitEventSpinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="24dp"
+        app:layout_constraintTop_toBottomOf="@+id/editHabitEventDialogTitle"
+        android:layout_above="@+id/editHabitEventImageButton"
+        android:layout_alignParentEnd="true" />
+
+    <TextureView
+        android:id="@+id/editEventCameraPreviewTextureView"
+        android:layout_width="257dp"
+        android:layout_height="212dp"
+        android:alpha="0"
+        android:layout_marginTop="24dp"
+        android:layout_below="@+id/editHabitEventDialogHabitTypeText"
+        android:layout_alignStart="@+id/editHabitEventDialogHabitTypeText"
+        android:layout_alignEnd="@+id/editHabitEventSpinner" />
+
+    <ImageButton
+        android:id="@+id/editHabitEventImageButton"
+        android:layout_width="257dp"
+        android:layout_height="212dp"
+        android:background="@color/white"
+        android:clickable="true"
+        app:srcCompat="@mipmap/add_image"
+        android:layout_marginTop="24dp"
+        android:layout_below="@+id/editHabitEventDialogHabitTypeText"
+        android:layout_alignStart="@+id/editHabitEventDialogHabitTypeText"
+        android:layout_alignEnd="@+id/editHabitEventSpinner" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Enable Location"
+        android:layout_below="@+id/editHabitEventImageButton"
+        android:layout_alignStart="@+id/editHabitEventImageButton"
+        android:layout_marginTop="16dp" />
+
+    <CheckBox
+        android:id="@+id/editHabitEventCheckBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/textView2"
+        android:layout_alignEnd="@+id/editHabitEventImageButton" />
+
+    <EditText
+        android:id="@+id/editEventCommentText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Add Comment..."
+        android:inputType="text"
+        android:layout_below="@+id/editHabitEventCheckBox"
+        android:layout_alignStart="@+id/textView2"
+        android:layout_marginTop="16dp"
+        android:layout_alignEnd="@+id/editHabitEventCheckBox" />
+
+    <Button
+        style="@style/Widget.AppCompat.Button.Borderless.Colored"
+        android:background="@android:color/transparent"
+        android:id="@+id/editEventCreateButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Create"
+        android:layout_alignParentBottom="true"
+        android:layout_alignEnd="@+id/editEventCommentText" />
+
+    <Button
+        style="@style/Widget.AppCompat.Button.Borderless.Colored"
+        android:background="@android:color/transparent"
+        android:id="@+id/editEventCancelButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Cancel"
+        android:layout_alignParentBottom="true"
+        android:layout_toStartOf="@+id/editEventCreateButton" />
+
+    <TextView
+        android:id="@+id/editEventCommentWarning"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/editEventCommentText"
+        android:layout_below="@+id/editHabitEventCheckBox"
+        android:text="Comment cannot be more than 20 characters!"
+        android:textColor="@color/red"/>
+
+    <ImageButton
+        android:id="@+id/editEventCaptureButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@mipmap/capture_button"
+        android:background="@null"
+        android:layout_alignBottom="@+id/editEventCameraPreviewTextureView"
+        android:layout_centerHorizontal="true" />
+
+</RelativeLayout>
