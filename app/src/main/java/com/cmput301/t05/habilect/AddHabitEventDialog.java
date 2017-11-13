@@ -250,7 +250,7 @@ public class AddHabitEventDialog extends DialogFragment {
         eventImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                captureButton.setVisibility(ImageButton.VISIBLE);
+                turnOnCaptureButton(captureButton);
                 eventImage.setVisibility(ImageButton.INVISIBLE);
                 if (!addEventImageViewDebounce) {
                     addEventImageViewDebounce = true;
@@ -270,14 +270,14 @@ public class AddHabitEventDialog extends DialogFragment {
         });
 
         // hit the capture button, take a picture, close camera and remove capture button
-        captureButton.setVisibility(ImageButton.INVISIBLE);
+        turnOffCaptureButton(captureButton);
         captureButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // set camera's auto-focus lock
                 camera.takePhoto();
                 eventImage.setVisibility(ImageButton.VISIBLE);
-                captureButton.setVisibility(ImageButton.INVISIBLE);
+                turnOffCaptureButton(captureButton);
             }
         });
 
@@ -335,6 +335,26 @@ public class AddHabitEventDialog extends DialogFragment {
             camera.close();
         }
         super.onPause();
+    }
+
+    /**
+     * Disable the capture button
+     */
+    private void turnOffCaptureButton(ImageButton captureButton) {
+        captureButton.setVisibility(View.INVISIBLE);
+        captureButton.setEnabled(false);
+        captureButton.setClickable(false);
+        captureButton.setFocusable(false);
+    }
+
+    /**
+     * Enables the capture button
+     */
+    private void turnOnCaptureButton(ImageButton captureButton) {
+        captureButton.setVisibility(View.VISIBLE);
+        captureButton.setEnabled(true);
+        captureButton.setClickable(true);
+        captureButton.setFocusable(true);
     }
 
     /**
