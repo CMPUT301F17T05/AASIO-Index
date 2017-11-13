@@ -39,6 +39,9 @@ public class ProfileActivity extends AppCompatActivity {
 
     Camera camera;
 
+    /**
+     * Sets up the camera to begin updating the texture surface once it is available
+     */
     TextureView.SurfaceTextureListener cameraPreviewSurfaceTextureListener = new TextureView.SurfaceTextureListener() {
         @Override
         public void onSurfaceTextureAvailable(SurfaceTexture surfaceTexture, int width, int height) {
@@ -74,6 +77,9 @@ public class ProfileActivity extends AppCompatActivity {
     Button saveChangesButton;
     Button captureButton;
 
+    /**
+     * Animates the view when the user captures a still image and enables the save button
+     */
     boolean profileImageViewDebounce = false;
     CameraCaptureSession.CaptureCallback cameraCaptureSessionCallback = new CameraCaptureSession.CaptureCallback() {
         @Override
@@ -115,6 +121,9 @@ public class ProfileActivity extends AppCompatActivity {
         }
     };
 
+    /**
+     * Constrains the length of the user's display name
+     */
     private void checkDisplayNameLength() {
         String commentField = displayNameEditText.getText().toString();
         if (commentField.length() <= 48) {
@@ -154,12 +163,18 @@ public class ProfileActivity extends AppCompatActivity {
         secondaryConstraint.setClickable(false);
         secondaryConstraint.setFocusable(false);
 
+        /**
+         * Retrieves user information and updates the views accordingly
+         */
         final UserProfile profile = new UserProfile(getApplicationContext());
         displayNameEditText.setText(profile.getDisplayName());
         if (profile.getProfilePicture()!=null) {
             profileImageView.setImageBitmap(profile.getProfilePicture());
         }
 
+        /**
+         * Subscribes the display name's EditText view to a listener that validates its input
+         */
         displayNameEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -177,14 +192,17 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
+        /**
+         * Subscribes the save button to a listener that stores display name and profile image information locally
+         */
         saveChangesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 saveChangesButton.setEnabled(false);
 
-                profile.setDisplayName(displayNameEditText.getText().toString());
                 SharedPreferences sharedPreferences = context.getSharedPreferences(UserProfile.HABILECT_USER_INFO, Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPreferences.edit();
+                profile.setDisplayName(displayNameEditText.getText().toString());
                 editor.putString(UserProfile.HABILECT_USER_DISPLAY_NAME, displayNameEditText.getText().toString());
                 editor.commit();
 
@@ -206,6 +224,9 @@ public class ProfileActivity extends AppCompatActivity {
         Typeface openSansFont = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Montserrat-Bold.ttf");
         displayNameEditText.setTypeface(openSansFont);
 
+        /**
+         * Animates and enables the views that facilitate the user with a way to capture an image for their profile pic
+         */
         profileImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

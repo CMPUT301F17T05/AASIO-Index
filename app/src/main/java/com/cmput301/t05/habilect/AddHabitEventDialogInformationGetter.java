@@ -21,17 +21,28 @@ public class AddHabitEventDialogInformationGetter {
         this.bundle = bundle;
     }
 
+    /**
+     *
+     * @return the title from the bundle
+     */
     public String getTitle() {
         String title = bundle.getString("habitType");
         return title == null ? "" : title ;
     }
 
+    /**
+     *
+     * @return the comment from the bundle
+     */
     public String getComment() {
         String comment = bundle.getString("comment");
         return comment == null ? "" : comment ;
     }
 
-
+    /**
+     *
+     * @return the date from the bundle
+     */
     public Date getDate() {
         SimpleDateFormat simpleDate = new SimpleDateFormat("yyyy_MM_dd");
         Date date = new Date();
@@ -43,6 +54,10 @@ public class AddHabitEventDialogInformationGetter {
         return date;
     }
 
+    /**
+     *
+     * @return the location from the bundle
+     */
     public Location getLocation() {
         String latitude = bundle.getString("latitude");
         String longitude = bundle.getString("longitude");
@@ -56,11 +71,19 @@ public class AddHabitEventDialogInformationGetter {
         return null;
     }
 
+    /**
+     *
+     * @return the file name from the bundle
+     */
     public String getFileName() {
         String fileName = bundle.getString("fileName");
         return fileName == null ? "" : fileName ;
     }
 
+    /**
+     *
+     * @return the directory from the bundle
+     */
     public String getDirectory() {
         String directory = bundle.getString("directory");
         return directory == null ? "" : directory ;

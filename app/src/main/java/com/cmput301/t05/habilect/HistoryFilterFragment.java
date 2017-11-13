@@ -14,6 +14,9 @@ import java.util.Date;
 
 /**
  * @author ioltuszy
+ * @author rarog
+ * The filter fragment displays all of the stored habit events and allows the user to filter
+ * by various parameters
  */
 
 public class HistoryFilterFragment extends Fragment {

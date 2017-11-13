@@ -5,7 +5,9 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
     <uses-feature android:name="android.hardware.camera2" />
+
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
@@ -27,6 +29,7 @@
         <activity android:name=".HomeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -38,7 +41,8 @@
         <activity
             android:name=".HabitTypeActivity"
             android:label="@string/title_activity_view_habit_type"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".ViewHabitEventActivity"></activity>
     </application>
 
 </manifest>
