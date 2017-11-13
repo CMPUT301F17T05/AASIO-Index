@@ -167,9 +167,7 @@ public class AddHabitEventDialog extends DialogFragment {
         );
 
         // if user does not have location permissions set, will ask to enable them
-        if (!checkPermissions()) {
-            requestPermissions();
-        } else {
+        if (checkPermissions()) {
             getLastLocation();
         }
     }
@@ -374,18 +372,23 @@ public class AddHabitEventDialog extends DialogFragment {
     }
 
     private String getTitleFromBundle() {
-        return getArguments().getString("Title") == null
-                ? "" : getArguments().getString("Title");
+        try {
+            return getArguments().getString("Title");
+        }
+        catch (Exception e) {
+            return "";
+        }
     }
 
 
     // TODO: Right now for simplicity, habit events only know the title of habit types, might want to change that
     private ArrayList<String> getHabitTypesFromBundle() {
-        ArrayList<String> habits = (ArrayList<String>) getArguments().get("Habit Type");
-        if (habits != null) {
-            return habits;
+        ArrayList<String> habits;
+        try {
+            return (ArrayList<String>) getArguments().get("Habit Type");
+        } catch (Exception e) {
+            return new ArrayList<>();
         }
-        return new ArrayList<>();
     }
 
 
@@ -415,62 +418,5 @@ public class AddHabitEventDialog extends DialogFragment {
         int permissionState = ActivityCompat.checkSelfPermission(context,
                 android.Manifest.permission.ACCESS_COARSE_LOCATION);
         return permissionState == PackageManager.PERMISSION_GRANTED;
-    }
-
-    private void startLocationPermissionRequest() {
-        ActivityCompat.requestPermissions((Activity) context,
-                new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION},
-                REQUEST_PERMISSIONS_REQUEST_CODE);
-    }
-
-    private void requestPermissions() {
-        boolean shouldProvideRationale =
-                ActivityCompat.shouldShowRequestPermissionRationale((Activity) context,
-                        android.Manifest.permission.ACCESS_COARSE_LOCATION);
-
-        // Provide an additional rationale to the user. This would happen if the user denied the
-        // request previously, but didn't check the "Don't ask again" checkbox.
-        if (shouldProvideRationale) {
-            Log.i(TAG, "Displaying permission rationale to provide additional context.");
-        } else {
-            Log.i(TAG, "Requesting permission");
-            // Request permission. It's possible this can be auto answered if device policy
-            // sets the permission in a given state or the user denied the permission
-            // previously and checked "Never ask again".
-            startLocationPermissionRequest();
-        }
-    }
-
-    /**
-     * Callback received when a permissions request has been completed.
-     */
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        Log.i(TAG, "onRequestPermissionResult");
-        if (requestCode == REQUEST_PERMISSIONS_REQUEST_CODE) {
-            if (grantResults.length <= 0) {
-                // If user interaction was interrupted, the permission request is cancelled and you
-                // receive empty arrays.
-                Log.i(TAG, "User interaction was cancelled.");
-            } else if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Permission granted.
-                getLastLocation();
-            } else {
-                // Permission denied.
-                // TODO: Can't test this right now due to bug mentioned above
-                // Notify the user via a SnackBar that they have rejected a core permission for the
-                // app, which makes the Activity useless. In a real app, core permissions would
-                // typically be best requested during a welcome-screen flow.
-
-                // Additionally, it is important to remember that a permission might have been
-                // rejected without asking the user for permission (device policy or "Never ask
-                // again" prompts). Therefore, a user interface affordance is typically implemented
-                // when permissions are denied. Otherwise, your app could appear unresponsive to
-                // touches or interactions which have required permissions.
-                Snackbar snackbar = Snackbar.make(getView(), "Test", Snackbar.LENGTH_SHORT);
-                snackbar.show();
-            }
-        }
     }
 }
