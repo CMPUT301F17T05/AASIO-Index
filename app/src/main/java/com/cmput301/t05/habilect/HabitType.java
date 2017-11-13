@@ -4,6 +4,7 @@ import android.util.Log;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -24,6 +25,7 @@ public class HabitType extends Observable implements Serializable {
     private boolean shared;
     private List<UserProfile> followers;
     private Date recent_habit_event;
+    private List<HabitEvent> habitEvents = new ArrayList<>();;
 
     /**
      * The Constructor for HabitType
@@ -154,6 +156,14 @@ public class HabitType extends Observable implements Serializable {
      */
     public void setRecentHabitEvent(Date date) {
         this.recent_habit_event = date;
+    }
+
+    public void addHabitEvent(HabitEvent habitEvent){
+        this.habitEvents.add(habitEvent);
+    }
+
+    public void removeHabitEvent(HabitEvent habitEvent){
+        this.habitEvents.remove(habitEvent);
     }
 
     // BEHAVIOURS
