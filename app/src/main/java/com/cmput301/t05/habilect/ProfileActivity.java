@@ -103,13 +103,14 @@ public class ProfileActivity extends AppCompatActivity {
 
         setTitle("Habilect - Social");
 
+        Navigation.setup(findViewById(android.R.id.content));
+
         mainConstraint = (ConstraintLayout) findViewById(R.id.mainConstraint);
         secondaryConstraint = (ConstraintLayout) findViewById(R.id.secondaryConstraint);
 
         cameraTextureView = (TextureView) findViewById(R.id.cameraPreviewTextureView);
         displayNameTextView = (TextView) findViewById(R.id.displayNameTextView);
         backgroundImageView = (ImageView) findViewById(R.id.backgroundImageView);
-        bandImageView = (ImageView) findViewById(R.id.bandImageView);
         profileImageView = (ImageView) findViewById(R.id.profileImageView);
         captureButton = (Button) findViewById(R.id.captureButton);
 

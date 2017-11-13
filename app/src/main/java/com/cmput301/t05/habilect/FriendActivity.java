@@ -20,6 +20,8 @@ public class FriendActivity extends AppCompatActivity {
 
         setTitle("Habilect - Friend");
 
+        Navigation.setup(findViewById(android.R.id.content));
+
         friendViewPagerAdapter = new ViewPagerFriendAdapter(fragmentManager);
         ViewPager mFriendViewPager = (ViewPager) findViewById(R.id.friendViewPager);
         mFriendViewPager.setAdapter(friendViewPagerAdapter);

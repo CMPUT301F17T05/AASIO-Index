@@ -28,6 +28,10 @@ public class ViewHabitTypesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_habit_types);
 
+        setTitle("Habilect - Habit Types");
+
+        Navigation.setup(findViewById(android.R.id.content));
+
         habitTypeList = (ListView) findViewById(R.id.habitTypeListView);
 
         habitTypeList.setOnItemClickListener(new AdapterView.OnItemClickListener() {

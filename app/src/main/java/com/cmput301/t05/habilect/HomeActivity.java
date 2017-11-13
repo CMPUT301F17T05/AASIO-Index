@@ -37,37 +37,6 @@ public class HomeActivity extends AppCompatActivity {
         ViewPager mHomeViewPager = (ViewPager) findViewById(R.id.homeViewPager);
         mHomeViewPager.setAdapter(homeViewPagerAdapter);
 
-        final Button navigateHabitTypes = (Button) findViewById(R.id.navigateHabitTypes);
-        navigateHabitTypes.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(currentActivity, ViewHabitTypesActivity.class);
-                startActivity(intent);
-            }
-        });
-        final Button navigateHistoryButton = (Button) findViewById(R.id.navigateHistory);
-        navigateHistoryButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(currentActivity, HistoryActivity.class);
-                startActivity(intent);
-            }
-        });
-        final Button navigateSocialButton = (Button) findViewById(R.id.navigateSocial);
-        navigateSocialButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(currentActivity, SocialActivity.class);
-                startActivity(intent);
-            }
-        });
-        final Button navigateProfileButton = (Button) findViewById(R.id.navigateProfile);
-        navigateProfileButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(currentActivity, ProfileActivity.class);
-                startActivity(intent);
-            }
-        });
+        Navigation.setup(findViewById(android.R.id.content));
     }
 }

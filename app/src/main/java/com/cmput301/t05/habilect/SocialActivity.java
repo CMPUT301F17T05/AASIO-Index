@@ -23,6 +23,8 @@ public class SocialActivity extends AppCompatActivity {
 
         setTitle("Habilect - Social");
 
+        Navigation.setup(findViewById(android.R.id.content));
+
         final Button viewFriendButton = (Button) findViewById(R.id.viewFriendButton);
         viewFriendButton.setOnClickListener(new View.OnClickListener() {
             @Override
