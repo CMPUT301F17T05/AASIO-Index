@@ -65,6 +65,7 @@ public class WebService {
         protected Void doInBackground(UserProfile... userProfile) {
             verifySettings();
 
+            userProfile[0].setContext();
             Index index = new Index.Builder(userProfile[0]).index("user").build();
 
             try {
