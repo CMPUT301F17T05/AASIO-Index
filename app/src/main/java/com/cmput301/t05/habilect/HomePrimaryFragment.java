@@ -1,6 +1,7 @@
 package com.cmput301.t05.habilect;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -38,6 +39,7 @@ public class HomePrimaryFragment extends Fragment {
 
     private ListView habitTypeList;
     private ArrayList<HabitType> habit_types;
+    //UserProfile user_profile = new UserProfile();
 
     @Override
     public View onCreateView(LayoutInflater inflater,
@@ -68,10 +70,9 @@ public class HomePrimaryFragment extends Fragment {
                         try {
                             HabitType habit_type = new HabitType(title, reason, start_date, weekly_plan);
 
-                            /*userProfile.addPlans(habit_type);
-                            userProfile.addPlans(habit_type);
+                            /*user_profile.addPlans(habit_type);
                             WebService.UpdateUserProfileTask updateUserProfileTask = new WebService.UpdateUserProfileTask();
-                            updateUserProfileTask.execute(userProfile);*/
+                            updateUserProfileTask.execute(user_profile);*/
                         } catch (IllegalArgumentException e) {
                             throw e;
                         }

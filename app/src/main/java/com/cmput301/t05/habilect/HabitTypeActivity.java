@@ -27,6 +27,8 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.Date;
 
+import android.content.Context;
+
 public class HabitTypeActivity extends AppCompatActivity {
 
     /**
@@ -232,6 +234,7 @@ public class HabitTypeActivity extends AppCompatActivity {
             final EditText newTitle = rootView.findViewById(R.id.editTextEditHabitTypeTitle);
             final EditText newReason = rootView.findViewById(R.id.editTextEditHabitTypeReason);
             final DatePicker newStartDate = rootView.findViewById(R.id.datePickerEditHabitTypeStartDate);
+            //UserProfile user_profile = new UserProfile(this.getApplicationContext());
 
             newMonday = rootView.findViewById(R.id.checkBoxEditMonday);
             newTuesday = rootView.findViewById(R.id.checkBoxEditTuesday);
@@ -297,6 +300,12 @@ public class HabitTypeActivity extends AppCompatActivity {
                                     newStartDate.getDayOfMonth());
                             try {
                                 habitTypeListener.OnAddedOrEdited(title, reason, start_date, weekly_plan);
+
+                                /*user_profile.addPlans(habit_type);
+                            WebService.UpdateUserProfileTask updateUserProfileTask = new WebService.UpdateUserProfileTask();
+                            updateUserProfileTask.execute(user_profile);*/
+
+
                             } catch (IllegalArgumentException e) {
                                 if (e.getMessage().equals("title")) {
                                     newTitle.setError("This field cannot be greater than 20 characters");
