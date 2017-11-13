@@ -338,11 +338,12 @@ public class GSONController {
 
     /**
      * For deleting a habit type on file
-     * @param habitType the habit type you want to save
+     * @param habitType the habit type you want to delete
      */
     public void deleteHabitTypeInFile(HabitType habitType) {
         if(typeInEventList(habitType)) {
-            typeList.remove(habitType);
+            HabitType rmType = findHabitType(habitType.getTitle());
+            typeList.remove(rmType);
             typeTitleList.remove(habitType.getTitle());
             saveHabitTypeListInFile();
         }

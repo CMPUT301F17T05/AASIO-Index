@@ -31,8 +31,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 
-import android.content.Context;
-
 public class HabitTypeActivity extends AppCompatActivity {
 
     /**
@@ -124,10 +122,22 @@ public class HabitTypeActivity extends AppCompatActivity {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
+        HabitTypeListener habitTypeListener = new HabitTypeListener() {
+            @Override
+            public void OnAddedOrEdited(String title, String reason, Date start_date, boolean[] weekly_plan) {
+            }
+
+            @Override
+            public void OnDeleted() {
+                GSONController.GSON_CONTROLLER.deleteHabitTypeInFile(habit_type);
+            }
+        };
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_delete) {
+            habitTypeListener.OnDeleted();
+            finish();
             return true;
         }
 
@@ -349,7 +359,7 @@ public class HabitTypeActivity extends AppCompatActivity {
                  * hasn't been implemented yet -- might delete
                  */
                 @Override
-                public void OnCancelled() {
+                public void OnDeleted() {
 
                 }
             });
@@ -460,22 +470,22 @@ public class HabitTypeActivity extends AppCompatActivity {
     /**
      * A fragment that allows the user to delete, set shared, or something else -- might delete
      */
-    public static class HabitOptionsFragment extends Fragment {
+    public static class HabitTypeEventsFragment extends Fragment {
 
         // The fragment argument representing the section number for this fragment.
         private static final String ARG_SECTION_NUMBER = "section_number";
 
         ArrayList<HabitEvent> eList;
 
-        public HabitOptionsFragment() {
+        public HabitTypeEventsFragment() {
         }
 
         /**
          * Returns a new instance of this fragment for the given section
          * number.
          */
-        public static HabitOptionsFragment newInstance(int sectionNumber) {
-            HabitOptionsFragment fragment = new HabitOptionsFragment();
+        public static HabitTypeEventsFragment newInstance(int sectionNumber) {
+            HabitTypeEventsFragment fragment = new HabitTypeEventsFragment();
             Bundle args = new Bundle();
             args.putInt(ARG_SECTION_NUMBER, sectionNumber);
             fragment.setArguments(args);
@@ -538,7 +548,7 @@ public class HabitTypeActivity extends AppCompatActivity {
                 return new EditHabitFragment();
             }
             else if (position == 2) {
-                return new HabitOptionsFragment();
+                return new HabitTypeEventsFragment();
             }
             else {
                 return PlaceholderFragment.newInstance(position + 1);
@@ -559,7 +569,7 @@ public class HabitTypeActivity extends AppCompatActivity {
                 case 1:
                     return "EDIT";
                 case 2:
-                    return "OPTIONS";
+                    return "EVENTS";
             }
             return null;
         }

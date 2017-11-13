@@ -92,8 +92,8 @@ public class HomePrimaryFragment extends Fragment {
                         }
                     }
                     @Override
-                    public void OnCancelled() {
-                        // TODO: implement OnCancelled
+                    public void OnDeleted() {
+                        // TODO: implement OnDeleted
                     }
                 });
                 addHabitDialog.show(fragmentManager, "addHabitDialog");
@@ -123,7 +123,7 @@ public class HomePrimaryFragment extends Fragment {
 
                     @Override
                     public void OnCancelled() {
-                        // TODO: implement OnCancelled
+                        // TODO: implement OnDeleted
                     }
                 });
                 viewHabitDialog.show(fragmentManager, "viewHabitDialog");
@@ -147,7 +147,7 @@ public class HomePrimaryFragment extends Fragment {
 
                     @Override
                     public void OnCancelled() {
-                        // TODO: implement OnCancelled
+                        // TODO: implement OnDeleted
                     }
                 });
                 ArrayList<String> titleList = getHabitTitles();
