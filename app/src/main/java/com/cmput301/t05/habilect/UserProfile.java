@@ -28,12 +28,19 @@ public class UserProfile {
     String displayName;
     Bitmap profilePicture;
 
+    boolean isNewUser = true;
+
     public UserProfile(Context context) {
         this.context = context;
 
         this.setIdentifier((String)this.Lookup(context, HABILECT_USER_INSTALL_ID));
         this.setDisplayName((String)this.Lookup(context, HABILECT_USER_DISPLAY_NAME));
         this.setProfilePicture((String)this.Lookup(context, HABILECT_USER_PICTURE));
+
+        if (isNewUser) {
+            WebService.AddUserProfileTask addUserProfileTask = new WebService.AddUserProfileTask();
+            addUserProfileTask.execute(this);
+        }
     }
 
     public String getDisplayName() {
