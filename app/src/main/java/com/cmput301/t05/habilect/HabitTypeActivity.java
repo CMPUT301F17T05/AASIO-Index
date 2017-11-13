@@ -1,8 +1,10 @@
 package com.cmput301.t05.habilect;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.location.Location;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
@@ -22,10 +24,14 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
+
+import android.content.Context;
 
 public class HabitTypeActivity extends AppCompatActivity {
 
@@ -45,6 +51,8 @@ public class HabitTypeActivity extends AppCompatActivity {
     private ViewPager mViewPager;
 
     private static HabitType habit_type;      // The habit type that has been clicked on for viewing
+
+    private static HabitEventEditListAdapter eventListAdapter;
 
     /**
      * sets up the activity and grabs the habit type that was passed in through a different
@@ -74,8 +82,29 @@ public class HabitTypeActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Will be able to add a habit event when clicked", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                final AddHabitEventDialog addHabitEventDialog = new AddHabitEventDialog();
+                addHabitEventDialog.setOnAddHabitEventListener(new OnAddHabitEventListener() {
+                    @Override
+                    public void OnAdded() {
+                        // TODO: implement OnAdded
+                        HabitEvent event =
+                                createHabitEventFromBundle(addHabitEventDialog.getResultBundle());
+                        GSONController.GSON_CONTROLLER.saveHabitEventInFile(event);
+                        if(eventListAdapter != null) {
+                            eventListAdapter.notifyDataSetChanged();
+                        }
+
+                    }
+
+                    @Override
+                    public void OnCancelled() {
+                        // do nothing...
+                    }
+                });
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                Bundle bundle = sendHabitInfoToDialog();
+                addHabitEventDialog.setArguments(bundle);
+                addHabitEventDialog.show(fragmentManager, "addHabitEventDialog");
             }
         });
 
@@ -103,6 +132,37 @@ public class HabitTypeActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private Bundle sendHabitInfoToDialog() {
+        Bundle bundle = new Bundle();
+        ArrayList<String> list = new ArrayList<>();
+        list.add(habit_type.getTitle());
+        bundle.putString("Title", habit_type.getTitle());
+        bundle.putSerializable("Habit Type", list);
+
+        return bundle;
+    }
+
+    private HabitEvent createHabitEventFromBundle(Bundle bundle) {
+        AddHabitEventDialogInformationGetter getter =
+                new AddHabitEventDialogInformationGetter(bundle);
+        String title = getter.getTitle();
+        String comment = getter.getComment();
+        Location location = getter.getLocation();
+        Date date = getter.getDate();
+        String filePath = getter.getFileName();
+        String directory = getter.getDirectory();
+        Bitmap eventImage = getBitmapFromFilePath(directory, filePath);
+
+        return new HabitEvent(comment, eventImage, location, date, title);
+    }
+
+    private Bitmap getBitmapFromFilePath(String directory, String filePath) {
+        File image = new File(directory, filePath);
+        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+        Bitmap bitmap = BitmapFactory.decodeFile(image.getAbsolutePath(),bmOptions);
+        return bitmap;
     }
 
     /**
@@ -232,6 +292,7 @@ public class HabitTypeActivity extends AppCompatActivity {
             final EditText newTitle = rootView.findViewById(R.id.editTextEditHabitTypeTitle);
             final EditText newReason = rootView.findViewById(R.id.editTextEditHabitTypeReason);
             final DatePicker newStartDate = rootView.findViewById(R.id.datePickerEditHabitTypeStartDate);
+            //UserProfile user_profile = new UserProfile(this.getApplicationContext());
 
             newMonday = rootView.findViewById(R.id.checkBoxEditMonday);
             newTuesday = rootView.findViewById(R.id.checkBoxEditTuesday);
@@ -269,10 +330,16 @@ public class HabitTypeActivity extends AppCompatActivity {
                 @Override
                 public void OnAddedOrEdited(String title, String reason, Date start_date, boolean[] weekly_plan) {
                     try {
-                        if (title.length() > 0) { habit_type.setTitle(title); }
-                        if (reason.length() > 0) { habit_type.setReason(reason); }
-                        habit_type.setStartDate(start_date);
-                        habit_type.setWeeklyPlan(weekly_plan);
+                        HabitType edited_habit_type = new HabitType(habit_type);
+
+                        if (title.length() > 0) { edited_habit_type.setTitle(title); }
+                        if (reason.length() > 0) { edited_habit_type.setReason(reason); }
+                        edited_habit_type.setStartDate(start_date);
+                        edited_habit_type.setWeeklyPlan(weekly_plan);
+
+                        GSONController.GSON_CONTROLLER.editHabitTypeInFile(edited_habit_type, habit_type.getTitle());
+                        habit_type = edited_habit_type;
+
                     } catch (IllegalArgumentException e) {
                         throw e;
                     }
@@ -297,6 +364,12 @@ public class HabitTypeActivity extends AppCompatActivity {
                                     newStartDate.getDayOfMonth());
                             try {
                                 habitTypeListener.OnAddedOrEdited(title, reason, start_date, weekly_plan);
+
+                                /*user_profile.addPlans(habit_type);
+                            WebService.UpdateUserProfileTask updateUserProfileTask = new WebService.UpdateUserProfileTask();
+                            updateUserProfileTask.execute(user_profile);*/
+
+
                             } catch (IllegalArgumentException e) {
                                 if (e.getMessage().equals("title")) {
                                     newTitle.setError("This field cannot be greater than 20 characters");
@@ -392,6 +465,8 @@ public class HabitTypeActivity extends AppCompatActivity {
         // The fragment argument representing the section number for this fragment.
         private static final String ARG_SECTION_NUMBER = "section_number";
 
+        ArrayList<HabitEvent> eList;
+
         public HabitOptionsFragment() {
         }
 
@@ -407,13 +482,37 @@ public class HabitTypeActivity extends AppCompatActivity {
             return fragment;
         }
 
+        // TODO: does not upadate the list view automatically when you make event, must exit out of activity then reopen habit type
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_habit_type_options, container, false);
 
+            ListView eventList = rootView.findViewById(R.id.fragmentHabitTypeOptionsListView);
+
+            eList = GSONController.GSON_CONTROLLER.loadHabitEventFromFile();
+            eList = filterEventList(habit_type, eList);
+
+            eventListAdapter = new HabitEventEditListAdapter(eList, getActivity());
+            eventList.setAdapter(eventListAdapter);
 
             return rootView;
+        }
+
+        private  ArrayList<HabitEvent> filterEventList(HabitType habitType, ArrayList<HabitEvent> eventList) {
+            ArrayList newList = new ArrayList();
+            for (HabitEvent event : eventList) {
+                if(event.getHabitType().equals(habitType.getTitle())) {
+                    newList.add(event);
+                }
+            }
+            return newList;
+        }
+
+        @Override
+        public void onStart() {
+            super.onStart();
+            eList = GSONController.GSON_CONTROLLER.loadHabitEventFromFile();
         }
     }
 
@@ -438,7 +537,7 @@ public class HabitTypeActivity extends AppCompatActivity {
             else if (position == 1) {
                 return new EditHabitFragment();
             }
-            else if (position == 3) {
+            else if (position == 2) {
                 return new HabitOptionsFragment();
             }
             else {

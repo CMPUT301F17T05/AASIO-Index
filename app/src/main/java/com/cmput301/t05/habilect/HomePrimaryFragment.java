@@ -1,11 +1,15 @@
 package com.cmput301.t05.habilect;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,12 +18,10 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
+import java.io.File;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.ArrayList;
-import java.util.Date;
-
-import static android.app.Activity.RESULT_OK;
-import static com.cmput301.t05.habilect.AddHabitEventDialog.REQUEST_IMAGE_CAPTURE;
 
 /**
  * Shows a list of habit types that can be completed today, allows the user to navigate to
@@ -37,7 +39,10 @@ public class HomePrimaryFragment extends Fragment {
     FragmentManager fragmentManager;
 
     private ListView habitTypeList;
-    private ArrayList<HabitType> habit_types;
+    private ArrayList<HabitType> all_habit_types;
+    private ArrayList<HabitType> incomplete_habit_types;
+    //UserProfile user_profile = new UserProfile(getApplicationContext());
+    ArrayAdapter<HabitType> adapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater,
@@ -46,16 +51,21 @@ public class HomePrimaryFragment extends Fragment {
                 R.layout.fragment_home_primary, container, false);
 
         fragmentManager = getActivity().getSupportFragmentManager();
-
         habitTypeList = rootView.findViewById(R.id.incompleteHabitsListView);
+
+
         habitTypeList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Intent intent = new Intent(getActivity(), HabitTypeActivity.class);
-                intent.putExtra("ClickedHabitType", habit_types.get(i));
+                intent.putExtra("ClickedHabitType", incomplete_habit_types.get(i));
                 startActivity(intent);
             }
         });
+
+        //habit_types = GSONController.GSON_CONTROLLER.loadHabitTypeFromFile();
+        //adapter = new ArrayAdapter<>(getActivity(), R.layout.habit_type_list_item, habit_types);
+        //habitTypeList.setAdapter(adapter);
 
         final Button addHabitButton = (Button) rootView.findViewById(R.id.addHabitButton);
         addHabitButton.setOnClickListener(new View.OnClickListener() {
@@ -68,10 +78,15 @@ public class HomePrimaryFragment extends Fragment {
                         try {
                             HabitType habit_type = new HabitType(title, reason, start_date, weekly_plan);
 
-                            /*userProfile.addPlans(habit_type);
-                            userProfile.addPlans(habit_type);
+                            GSONController.GSON_CONTROLLER.saveHabitTypeInFile(habit_type);
+                            all_habit_types = GSONController.GSON_CONTROLLER.loadHabitTypeFromFile();
+                            incomplete_habit_types = getIncompleteHabitTypes();
+                            adapter.notifyDataSetChanged();
+
+                            /*user_profile.addPlans(habit_type);
                             WebService.UpdateUserProfileTask updateUserProfileTask = new WebService.UpdateUserProfileTask();
-                            updateUserProfileTask.execute(userProfile);*/
+                            updateUserProfileTask.execute(user_profile);*/
+
                         } catch (IllegalArgumentException e) {
                             throw e;
                         }
@@ -115,7 +130,7 @@ public class HomePrimaryFragment extends Fragment {
             }
         });
 
-
+        // TODO: Add habit event from title once information saving is done
         final Button addHabitEventButton = rootView.findViewById(R.id.addHabitEvent);
         addHabitEventButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -125,6 +140,9 @@ public class HomePrimaryFragment extends Fragment {
                     @Override
                     public void OnAdded() {
                         // TODO: implement OnAdded
+                        HabitEvent event =
+                                createHabitEventFromBundle(addHabitEventDialog.getResultBundle());
+                        GSONController.GSON_CONTROLLER.saveHabitEventInFile(event);
                     }
 
                     @Override
@@ -132,16 +150,50 @@ public class HomePrimaryFragment extends Fragment {
                         // TODO: implement OnCancelled
                     }
                 });
+                ArrayList<String> titleList = getHabitTitles();
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("Habit Type", titleList);
+                addHabitEventDialog.setArguments(bundle);
                 addHabitEventDialog.show(fragmentManager, "addHabitEventDialog");
+
             }
         });
 
         return rootView;
     }
 
+    private HabitEvent createHabitEventFromBundle(Bundle bundle) {
+        AddHabitEventDialogInformationGetter getter =
+                new AddHabitEventDialogInformationGetter(bundle);
+        String title = getter.getTitle();
+        String comment = getter.getComment();
+        Location location = getter.getLocation();
+        Date date = getter.getDate();
+        String filePath = getter.getFileName();
+        String directory = getter.getDirectory();
+        Bitmap eventImage = getBitmapFromFilePath(directory, filePath);
+
+        return new HabitEvent(comment, eventImage, location, date, title);
+    }
+
+    private Bitmap getBitmapFromFilePath(String directory, String filePath) {
+        File image = new File(directory, filePath);
+        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+        Bitmap bitmap = BitmapFactory.decodeFile(image.getAbsolutePath(),bmOptions);
+        return bitmap;
+    }
+
+    private ArrayList<String> getHabitTitles() {
+        ArrayList<String> list = new ArrayList<>();
+        for(HabitType type : all_habit_types) {
+            list.add(type.getTitle());
+        }
+        return list;
+    }
+
     /**
      * gets all of the user's habit types locally or from elasticsearch (to be implemented) and
-     * puts them in the ListView
+     * searches through the list to find the ones that need to be completed today.
      *
      * @see HabitType
      */
@@ -149,17 +201,46 @@ public class HomePrimaryFragment extends Fragment {
     public void onStart() {
         super.onStart();
 
-        habit_types = new ArrayList<>();
-
-        boolean[] plan1 = {true, true, true, true, false, false, false};
-        boolean[] plan2 = {false, false, false, false, false, false, true};
-        HabitType habit1 = new HabitType("clean", "keep the house nice", new Date(), plan1);
-        HabitType habit2 = new HabitType("plan meals", "to save time", new Date(), plan2);
-
-        ArrayAdapter<HabitType> adapter = new ArrayAdapter<HabitType>(getActivity(), R.layout.habit_type_list_item, habit_types);
+        all_habit_types = GSONController.GSON_CONTROLLER.loadHabitTypeFromFile();
+        incomplete_habit_types = getIncompleteHabitTypes();
+        adapter = new ArrayAdapter<>(getActivity(), R.layout.habit_type_list_item, incomplete_habit_types);
         habitTypeList.setAdapter(adapter);
-        habit_types.add(habit1);
-        habit_types.add(habit2);
         adapter.notifyDataSetChanged();
+
+    }
+
+    private ArrayList<HabitType> getIncompleteHabitTypes() {
+
+        Calendar c = Calendar.getInstance();
+        int today = c.get(Calendar.DAY_OF_WEEK);
+        //Log.d("Debugging", "today in int:" + Integer.toString(today));
+        boolean[] plan;
+        ArrayList<HabitType> incomplete_habits = new ArrayList<>();
+
+        for (HabitType h : all_habit_types) {
+            plan = h.getWeeklyPlan();
+            if (today == Calendar.MONDAY && plan[0]) {
+                incomplete_habits.add(h);
+            }
+            else if (today == Calendar.TUESDAY && plan[1]) {
+                incomplete_habits.add(h);
+            }
+            else if (today == Calendar.WEDNESDAY && plan[2]) {
+                incomplete_habits.add(h);
+            }
+            else if (today == Calendar.THURSDAY && plan[3]) {
+                incomplete_habits.add(h);
+            }
+            else if (today == Calendar.FRIDAY && plan[4]) {
+                incomplete_habits.add(h);
+            }
+            else if (today == Calendar.SATURDAY && plan[5]) {
+                incomplete_habits.add(h);
+            }
+            else if (today == Calendar.SUNDAY && plan[6]) {
+                incomplete_habits.add(h);
+            }
+        }
+        return incomplete_habits;
     }
 }

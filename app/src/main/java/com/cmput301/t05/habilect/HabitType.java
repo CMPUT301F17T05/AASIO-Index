@@ -25,7 +25,7 @@ public class HabitType extends Observable implements Serializable {
     private boolean shared;
     private List<UserProfile> followers;
     private Date recent_habit_event;
-    private List<HabitEvent> habitEvents = new ArrayList<>();;
+    private List<HabitEvent> habitEvents = new ArrayList<>();
 
     /**
      * The Constructor for HabitType
@@ -41,6 +41,22 @@ public class HabitType extends Observable implements Serializable {
         this.setWeeklyPlan(weekly_plan);
         this.setShared(false);
         this.followers = null;
+    }
+
+    /**
+     * Copy constructor for HabitType
+     *
+     * @param copy
+     */
+    public HabitType(HabitType copy) {
+        this.title = copy.title;
+        this.reason = copy.reason;
+        this.start_date = copy.start_date;
+        this.weekly_plan = copy.weekly_plan;
+        this.shared = copy.shared;
+        this.followers = copy.followers;
+        this.recent_habit_event = copy.recent_habit_event;
+        this.habitEvents = copy.habitEvents;
     }
 
     // GETTERS

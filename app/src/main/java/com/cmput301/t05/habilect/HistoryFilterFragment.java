@@ -27,20 +27,12 @@ public class HistoryFilterFragment extends Fragment {
 
         fragmentManager = getActivity().getSupportFragmentManager();
 
-        ListView eventList = rootView.findViewById(R.id.historyFilterFragmentListView);
+        ListView fragmentHabitTypeOptionsListView = rootView.findViewById(R.id.historyFilterFragmentListView);
 
-        HabitEvent e1 = new HabitEvent("Event 1", null, null, new Date(), "Event 1");
-        HabitEvent e2 = new HabitEvent("Event 2", null, null, new Date(), "Event 2");
-        HabitEvent e3 = new HabitEvent("Event 3", null, null, new Date(), "Event 3");
-        HabitEvent e4 = new HabitEvent("Event 4", null, null, new Date(), "Event 4");
-        ArrayList<HabitEvent> eList = new ArrayList<>();
-        eList.add(e1);
-        eList.add(e2);
-        eList.add(e3);
-        eList.add(e4);
+        ArrayList<HabitEvent> eList = GSONController.GSON_CONTROLLER.loadHabitEventFromFile();
 
         HabitEventListAdapter eventListAdapter = new HabitEventListAdapter(eList, rootView.getContext());
-        eventList.setAdapter(eventListAdapter);
+        fragmentHabitTypeOptionsListView.setAdapter(eventListAdapter);
 
 
         return rootView;

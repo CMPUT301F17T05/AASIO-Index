@@ -14,7 +14,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 /**
- * @author amwhitta
+ * @author rarog
  * @see <a href="https://stackoverflow.com/questions/37527603/how-to-use-files-in-instrumented-unit-tests">StackOverflow source for getBitmapFromTestAssets</a>
  */
 

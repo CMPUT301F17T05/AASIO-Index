@@ -15,6 +15,7 @@ import java.util.StringTokenizer;
  */
 
 class HabitEvent {
+    static int MAX_COMMENT_LENGTH = 20;
 
     private String comment;
     private Bitmap event_picture;
@@ -57,10 +58,12 @@ class HabitEvent {
     public void setEventPicture(Bitmap event_picture) {
         if (event_picture != null) {
             if (event_picture.getByteCount() >= 65536) {
-                throw new IllegalArgumentException();
-            } else {
-                this.event_picture = event_picture;
+                event_picture = Bitmap.createScaledBitmap(event_picture, 127, 127, false);
             }
+            if(event_picture.getByteCount() >= 65536) {
+                throw new IllegalArgumentException();
+            }
+            this.event_picture = event_picture;
         } else {
             this.event_picture = null;
         }

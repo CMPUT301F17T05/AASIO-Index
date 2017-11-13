@@ -59,6 +59,9 @@ public class HomeActivity extends AppCompatActivity {
         ViewPager mHomeViewPager = (ViewPager) findViewById(R.id.homeViewPager);
         mHomeViewPager.setAdapter(homeViewPagerAdapter);
 
+        GSONController.context = getApplicationContext();
+        GSONController gsonController = new GSONController();
+
         Navigation.setup(findViewById(android.R.id.content));
     }
 

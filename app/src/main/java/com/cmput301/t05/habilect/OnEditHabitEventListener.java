@@ -1,9 +1,11 @@
 package com.cmput301.t05.habilect;
 
 /**
- * Created by Oliver on 05/11/2017.
+ * This interface is a Listener for the editHabitEvent dialog, it is used so that when the user
+ * presses the create or cancel button, the calling activity can be informed and take appropriate
+ * action
+ * @author rarog
  */
-
 public interface OnEditHabitEventListener {
     public void OnAdded();
     public void OnCancelled();

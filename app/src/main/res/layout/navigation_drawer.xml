@@ -1,61 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/background_material_light"
     android:layout_width="240dp"
     android:layout_height="match_parent"
-    android:background="@color/white"
     android:choiceMode="singleChoice"
     android:divider="@drawable/divider"
     android:dividerHeight="1dp"
     android:layout_gravity="start"
     android:orientation="vertical"
-    android:showDividers="middle|end">
+    android:showDividers="middle|end"
+    >
 
-        <Button
-            android:id="@+id/navigateHabitTypes"
-            style="@style/Widget.AppCompat.Button.Borderless"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/white"
-            android:drawablePadding="0dp"
-            android:drawableStart="@drawable/social"
-            android:paddingEnd="32dp"
-            android:paddingStart="16dp"
-            android:text="View Habit Types (Activity)" />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:fontFamily="sans-serif-thin"
+        android:text="Menu"
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        android:textSize="48sp" />
 
-        <Button
-            android:id="@+id/navigateSocial"
-            style="@style/Widget.AppCompat.Button.Borderless"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/white"
-            android:drawablePadding="0dp"
-            android:drawableStart="@drawable/social"
-            android:paddingEnd="32dp"
-            android:paddingStart="16dp"
-            android:text="Social (Activity)" />
+    <Button
+        android:id="@+id/navigateHabitTypes"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/background_material_light"
+        android:drawablePadding="0dp"
+        android:drawableStart="@drawable/view_habits"
+        android:paddingEnd="32dp"
+        android:paddingStart="16dp"
+        android:paddingTop="5dp"
+        android:text="V i e w  H a b i t s"
+        android:textColor="@color/white" />
 
-        <Button
-            android:id="@+id/navigateProfile"
-            style="@style/Widget.AppCompat.Button.Borderless"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/white"
-            android:drawablePadding="0dp"
-            android:drawableStart="@drawable/profile"
-            android:paddingEnd="32dp"
-            android:paddingStart="16dp"
-            android:text="Profile (Activity)" />
+    <Button
+        android:id="@+id/navigateSocial"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/background_material_light"
+        android:drawablePadding="0dp"
+        android:drawableStart="@drawable/social"
+        android:paddingEnd="32dp"
+        android:paddingStart="16dp"
+        android:text="S o c i a l"
+        android:textColor="@color/white"/>
 
-        <Button
-            android:id="@+id/navigateHistory"
-            style="@style/Widget.AppCompat.Button.Borderless"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/white"
-            android:drawablePadding="0dp"
-            android:drawableStart="@drawable/history"
-            android:paddingEnd="32dp"
-            android:paddingStart="16dp"
-            android:text="History (Activity)"
-            android:theme="@style/AppTheme" />
+    <Button
+        android:id="@+id/navigateProfile"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/background_material_light"
+        android:drawablePadding="0dp"
+        android:drawableStart="@drawable/profile"
+        android:paddingEnd="32dp"
+        android:paddingStart="16dp"
+        android:text="P r o f i l e"
+        android:textColor="@color/white"/>
+
+    <Button
+        android:id="@+id/navigateHistory"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/background_material_light"
+        android:drawablePadding="0dp"
+        android:drawableStart="@drawable/history"
+        android:paddingEnd="32dp"
+        android:paddingStart="16dp"
+        android:text="H i s t o r y"
+        android:theme="@style/AppTheme"
+        android:textColor="@color/white"/>
+
     </LinearLayout>
