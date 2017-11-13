@@ -12,8 +12,8 @@
         android:id="@+id/editTextEditHabitTypeTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
         android:ems="10"
         android:hint="@string/add_habit_title_hint"
         android:inputType="textPersonName" />
@@ -22,9 +22,8 @@
         android:id="@+id/editTextEditHabitTypeReason"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/editTextEditHabitTypeTitle"
+        android:layout_alignParentStart="true"
         android:layout_below="@+id/editTextEditHabitTypeTitle"
-        android:layout_marginTop="16dp"
         android:ems="10"
         android:hint="@string/add_habit_reason_hint"
         android:inputType="textPersonName" />
@@ -33,9 +32,9 @@
         android:id="@+id/datePickerEditHabitTypeStartDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:datePickerMode="spinner"
+        android:layout_alignParentStart="true"
         android:layout_below="@+id/editTextEditHabitTypeReason"
-        android:layout_alignParentStart="true" />
+        android:datePickerMode="spinner" />
 
     <CheckBox
         android:id="@+id/checkBoxEditMonday"
@@ -44,68 +43,70 @@
         android:layout_alignParentStart="true"
         android:layout_below="@+id/datePickerEditHabitTypeStartDate"
         android:text="@string/monday"
-        android:textSize="20sp"
+        android:textSize="@dimen/font_size_small"
         android:fontFamily="sans-serif-thin"/>
 
     <CheckBox
         android:id="@+id/checkBoxEditTuesday"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignEnd="@+id/checkBoxEditMonday"
-        android:layout_below="@+id/checkBoxEditMonday"
+        android:layout_below="@+id/datePickerEditHabitTypeStartDate"
+        android:layout_toEndOf="@+id/checkBoxEditMonday"
+        android:fontFamily="sans-serif-thin"
         android:text="@string/tuesday"
-        android:textSize="20sp"
-        android:fontFamily="sans-serif-thin"/>
+        android:textSize="@dimen/font_size_small" />
 
     <CheckBox
         android:id="@+id/checkBoxEditWednesday"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/checkBoxEditTuesday"
-        android:layout_toEndOf="@+id/checkBoxEditMonday"
+        android:layout_alignBaseline="@+id/checkBoxEditThursday"
+        android:layout_alignBottom="@+id/checkBoxEditThursday"
+        android:layout_toStartOf="@+id/checkBoxEditThursday"
+        android:fontFamily="sans-serif-thin"
         android:text="@string/wednesday"
-        android:textSize="20sp"
-        android:fontFamily="sans-serif-thin"/>
+        android:textSize="@dimen/font_size_small" />
 
     <CheckBox
         android:id="@+id/checkBoxEditThursday"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/datePickerEditHabitTypeStartDate"
-        android:layout_toEndOf="@+id/checkBoxEditWednesday"
+        android:layout_toEndOf="@+id/editTextEditHabitTypeReason"
+        android:fontFamily="sans-serif-thin"
         android:text="@string/thursday"
-        android:textSize="20sp"
-        android:fontFamily="sans-serif-thin"/>
+        android:textSize="@dimen/font_size_small" />
 
     <CheckBox
         android:id="@+id/checkBoxEditFriday"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/checkBoxEditTuesday"
-        android:layout_toEndOf="@+id/checkBoxEditMonday"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/checkBoxEditMonday"
+        android:fontFamily="sans-serif-thin"
         android:text="@string/friday"
-        android:textSize="20sp"
-        android:fontFamily="sans-serif-thin"/>
+        android:textSize="@dimen/font_size_small" />
 
     <CheckBox
         android:id="@+id/checkBoxEditSaturday"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/checkBoxEditThursday"
+        android:layout_alignBaseline="@+id/checkBoxEditFriday"
+        android:layout_alignBottom="@+id/checkBoxEditFriday"
         android:layout_toEndOf="@+id/checkBoxEditFriday"
+        android:fontFamily="sans-serif-thin"
         android:text="@string/saturday"
-        android:textSize="20sp"
-        android:fontFamily="sans-serif-thin"/>
+        android:textSize="@dimen/font_size_small" />
 
     <CheckBox
         android:id="@+id/checkBoxEditSunday"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
         android:layout_below="@+id/checkBoxEditTuesday"
+        android:layout_toEndOf="@+id/checkBoxEditSaturday"
+        android:fontFamily="sans-serif-thin"
         android:text="@string/sunday"
-        android:textSize="20sp"
-        android:fontFamily="sans-serif-thin"/>
+        android:textSize="@dimen/font_size_small" />
 
     <Button
         android:id="@+id/buttonSaveHabitTypeEdits"
@@ -113,10 +114,10 @@
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/checkBoxEditSunday"
         android:layout_alignParentEnd="true"
-        android:text="@string/save"
-        android:fontFamily="sans-serif-thin"
-        android:textSize="35sp"
-        android:textColor="@color/white"
+        android:layout_below="@+id/checkBoxEditThursday"
         android:background="@color/colorPrimary"
-        android:layout_marginTop="10dp"/>
+        android:fontFamily="sans-serif-thin"
+        android:text="@string/save"
+        android:textColor="@color/white"
+        android:textSize="@dimen/font_size_medium" />
 </RelativeLayout>

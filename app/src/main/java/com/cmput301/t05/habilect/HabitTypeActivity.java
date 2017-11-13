@@ -24,6 +24,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import java.io.File;
@@ -50,6 +51,8 @@ public class HabitTypeActivity extends AppCompatActivity {
     private ViewPager mViewPager;
 
     private static HabitType habit_type;      // The habit type that has been clicked on for viewing
+
+    private static HabitEventListAdapter eventListAdapter;
 
     /**
      * sets up the activity and grabs the habit type that was passed in through a different
@@ -87,6 +90,9 @@ public class HabitTypeActivity extends AppCompatActivity {
                         HabitEvent event =
                                 createHabitEventFromBundle(addHabitEventDialog.getResultBundle());
                         GSONController.GSON_CONTROLLER.saveHabitEventInFile(event);
+                        if(eventListAdapter != null) {
+                            eventListAdapter.notifyDataSetChanged();
+                        }
 
                     }
 
@@ -453,6 +459,8 @@ public class HabitTypeActivity extends AppCompatActivity {
         // The fragment argument representing the section number for this fragment.
         private static final String ARG_SECTION_NUMBER = "section_number";
 
+        ArrayList<HabitEvent> eList;
+
         public HabitOptionsFragment() {
         }
 
@@ -468,13 +476,37 @@ public class HabitTypeActivity extends AppCompatActivity {
             return fragment;
         }
 
+        // TODO: does not upadate the list view automatically when you make event, must exit out of activity then reopen habit type
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_habit_type_options, container, false);
 
+            ListView eventList = rootView.findViewById(R.id.fragmentHabitTypeOptionsListView);
+
+            eList = GSONController.GSON_CONTROLLER.loadHabitEventFromFile();
+            eList = filterEventList(habit_type, eList);
+
+            eventListAdapter = new HabitEventListAdapter(eList, getActivity());
+            eventList.setAdapter(eventListAdapter);
 
             return rootView;
+        }
+
+        private  ArrayList<HabitEvent> filterEventList(HabitType habitType, ArrayList<HabitEvent> eventList) {
+            ArrayList newList = new ArrayList();
+            for (HabitEvent event : eventList) {
+                if(event.getHabitType().equals(habitType.getTitle())) {
+                    newList.add(event);
+                }
+            }
+            return newList;
+        }
+
+        @Override
+        public void onStart() {
+            super.onStart();
+            eList = GSONController.GSON_CONTROLLER.loadHabitEventFromFile();
         }
     }
 
@@ -499,7 +531,7 @@ public class HabitTypeActivity extends AppCompatActivity {
             else if (position == 1) {
                 return new EditHabitFragment();
             }
-            else if (position == 3) {
+            else if (position == 2) {
                 return new HabitOptionsFragment();
             }
             else {

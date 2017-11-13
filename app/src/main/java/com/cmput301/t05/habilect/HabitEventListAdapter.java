@@ -51,9 +51,12 @@ public class HabitEventListAdapter extends BaseAdapter implements ListAdapter {
 
         TextView habitTitle = view.findViewById(R.id.habitEventRowTitle);
         TextView habitDate = view.findViewById(R.id.habitEventRowDate);
+        TextView habitComment = view.findViewById(R.id.habitEventRowComment);
 
         habitTitle.setText(event.getHabitType());
         habitDate.setText(event.getCompletionDate().toString());
+        habitComment.setText(event.getComment());
+
 
         return view;
     }
