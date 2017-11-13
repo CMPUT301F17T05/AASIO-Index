@@ -20,7 +20,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
 import android.text.Editable;
@@ -68,42 +67,40 @@ import java.util.Locale;
  * habitType - the associated HabitType title of the event
  * @author rarog
  */
-
+// TODO: need to pass the date to this dialog, and not make a new date when finished editing
 public class EditHabitEventDialog extends DialogFragment {
     private OnEditHabitEventListener onEditHabitEventListener;
+    private Bundle resultBundle;
+
+    // layout views
+    private TextureView cameraTextureView;
     private ImageButton eventImage;
     private Bitmap eventBitmap;
-    static final int REQUEST_IMAGE_CAPTURE = 1;
-    private static final String TAG = "Edit event dialog";
-    private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 34;
     Context context;
     TextView commentText;
     TextView commentWarning;
     Button createButton;
     Spinner spinner;
     CheckBox checkBox;
+
+    private static final String TAG = "Edit event dialog";
+
     private boolean cameraPermission;
     private boolean locationPermission;
 
     Camera camera;
     boolean editEventImageViewDebounce = false;
-    private TextureView cameraTextureView;
 
-    /**
-     * Provides the entry point to the Fused Location Provider API.
-     */
-    private FusedLocationProviderClient mFusedLocationClient;
-
-    /**
-     * Represents a geographical location.
-     */
-    protected Location mLastLocation;
+    // location controller
+    private FusedLocationProviderClient fusedLocationClient;
+    protected Location lastLocation;
 
 
     public void setOnEditHabitEventListener(OnEditHabitEventListener onEditHabitEventListener) {
         this.onEditHabitEventListener = onEditHabitEventListener;
     }
 
+    //region camera controller
     TextureView.SurfaceTextureListener cameraPreviewSurfaceTextureListener = new TextureView.SurfaceTextureListener() {
         @Override
         public void onSurfaceTextureAvailable(SurfaceTexture surfaceTexture, int width, int height) {
@@ -168,7 +165,7 @@ public class EditHabitEventDialog extends DialogFragment {
         public void onCaptureFailed(CameraCaptureSession session, @NonNull CaptureRequest request, CaptureFailure failure) {
 
         }
-    };
+    }; //endregion
 
     @Override
     public void onStart() {
@@ -210,9 +207,12 @@ public class EditHabitEventDialog extends DialogFragment {
         }
     };
 
+    /**
+     * Checks if the inputted comment confers to the correct size for HabitEvent
+     */
     private void checkCommentLength() {
         String commentField = commentText.getText().toString();
-        if(commentField.length() <= 20) {
+        if(commentField.length() <= HabitEvent.MAX_COMMENT_LENGTH) {
             createButton.setEnabled(true);
             commentWarning.setVisibility(View.INVISIBLE);
 
@@ -234,16 +234,21 @@ public class EditHabitEventDialog extends DialogFragment {
 
         context = getContext();
 
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(context);
-        eventImage = view.findViewById(R.id.editHabitEventImageButton);
-
-        checkBox = view.findViewById(R.id.editHabitEventCheckBox);
-
-        final ImageButton captureButton = view.findViewById(R.id.editEventCaptureButton);
-        captureButton.setVisibility(ImageButton.INVISIBLE);
-
-        cameraTextureView = view.findViewById(R.id.editEventCameraPreviewTextureView);
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(context);
         camera = new Camera(cameraTextureView, cameraCaptureSessionCallback, eventImage);
+
+        TextView eventTitle = view.findViewById(R.id.editHabitEventDialogTitle);
+        spinner = view.findViewById(R.id.editHabitEventSpinner);
+        eventImage = view.findViewById(R.id.editHabitEventImageButton);
+        cameraTextureView = view.findViewById(R.id.editEventCameraPreviewTextureView);
+        final ImageButton captureButton = view.findViewById(R.id.editEventCaptureButton);
+        checkBox = view.findViewById(R.id.editHabitEventCheckBox);
+        commentText = view.findViewById(R.id.editEventCommentText);
+        commentWarning = view.findViewById(R.id.editEventCommentWarning);
+        Button cancelButton = view.findViewById(R.id.editEventCancelButton);
+        createButton = view.findViewById(R.id.editEventCreateButton);
+
+        // when you click on add image, open the camera and capture button
         eventImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -266,6 +271,8 @@ public class EditHabitEventDialog extends DialogFragment {
             }
         });
 
+        // hit the capture button, take a picture, close camera and remove capture button
+        captureButton.setVisibility(ImageButton.INVISIBLE);
         captureButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -277,34 +284,32 @@ public class EditHabitEventDialog extends DialogFragment {
             }
         });
 
-        commentText = view.findViewById(R.id.editEventCommentText);
-        commentWarning = view.findViewById(R.id.editEventCommentWarning);
+        // add the text listener to display warning when comment is too long
         commentWarning.setVisibility(View.INVISIBLE);
         commentText.addTextChangedListener(commentTextWatcher);
 
+        // gets the passed information from calling activity
         String title = getTitleFromBundle();
         ArrayList<String> habits = getHabitTypesFromBundle();
 
+        // sets list adapter for the spinner
         ListAdapter listAdapter = new ArrayAdapter<>(context,
                 R.layout.habit_type_spinner_layout,
                 R.id.habitTypeSpinnerTextView, habits);
-
-        spinner = view.findViewById(R.id.editHabitEventSpinner);
         spinner.setAdapter((SpinnerAdapter) listAdapter);
 
-        TextView eventTitle = view.findViewById(R.id.editHabitEventDialogTitle);
         eventTitle.setText("Edit " + title + " event");
 
-        createButton = view.findViewById(R.id.editEventCreateButton);
+        // when we create, gather the relevant information, inform calling activity, dismiss dialog
         createButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = createHabitEventIntent();
+                 resultBundle = createHabitEventBundle();
                 dialog.dismiss();
             }
         });
 
-        Button cancelButton = view.findViewById(R.id.editEventCancelButton);
+        // when you want to cancel, simply exit the dialog
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -334,54 +339,74 @@ public class EditHabitEventDialog extends DialogFragment {
         super.onPause();
     }
 
-    // TODO: Probably want some error checking...
-    private Intent createHabitEventIntent() {
-        Intent intent = new Intent();
+    /**
+     *
+     * @return returns a bundle with all of the information that the user specified
+     * in creating the event
+     */
+    public Bundle getResultBundle() {
+        return resultBundle;
+    }
+
+    /**
+     *
+     * @return Creates a resultBundle, which holds all of the information the user inputted
+     * in creating the event
+     */
+    private Bundle createHabitEventBundle() {
+        Bundle bundle= new Bundle();
         String latitude;
         String longitude;
         String habitType;
+        String comment;
+        String date;
 
+        // gets location
         if (checkBox.isChecked() && locationPermission) {
-            latitude = String.valueOf(mLastLocation.getLatitude());
-            longitude = String.valueOf(mLastLocation.getLongitude());
+            latitude = String.valueOf(lastLocation.getLatitude());
+            longitude = String.valueOf(lastLocation.getLongitude());
         } else {
             latitude = null;
             longitude = null;
         }
-        String comment = commentText.getText().toString();
-        String date = new SimpleDateFormat("yyyy_MM_dd", Locale.ENGLISH).format(new Date());
+        // gets comment and makes new date
+        comment = commentText.getText().toString();
+        date = new SimpleDateFormat("yyyy_MM_dd", Locale.ENGLISH).format(new Date());
 
+        // gets the selected title
         if(spinner.getSelectedItem() != null) {
             habitType = spinner.getSelectedItem().toString();
         } else {
             habitType = "";
         }
+        // makes the file name, in form habitTitle_yyyy_mm_dd
+        String fileName = habitType.replace(" ", "_") + "_" + date;
 
-        String filePath = habitType.replace(" ", "_") + "_" + date;
+        // saves the image in file, save the directory and file name
+        String directory = saveImageInFile(fileName);
+        bundle.putString("fileName", fileName);
+        bundle.putString("directory", directory);
 
-        if (eventBitmap != null) {
-            saveImageInFile(filePath);
-            intent.putExtra("filePath", filePath);
-        }
+        // put all information in bundle
+        bundle.putString("comment", comment);
+        bundle.putString("date", date);
+        bundle.putString("latitude", latitude);
+        bundle.putString("longitude", longitude);
+        bundle.putString("habitType", habitType);
 
-        intent.putExtra("comment", comment);
-        intent.putExtra("date", date);
-        intent.putExtra("latitude", latitude);
-        intent.putExtra("longitude", longitude);
-        intent.putExtra("habitType", habitType);
-
-        return intent;
+        return bundle;
     }
 
     // https://stackoverflow.com/questions/17674634/saving-and-reading-bitmaps-images-from-internal-memory-in-android
-    private void saveImageInFile(String filePath) {
+    private String saveImageInFile(String fileName) {
+        eventBitmap = ((BitmapDrawable) eventImage.getDrawable()).getBitmap();
         ContextWrapper cw = new ContextWrapper(context.getApplicationContext());
         File directory = cw.getDir("eventImages", Context.MODE_PRIVATE);
-        File mypath = new File(directory, filePath);
+        File myPath = new File(directory, fileName);
 
         FileOutputStream fos = null;
         try {
-            fos = new FileOutputStream(mypath);
+            fos = new FileOutputStream(myPath);
             eventBitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
         } catch (Exception e) {
             e.printStackTrace();
@@ -392,8 +417,13 @@ public class EditHabitEventDialog extends DialogFragment {
                 e.printStackTrace();
             }
         }
+        return directory.toString();
     }
 
+    /**
+     *
+     * @return a String representing the habit event title if there is one
+     */
     private String getTitleFromBundle() {
         try {
             return getArguments().getString("Title");
@@ -403,8 +433,11 @@ public class EditHabitEventDialog extends DialogFragment {
         }
     }
 
-
-    // TODO: Right now for simplicity, habit events only know the title of habit types, might want to change that
+    /**
+     *
+     * @return an ArrayList with all of the passed habit types. If calling from main activity,
+     * will be list of all of the users created habit types
+     */
     private ArrayList<String> getHabitTypesFromBundle() {
         ArrayList<String> habits;
         try {
@@ -417,12 +450,12 @@ public class EditHabitEventDialog extends DialogFragment {
     // TODO: seems to be a bug where it can't get location unless you open an app like google maps
     @SuppressWarnings("MissingPermission")
     private void getLastLocation() {
-        mFusedLocationClient.getLastLocation()
+        fusedLocationClient.getLastLocation()
                 .addOnCompleteListener((Activity) context, new OnCompleteListener<Location>() {
                     @Override
                     public void onComplete(@NonNull Task<Location> task) {
                         if (task.isSuccessful() && task.getResult() != null) {
-                            mLastLocation = task.getResult();
+                            lastLocation = task.getResult();
                         } else {
                             Log.w(TAG, "getLastLocation:exception", task.getException());
                         }
@@ -431,7 +464,8 @@ public class EditHabitEventDialog extends DialogFragment {
     }
 
     /**
-     * Return the current state of the permissions needed.
+     *
+     * @return a boolean representing if we have permission to access user location
      */
     private boolean checkLocationPermissions() {
         int permissionState = ActivityCompat.checkSelfPermission(context,
@@ -439,6 +473,10 @@ public class EditHabitEventDialog extends DialogFragment {
         return permissionState == PackageManager.PERMISSION_GRANTED;
     }
 
+    /**
+     *
+     * @return a boolean representing if we have permission to access the camera
+     */
     private boolean checkCameraPermissions() {
         int permissionState = ActivityCompat.checkSelfPermission(context,
                 Manifest.permission.CAMERA);

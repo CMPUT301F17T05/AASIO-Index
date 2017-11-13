@@ -1,24 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="bottom"
+    android:orientation="vertical">
 
     <Button
         android:id="@+id/accept_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Accept" />
+        android:text="Accept"
+        android:fontFamily="sans-serif-thin"
+        android:textSize="50sp"
+        android:textColor="@color/white"
+        android:background="@color/colorPrimary"
+        android:layout_marginTop="10dp"/>
 
     <Button
         android:id="@+id/decline_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Decline" />
+        android:text="Decline"
+        android:fontFamily="sans-serif-thin"
+        android:textSize="50sp"
+        android:textColor="@color/white"
+        android:background="@color/colorPrimary"
+        android:layout_marginTop="10dp"/>
 
     <Button
         android:id="@+id/ignore_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Ignore" />
+        android:text="Ignore"
+        android:fontFamily="sans-serif-thin"
+        android:textSize="50sp"
+        android:textColor="@color/white"
+        android:background="@color/colorPrimary"
+        android:layout_marginTop="10dp"/>
 </LinearLayout>

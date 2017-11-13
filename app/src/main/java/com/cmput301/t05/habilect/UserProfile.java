@@ -28,7 +28,7 @@ public class UserProfile {
     String displayName;
     Bitmap profilePicture;
 
-    boolean isNewUser = true;
+    boolean isNewUser = false;
 
     public UserProfile(Context context) {
         this.context = context;
@@ -41,6 +41,10 @@ public class UserProfile {
             WebService.AddUserProfileTask addUserProfileTask = new WebService.AddUserProfileTask();
             addUserProfileTask.execute(this);
         }
+    }
+
+    public void setContext() {
+        context = null;
     }
 
     public String getDisplayName() {

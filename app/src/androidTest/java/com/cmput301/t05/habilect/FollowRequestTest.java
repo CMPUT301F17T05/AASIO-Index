@@ -18,7 +18,7 @@ public class FollowRequestTest extends ActivityInstrumentationTestCase2 {
      */
     public void testProspectiveFollower() {
         boolean[] plan = {true, true, true, true, true, true, true};
-        UserProfile profile = new UserProfile("TestProfile", null, null);
+        UserProfile profile = new UserProfile(getActivity().getApplicationContext());
         HabitType habit = new HabitType("Habit", "Reason", new Date(), plan);
         FollowRequest request = new FollowRequest(profile, habit);
 
@@ -38,7 +38,7 @@ public class FollowRequestTest extends ActivityInstrumentationTestCase2 {
      */
     public void testHabitToBeFollowed() {
         boolean[] plan = {true, true, true, true, true, true, true};
-        UserProfile profile = new UserProfile("TestProfile", null, null);
+        UserProfile profile = new UserProfile(getActivity().getApplicationContext());
         HabitType habit = new HabitType("Habit", "Reason", new Date(), plan);
         FollowRequest request = new FollowRequest(profile, habit);
 

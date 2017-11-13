@@ -3,7 +3,6 @@ package com.cmput301.t05.habilect;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -17,10 +16,6 @@ import android.widget.ListView;
 
 import java.util.Date;
 import java.util.ArrayList;
-import java.util.Date;
-
-import static android.app.Activity.RESULT_OK;
-import static com.cmput301.t05.habilect.AddHabitEventDialog.REQUEST_IMAGE_CAPTURE;
 
 /**
  * Shows a list of habit types that can be completed today, allows the user to navigate to
@@ -116,8 +111,8 @@ public class HomePrimaryFragment extends Fragment {
             }
         });
 
-
-        final Button addHabitEventButton = rootView.findViewById(R.id.addHabitEvent);
+        // TODO: Add habit event from title once information saving is done
+        /*final Button addHabitEventButton = rootView.findViewById(R.id.addHabitEvent);
         addHabitEventButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -135,7 +130,7 @@ public class HomePrimaryFragment extends Fragment {
                 });
                 addHabitEventDialog.show(fragmentManager, "addHabitEventDialog");
             }
-        });
+        }); */
 
         return rootView;
     }
