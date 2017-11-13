@@ -4,7 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.cmput301.t05.habilect.ViewHabitTypesActivity">
+    tools:context="com.cmput301.t05.habilect.ViewHabitTypesActivity"
+
+    android:background="@drawable/gray2">
+
+
 
     <ListView
         android:id="@+id/habitTypeListView"
@@ -12,4 +16,6 @@
         android:layout_height="495dp"
         tools:layout_editor_absoluteX="8dp"
         tools:layout_editor_absoluteY="8dp" />
+
+
 </android.support.constraint.ConstraintLayout>
