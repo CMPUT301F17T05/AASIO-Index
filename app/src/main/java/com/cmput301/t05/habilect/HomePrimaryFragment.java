@@ -67,9 +67,11 @@ public class HomePrimaryFragment extends Fragment {
                     public void OnAddedOrEdited(String title, String reason, Date start_date, boolean[] weekly_plan) {
                         try {
                             HabitType habit_type = new HabitType(title, reason, start_date, weekly_plan);
-                            /*ElasticsearchHabitTypeController.AddHabitTypeTask addHabitTypeTask =
-                        new ElasticsearchHabitTypeController.AddHabitTypeTask();
-                        addHabitTypeTask.execute(habit_type);*/
+
+                            /*userProfile.addPlans(habit_type);
+                            userProfile.addPlans(habit_type);
+                            WebService.UpdateUserProfileTask updateUserProfileTask = new WebService.UpdateUserProfileTask();
+                            updateUserProfileTask.execute(userProfile);*/
                         } catch (IllegalArgumentException e) {
                             throw e;
                         }
@@ -148,9 +150,7 @@ public class HomePrimaryFragment extends Fragment {
         super.onStart();
 
         habit_types = new ArrayList<>();
-        /*ElasticsearchHabitTypeController.GetHabitTypeTask getHabitTypeTask =
-          new ElasticsearchHabitTypeController.GetHabitTypeTask();
-          habit_types = getHabitTypeTask.execute(null);*/
+
         boolean[] plan1 = {true, true, true, true, false, false, false};
         boolean[] plan2 = {false, false, false, false, false, false, true};
         HabitType habit1 = new HabitType("clean", "keep the house nice", new Date(), plan1);
