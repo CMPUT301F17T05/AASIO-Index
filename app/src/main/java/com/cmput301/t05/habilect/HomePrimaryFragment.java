@@ -34,7 +34,8 @@ public class HomePrimaryFragment extends Fragment {
 
     private ListView habitTypeList;
     private ArrayList<HabitType> habit_types;
-    //UserProfile user_profile = new UserProfile();
+    //UserProfile user_profile = new UserProfile(getApplicationContext());
+    ArrayAdapter<HabitType> adapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater,
@@ -54,6 +55,11 @@ public class HomePrimaryFragment extends Fragment {
             }
         });
 
+        habitTypeList.setAdapter(adapter);
+        habit_types = GSONController.GSON_CONTROLLER.loadHabitTypeFromFile();
+        adapter = new ArrayAdapter<>(getActivity(), R.layout.habit_type_list_item, habit_types);
+        habitTypeList.setAdapter(adapter);
+
         final Button addHabitButton = (Button) rootView.findViewById(R.id.addHabitButton);
         addHabitButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -65,9 +71,14 @@ public class HomePrimaryFragment extends Fragment {
                         try {
                             HabitType habit_type = new HabitType(title, reason, start_date, weekly_plan);
 
+                            GSONController.GSON_CONTROLLER.saveHabitTypeInFile(habit_type);
+                            habit_types = GSONController.GSON_CONTROLLER.loadHabitTypeFromFile();
+                            adapter.notifyDataSetChanged();
+
                             /*user_profile.addPlans(habit_type);
                             WebService.UpdateUserProfileTask updateUserProfileTask = new WebService.UpdateUserProfileTask();
                             updateUserProfileTask.execute(user_profile);*/
+                            
                         } catch (IllegalArgumentException e) {
                             throw e;
                         }
@@ -144,18 +155,5 @@ public class HomePrimaryFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-
-        habit_types = new ArrayList<>();
-
-        boolean[] plan1 = {true, true, true, true, false, false, false};
-        boolean[] plan2 = {false, false, false, false, false, false, true};
-        HabitType habit1 = new HabitType("clean", "keep the house nice", new Date(), plan1);
-        HabitType habit2 = new HabitType("plan meals", "to save time", new Date(), plan2);
-
-        ArrayAdapter<HabitType> adapter = new ArrayAdapter<HabitType>(getActivity(), R.layout.habit_type_list_item, habit_types);
-        habitTypeList.setAdapter(adapter);
-        habit_types.add(habit1);
-        habit_types.add(habit2);
-        adapter.notifyDataSetChanged();
     }
 }
