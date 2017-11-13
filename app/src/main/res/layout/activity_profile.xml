@@ -97,8 +97,7 @@
                     android:height="20dp"
                     android:enabled="false"
                     android:text="Save Changes"
-                    tools:layout_editor_absoluteX="117dp"
-                    tools:layout_editor_absoluteY="423dp" />
+                    />
             </GridLayout>
 
             <android.support.constraint.Guideline
@@ -118,6 +117,19 @@
                 app:layout_constraintGuide_percent="0.75"
                 tools:layout_editor_absoluteX="288dp"
                 tools:layout_editor_absoluteY="25dp" />
+
+            <TextView
+                android:id="@+id/displayNameWarning"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="invisible"
+                android:text="Display name cannot be more than 48 characters!"
+                android:textColor="@color/red"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/displayNameEditText"
+                tools:layout_editor_absoluteY="281dp" />
 
         </android.support.constraint.ConstraintLayout>
 
@@ -141,6 +153,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent" />
+
         </android.support.constraint.ConstraintLayout>
 
     </android.support.constraint.ConstraintLayout>

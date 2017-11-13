@@ -2,8 +2,11 @@ package com.cmput301.t05.habilect;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.graphics.SurfaceTexture;
 import android.graphics.Typeface;
+import android.graphics.drawable.BitmapDrawable;
 import android.hardware.camera2.CameraCaptureSession;
 import android.hardware.camera2.CaptureFailure;
 import android.hardware.camera2.CaptureRequest;
@@ -17,12 +20,15 @@ import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Base64;
 import android.view.TextureView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import java.io.ByteArrayOutputStream;
 
 /**
  * @author ioltuszy
@@ -60,7 +66,8 @@ public class ProfileActivity extends AppCompatActivity {
     ConstraintLayout secondaryConstraint;
 
     TextureView cameraTextureView;
-    TextView displayNameEditText;
+    EditText displayNameEditText;
+    TextView displayNameWarning;
     ImageView backgroundImageView;
     ImageView profileImageView;
     ImageView bandImageView;
@@ -108,14 +115,25 @@ public class ProfileActivity extends AppCompatActivity {
         }
     };
 
+    private void checkDisplayNameLength() {
+        String commentField = displayNameEditText.getText().toString();
+        if (commentField.length() <= 48) {
+            saveChangesButton.setEnabled(true);
+            displayNameWarning.setVisibility(View.INVISIBLE);
+
+        } else {
+            saveChangesButton.setEnabled(false);
+            displayNameWarning.setVisibility(View.VISIBLE);
+        }
+    }
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
         setTitle("Habilect - Profile");
-
-        UserProfile profile = new UserProfile(getApplicationContext());
 
         Navigation.setup(findViewById(android.R.id.content));
 
@@ -124,6 +142,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         cameraTextureView = (TextureView) findViewById(R.id.cameraPreviewTextureView);
         displayNameEditText = (EditText) findViewById(R.id.displayNameEditText);
+        displayNameWarning = (TextView) findViewById(R.id.displayNameWarning);
         backgroundImageView = (ImageView) findViewById(R.id.backgroundImageView);
         profileImageView = (ImageView) findViewById(R.id.profileImageView);
         saveChangesButton = (Button) findViewById(R.id.saveChangesButton);
@@ -135,6 +154,12 @@ public class ProfileActivity extends AppCompatActivity {
         secondaryConstraint.setClickable(false);
         secondaryConstraint.setFocusable(false);
 
+        final UserProfile profile = new UserProfile(getApplicationContext());
+        displayNameEditText.setText(profile.getDisplayName());
+        if (profile.getProfilePicture()!=null) {
+            profileImageView.setImageBitmap(profile.getProfilePicture());
+        }
+
         displayNameEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -143,7 +168,7 @@ public class ProfileActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
+                checkDisplayNameLength();
             }
 
             @Override
@@ -156,6 +181,23 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 saveChangesButton.setEnabled(false);
+
+                profile.setDisplayName(displayNameEditText.getText().toString());
+                SharedPreferences sharedPreferences = context.getSharedPreferences(UserProfile.HABILECT_USER_INFO, Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putString(UserProfile.HABILECT_USER_DISPLAY_NAME, displayNameEditText.getText().toString());
+                editor.commit();
+
+                Bitmap bitmap = ((BitmapDrawable) profileImageView.getDrawable()).getBitmap();
+                ByteArrayOutputStream blob = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, blob);
+                String encodedBitmapString = new String(Base64.encode(blob.toByteArray(), Base64.DEFAULT));
+                profile.setProfilePicture(encodedBitmapString);
+                editor.putString(UserProfile.HABILECT_USER_PICTURE, encodedBitmapString);
+                editor.commit();
+
+                WebService.UpdateUserProfileTask updateUserProfileTask = new WebService.UpdateUserProfileTask();
+                updateUserProfileTask.execute(profile);
             }
         });
 
@@ -195,7 +237,7 @@ public class ProfileActivity extends AppCompatActivity {
         captureButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // set camera's auto-focus lock
+                // TODO: set camera's auto-focus lock
                 camera.takePhoto();
             }
         });

@@ -3,6 +3,9 @@ package com.cmput301.t05.habilect;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -15,6 +18,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
+import java.io.File;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.ArrayList;
@@ -127,7 +131,7 @@ public class HomePrimaryFragment extends Fragment {
         });
 
         // TODO: Add habit event from title once information saving is done
-        /*final Button addHabitEventButton = rootView.findViewById(R.id.addHabitEvent);
+        final Button addHabitEventButton = rootView.findViewById(R.id.addHabitEvent);
         addHabitEventButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -136,6 +140,9 @@ public class HomePrimaryFragment extends Fragment {
                     @Override
                     public void OnAdded() {
                         // TODO: implement OnAdded
+                        HabitEvent event =
+                                createHabitEventFromBundle(addHabitEventDialog.getResultBundle());
+                        GSONController.GSON_CONTROLLER.saveHabitEventInFile(event);
                     }
 
                     @Override
@@ -143,11 +150,45 @@ public class HomePrimaryFragment extends Fragment {
                         // TODO: implement OnCancelled
                     }
                 });
+                ArrayList<String> titleList = getHabitTitles();
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("Habit Type", titleList);
+                addHabitEventDialog.setArguments(bundle);
                 addHabitEventDialog.show(fragmentManager, "addHabitEventDialog");
+
             }
-        }); */
+        });
 
         return rootView;
+    }
+
+    private HabitEvent createHabitEventFromBundle(Bundle bundle) {
+        AddHabitEventDialogInformationGetter getter =
+                new AddHabitEventDialogInformationGetter(bundle);
+        String title = getter.getTitle();
+        String comment = getter.getComment();
+        Location location = getter.getLocation();
+        Date date = getter.getDate();
+        String filePath = getter.getFileName();
+        String directory = getter.getDirectory();
+        Bitmap eventImage = getBitmapFromFilePath(directory, filePath);
+
+        return new HabitEvent(comment, eventImage, location, date, title);
+    }
+
+    private Bitmap getBitmapFromFilePath(String directory, String filePath) {
+        File image = new File(directory, filePath);
+        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+        Bitmap bitmap = BitmapFactory.decodeFile(image.getAbsolutePath(),bmOptions);
+        return bitmap;
+    }
+
+    private ArrayList<String> getHabitTitles() {
+        ArrayList<String> list = new ArrayList<>();
+        for(HabitType type : all_habit_types) {
+            list.add(type.getTitle());
+        }
+        return list;
     }
 
     /**
