@@ -56,9 +56,9 @@ public class AddHabitEventDialogInformationGetter {
         return null;
     }
 
-    public String getFilePath() {
-        String filePath = bundle.getString("filePath");
-        return filePath == null ? "" : filePath ;
+    public String getFileName() {
+        String fileName = bundle.getString("fileName");
+        return fileName == null ? "" : fileName ;
     }
 
     public String getDirectory() {

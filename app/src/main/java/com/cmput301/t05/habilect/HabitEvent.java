@@ -15,6 +15,7 @@ import java.util.StringTokenizer;
  */
 
 class HabitEvent {
+    static int MAX_COMMENT_LENGTH = 20;
 
     private String comment;
     private Bitmap event_picture;

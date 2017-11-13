@@ -5,8 +5,6 @@ import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
@@ -29,7 +27,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import java.io.File;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -145,7 +142,7 @@ public class HabitTypeActivity extends AppCompatActivity {
         String comment = getter.getComment();
         Location location = getter.getLocation();
         Date date = getter.getDate();
-        String filePath = getter.getFilePath();
+        String filePath = getter.getFileName();
         String directory = getter.getDirectory();
         Bitmap eventImage = getBitmapFromFilePath(directory, filePath);
 
