@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.ContextWrapper;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.SurfaceTexture;
@@ -20,7 +19,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
 import android.text.Editable;
@@ -86,6 +84,7 @@ public class AddHabitEventDialog extends DialogFragment {
     CheckBox checkBox;
     private boolean cameraPermission;
     private boolean locationPermission;
+    private Bundle resultBundle;
 
     Camera camera;
     boolean addEventImageViewDebounce = false;
@@ -264,7 +263,6 @@ public class AddHabitEventDialog extends DialogFragment {
             public void onClick(View view) {
                 // set camera's auto-focus lock
                 camera.takePhoto();
-                eventBitmap = ((BitmapDrawable) eventImage.getDrawable()).getBitmap();
                 eventImage.setVisibility(ImageButton.VISIBLE);
                 captureButton.setVisibility(ImageButton.INVISIBLE);
             }
@@ -292,7 +290,8 @@ public class AddHabitEventDialog extends DialogFragment {
         createButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = createHabitEventIntent();
+                resultBundle = createHabitEventBundle();
+                onAddHabitEventListener.OnAdded();
                 dialog.dismiss();
             }
         });
@@ -327,9 +326,13 @@ public class AddHabitEventDialog extends DialogFragment {
         super.onPause();
     }
 
+    public Bundle getResultBundle() {
+        return resultBundle;
+    }
+
     // TODO: Probably want some error checking...
-    private Intent createHabitEventIntent() {
-        Intent intent = new Intent();
+    private Bundle createHabitEventBundle() {
+        Bundle bundle= new Bundle();
         String latitude;
         String longitude;
         String habitType;
@@ -352,29 +355,29 @@ public class AddHabitEventDialog extends DialogFragment {
 
         String filePath = habitType.replace(" ", "_") + "_" + date;
 
-        if (eventBitmap != null) {
-            saveImageInFile(filePath);
-            intent.putExtra("filePath", filePath);
-        }
+        String directory = saveImageInFile(filePath);
+        bundle.putString("filePath", filePath);
+        bundle.putString("directory", directory);
 
-        intent.putExtra("comment", comment);
-        intent.putExtra("date", date);
-        intent.putExtra("latitude", latitude);
-        intent.putExtra("longitude", longitude);
-        intent.putExtra("habitType", habitType);
+        bundle.putString("comment", comment);
+        bundle.putString("date", date);
+        bundle.putString("latitude", latitude);
+        bundle.putString("longitude", longitude);
+        bundle.putString("habitType", habitType);
 
-        return intent;
+        return bundle;
     }
 
     // https://stackoverflow.com/questions/17674634/saving-and-reading-bitmaps-images-from-internal-memory-in-android
-    private void saveImageInFile(String filePath) {
+    private String saveImageInFile(String filePath) {
+        eventBitmap = ((BitmapDrawable) eventImage.getDrawable()).getBitmap();
         ContextWrapper cw = new ContextWrapper(context.getApplicationContext());
         File directory = cw.getDir("eventImages", Context.MODE_PRIVATE);
-        File mypath = new File(directory, filePath);
+        File myPath = new File(directory, filePath);
 
         FileOutputStream fos = null;
         try {
-            fos = new FileOutputStream(mypath);
+            fos = new FileOutputStream(myPath);
             eventBitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
         } catch (Exception e) {
             e.printStackTrace();
@@ -385,6 +388,7 @@ public class AddHabitEventDialog extends DialogFragment {
                 e.printStackTrace();
             }
         }
+        return directory.toString();
     }
 
     private String getTitleFromBundle() {

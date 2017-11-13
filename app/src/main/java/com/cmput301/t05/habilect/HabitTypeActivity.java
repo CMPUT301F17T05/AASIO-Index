@@ -1,8 +1,12 @@
 package com.cmput301.t05.habilect;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.location.Location;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
@@ -24,6 +28,8 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import java.io.File;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -74,8 +80,25 @@ public class HabitTypeActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Will be able to add a habit event when clicked", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                final AddHabitEventDialog addHabitEventDialog = new AddHabitEventDialog();
+                addHabitEventDialog.setOnAddHabitEventListener(new OnAddHabitEventListener() {
+                    @Override
+                    public void OnAdded() {
+                        // TODO: implement OnAdded
+                        HabitEvent event =
+                                createHabitEventFromBundle(addHabitEventDialog.getResultBundle());
+
+                    }
+
+                    @Override
+                    public void OnCancelled() {
+                        // do nothing...
+                    }
+                });
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                Bundle bundle = sendHabitInfoToDialog();
+                addHabitEventDialog.setArguments(bundle);
+                addHabitEventDialog.show(fragmentManager, "addHabitEventDialog");
             }
         });
 
@@ -103,6 +126,37 @@ public class HabitTypeActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private Bundle sendHabitInfoToDialog() {
+        Bundle bundle = new Bundle();
+        ArrayList<String> list = new ArrayList<>();
+        list.add(habit_type.getTitle());
+        bundle.putString("Title", habit_type.getTitle());
+        bundle.putSerializable("Habit Type", list);
+
+        return bundle;
+    }
+
+    private HabitEvent createHabitEventFromBundle(Bundle bundle) {
+        AddHabitEventDialogInformationGetter getter =
+                new AddHabitEventDialogInformationGetter(bundle);
+        String title = getter.getTitle();
+        String comment = getter.getComment();
+        Location location = getter.getLocation();
+        Date date = getter.getDate();
+        String filePath = getter.getFilePath();
+        String directory = getter.getDirectory();
+        Bitmap eventImage = getBitmapFromFilePath(directory, filePath);
+
+        return new HabitEvent(comment, eventImage, location, date, title);
+    }
+
+    private Bitmap getBitmapFromFilePath(String directory, String filePath) {
+        File image = new File(directory, filePath);
+        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+        Bitmap bitmap = BitmapFactory.decodeFile(image.getAbsolutePath(),bmOptions);
+        return bitmap;
     }
 
     /**
