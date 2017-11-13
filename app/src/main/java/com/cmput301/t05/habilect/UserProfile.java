@@ -10,6 +10,7 @@ import android.util.Base64;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -30,6 +31,7 @@ public class UserProfile {
     String identifier;
     String displayName;
     String profilePicture;
+    List<HabitType> plans = new ArrayList<>();
 
     boolean isNewUser = false;
 
@@ -63,6 +65,22 @@ public class UserProfile {
 
     public String getIdentifier() {
         return identifier;
+    }
+
+    public List<HabitType> getPlans() {
+        return plans;
+    }
+
+    public void addPlans(HabitType habitType){
+        this.plans.add(habitType);
+    }
+
+    public void deletePlans(HabitType habitType){
+        this.plans.remove(habitType);
+    }
+
+    public void setPlans(List<HabitType> plans) {
+        this.plans = plans;
     }
 
     public void setDisplayName(String displayName) {
