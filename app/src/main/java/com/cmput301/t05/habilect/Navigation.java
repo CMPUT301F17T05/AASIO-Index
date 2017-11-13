@@ -2,6 +2,8 @@ package com.cmput301.t05.habilect;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.v4.widget.DrawerLayout;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 
@@ -15,6 +17,7 @@ public class Navigation {
         navigateHabitTypes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                ((DrawerLayout)(view.getParent().getParent())).closeDrawer(Gravity.START);
                 Intent intent = new Intent(context.getContext(), ViewHabitTypesActivity.class);
                 view.getContext().startActivity(intent);
             }
@@ -23,6 +26,7 @@ public class Navigation {
         navigateHistoryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                ((DrawerLayout)(view.getParent().getParent())).closeDrawer(Gravity.START);
                 Intent intent = new Intent(context.getContext(), HistoryActivity.class);
                 context.getContext().startActivity(intent);
             }
@@ -31,6 +35,7 @@ public class Navigation {
         navigateSocialButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                ((DrawerLayout)(view.getParent().getParent())).closeDrawer(Gravity.START);
                 Intent intent = new Intent(context.getContext(), SocialActivity.class);
                 context.getContext().startActivity(intent);
             }
@@ -39,6 +44,7 @@ public class Navigation {
         navigateProfileButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                ((DrawerLayout)(view.getParent().getParent())).closeDrawer(Gravity.START);
                 Intent intent = new Intent(context.getContext(), ProfileActivity.class);
                 context.getContext().startActivity(intent);
             }
