@@ -112,6 +112,8 @@ public class ProfileActivity extends AppCompatActivity {
 
         setTitle("Habilect - Profile");
 
+        UserProfile profile = new UserProfile(getApplicationContext());
+
         Navigation.setup(findViewById(android.R.id.content));
 
         mainConstraint = (ConstraintLayout) findViewById(R.id.mainConstraint);
