@@ -6,11 +6,9 @@ import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ListView;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 /**
  * @author ioltuszy

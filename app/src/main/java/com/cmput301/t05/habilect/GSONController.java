@@ -54,7 +54,7 @@ public class GSONController {
     }
     //region initialization region
     private ArrayList<String> getAllEventTitleAndDate() {
-        ArrayList<String> eventTitleList = new ArrayList<String>();
+        ArrayList<String> eventTitleList = new ArrayList<>();
         for (HabitEvent event : eventList) {
             eventTitleList.add(event.getHabitType() + "_" + event.getCompletionDate());
         }
@@ -62,7 +62,7 @@ public class GSONController {
     }
 
     private ArrayList<String> getAllTypeTitles() {
-        ArrayList<String> typeTitleList = new ArrayList<String>();
+        ArrayList<String> typeTitleList = new ArrayList<>();
         for (HabitType type : typeList) {
             typeTitleList.add(type.getTitle());
         }
@@ -90,12 +90,9 @@ public class GSONController {
         } catch (FileNotFoundException e) {
             // TODO Auto-generated catch block
             fullList = new ArrayList<>();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            throw new RuntimeException();
         }
 
-        return fullList == null ? new ArrayList<HabitEvent>() : fullList;
+        return fullList == null ? new ArrayList<>() : fullList;
     }
 
     private ArrayList<HabitType> loadAllTypesFromFile() {
@@ -119,19 +116,16 @@ public class GSONController {
         } catch (FileNotFoundException e) {
             // TODO Auto-generated catch block
             fullList = new ArrayList<>();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            throw new RuntimeException();
         }
 
-        return fullList == null ? new ArrayList<HabitType>() : fullList;
+        return fullList == null ? new ArrayList<>() : fullList;
     }
 
     /**
      *
      * @return an ArrayList of all habit events stored on file
      */
-    public ArrayList<HabitEvent> loadHabitEventFromFile() {
+    ArrayList<HabitEvent> loadHabitEventFromFile() {
         try {
             ContextWrapper cw = new ContextWrapper(context.getApplicationContext());
             File directory = cw.getDir("userData", Context.MODE_PRIVATE);
@@ -150,20 +144,17 @@ public class GSONController {
 
         } catch (FileNotFoundException e) {
             // TODO Auto-generated catch block
-            eventList = new ArrayList<HabitEvent>();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            throw new RuntimeException();
+            eventList = new ArrayList<>();
         }
 
-        return eventList == null ? new ArrayList<HabitEvent>() : eventList;
+        return eventList == null ? new ArrayList<>() : eventList;
     } //endregion
 
     /**
      * Saves a habit event in file if we don't already have it
      * @param event the habit evnt you want to save
      */
-    public void saveHabitEventInFile(HabitEvent event) {
+    void saveHabitEventInFile(HabitEvent event) {
         try {
             ContextWrapper cw = new ContextWrapper(context.getApplicationContext());
             File directory = cw.getDir("userData", Context.MODE_PRIVATE);
@@ -184,10 +175,7 @@ public class GSONController {
             out.flush();
 
             fw.close();
-        } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
-            throw new RuntimeException();
-        } catch (IOException e) {
+        } catch (Exception e) {
             // TODO Auto-generated catch block
             throw new RuntimeException();
         }
@@ -211,10 +199,7 @@ public class GSONController {
             out.flush();
 
             fw.close();
-        } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
-            throw new RuntimeException();
-        } catch (IOException e) {
+        } catch (Exception e) {
             // TODO Auto-generated catch block
             throw new RuntimeException();
         }
@@ -224,7 +209,7 @@ public class GSONController {
      * For deleting a habit event on file
      * @param event the habit event you want to delete
      */
-    public void deleteHabitEventInFile(HabitEvent event) {
+    void deleteHabitEventInFile(HabitEvent event) {
         HabitEvent rmEvent = findHabitEvent(event.getHabitType(), event.getCompletionDate());
         eventList.remove(rmEvent);
         saveHabitEventListInFile();
@@ -234,7 +219,7 @@ public class GSONController {
      * If you want to edit a saved event, pass the event to this method
      * @param event the event you edited
      */
-    public void editHabitEventInFile(HabitEvent event) {
+    void editHabitEventInFile(HabitEvent event) {
         try {
             ContextWrapper cw = new ContextWrapper(context.getApplicationContext());
             File directory = cw.getDir("userData", Context.MODE_PRIVATE);
@@ -253,10 +238,7 @@ public class GSONController {
             out.flush();
 
             fw.close();
-        } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
-            throw new RuntimeException();
-        } catch (IOException e) {
+        } catch (Exception e) {
             // TODO Auto-generated catch block
             throw new RuntimeException();
         }
@@ -266,7 +248,7 @@ public class GSONController {
      * Finds the habit event object that is saved
      * @param title title of habit event
      * @param date completion date of habit event
-     * @return
+     * @return returns the found habit event from the list
      */
     private HabitEvent findHabitEvent(String title, Date date) {
         String inDate = new SimpleDateFormat("yyyy_MM_dd").format(date);
@@ -283,7 +265,7 @@ public class GSONController {
      *
      * @return an ArrayList of all habit types stored on file
      */
-    public ArrayList<HabitType> loadHabitTypeFromFile() {
+    ArrayList<HabitType> loadHabitTypeFromFile() {
         try {
             ContextWrapper cw = new ContextWrapper(context.getApplicationContext());
             File directory = cw.getDir("userData", Context.MODE_PRIVATE);
@@ -303,18 +285,15 @@ public class GSONController {
         } catch (FileNotFoundException e) {
             // TODO Auto-generated catch block
             typeList = new ArrayList<HabitType>();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            throw new RuntimeException();
         }
-        return typeList == null ? new ArrayList<HabitType>() : typeList;
+        return typeList == null ? new ArrayList<>() : typeList;
     }
 
     /**
      * For saving a habit type on file
      * @param habitType the habit type you want to save
      */
-    public void saveHabitTypeInFile(HabitType habitType) {
+    void saveHabitTypeInFile(HabitType habitType) {
         try {
             ContextWrapper cw = new ContextWrapper(context.getApplicationContext());
             File directory = cw.getDir("userData", Context.MODE_PRIVATE);
@@ -335,10 +314,7 @@ public class GSONController {
             out.flush();
 
             fw.close();
-        } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
-            throw new RuntimeException();
-        } catch (IOException e) {
+        } catch (Exception e) {
             // TODO Auto-generated catch block
             throw new RuntimeException();
         }
@@ -363,7 +339,7 @@ public class GSONController {
      * @param habitType habitType that you edited
      * @param title old title of the habitType that you edited
      */
-    public void editHabitTypeInFile(HabitType habitType, String title) {
+    void editHabitTypeInFile(HabitType habitType, String title) {
         try {
             ContextWrapper cw = new ContextWrapper(context.getApplicationContext());
             File directory = cw.getDir("userData", Context.MODE_PRIVATE);
@@ -383,10 +359,7 @@ public class GSONController {
             out.flush();
 
             fw.close();
-        } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
-            throw new RuntimeException();
-        } catch (IOException e) {
+        } catch (Exception e) {
             // TODO Auto-generated catch block
             throw new RuntimeException();
         }
@@ -395,7 +368,7 @@ public class GSONController {
     /**
      * Finds specified HabitType object on file
      * @param title title of habit type object you want to find
-     * @return
+     * @return returns the found habit type
      */
     private HabitType findHabitType(String title) {
         for(HabitType type : typeList) {
@@ -417,17 +390,13 @@ public class GSONController {
 
             FileWriter fw = new FileWriter(myPath);
 
-            BufferedWriter out = new BufferedWriter(fw);;
-
+            BufferedWriter out = new BufferedWriter(fw);
             Gson gson = new Gson();
             gson.toJson(typeList, out);
             out.flush();
 
             fw.close();
-        } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
-            throw new RuntimeException();
-        } catch (IOException e) {
+        } catch (Exception e) {
             // TODO Auto-generated catch block
             throw new RuntimeException();
         }

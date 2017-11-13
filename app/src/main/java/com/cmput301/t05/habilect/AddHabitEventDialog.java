@@ -58,6 +58,7 @@ import java.util.Locale;
  * with the tag 'Habit Type'. If you are creating an event from a specific Habit Type, you must still
  * pass the Habit Title in an ArrayList of String. When the user presses create the following tags are
  * passed back to the calling Activity, they are all Strings.
+ * In order to make location functionality, used this sample - https://github.com/googlesamples/android-play-location/blob/master/LocationUpdatesForegroundService/app/src/main/java/com/google/android/gms/location/sample/locationupdatesforegroundservice/MainActivity.java
  * <p>
  * comment - the comment the user left with the event. Always less than 20 characters
  * date -  the date the event was created in form yyyy_mm_dd
@@ -346,8 +347,6 @@ public class AddHabitEventDialog extends DialogFragment {
     }
 
 
-    // TODO: Probably want some error checking...
-
     /**
      *
      * @return Creates a resultBundle, which holds all of the information the user inputted
@@ -414,7 +413,7 @@ public class AddHabitEventDialog extends DialogFragment {
             try {
                 fos.close();
             } catch (IOException e) {
-                e.printStackTrace();
+                e.printStackTrace();// TODO: Don't want to crash, just don't have image
             }
         }
         return directory.toString();
