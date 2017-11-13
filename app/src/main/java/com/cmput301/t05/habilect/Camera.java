@@ -1,5 +1,6 @@
 package com.cmput301.t05.habilect;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -20,6 +21,7 @@ import android.media.ImageReader;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Size;
@@ -198,7 +200,7 @@ class Camera {
                             cameraManager.openCamera(mCameraId, mCameraDeviceStateCallback, mBackgroundHandler);
                         }
                     } else {
-                        ((AppCompatActivity) context).requestPermissions(new String[]{android.Manifest.permission.CAMERA}, 1);
+                        ActivityCompat.requestPermissions((Activity)context, new String[]{android.Manifest.permission.CAMERA}, 1);
                     }
                 } catch (CameraAccessException e) {
                     e.printStackTrace();

@@ -1,5 +1,6 @@
 package com.cmput301.t05.habilect;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.SurfaceTexture;
 import android.graphics.Typeface;
@@ -25,7 +26,7 @@ import android.widget.TextView;
  */
 
 public class ProfileActivity extends AppCompatActivity {
-    Context context = this;
+    Context context = ProfileActivity.this;
 
     Camera camera;
 
@@ -33,7 +34,7 @@ public class ProfileActivity extends AppCompatActivity {
         @Override
         public void onSurfaceTextureAvailable(SurfaceTexture surfaceTexture, int width, int height) {
             camera.setup(getApplication(), width, height);
-            camera.open(getApplication());
+            camera.open(context);
         }
 
         @Override
@@ -70,7 +71,7 @@ public class ProfileActivity extends AppCompatActivity {
                 case Camera.STATE_PREVIEWING:
                     break;
                 case Camera.STATE_CAPTURING:
-                    camera.retrieveImage(context);
+                    camera.retrieveImage(context.getApplicationContext());
                     if (!profileImageViewDebounce) {
                         profileImageViewDebounce = true;
                         Handler responseHandler = new Handler(Looper.getMainLooper()) {
@@ -156,8 +157,8 @@ public class ProfileActivity extends AppCompatActivity {
         if (!cameraTextureView.isAvailable()) {
             cameraTextureView.setSurfaceTextureListener(cameraPreviewSurfaceTextureListener);
         } else {
-            camera.setup(ProfileActivity.this, cameraTextureView.getWidth(), cameraTextureView.getHeight());
-            camera.open(this);
+            camera.setup(this, cameraTextureView.getWidth(), cameraTextureView.getHeight());
+            camera.open((Activity)ProfileActivity.this);
         }
     }
 
