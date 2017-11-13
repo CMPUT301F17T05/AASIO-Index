@@ -2,12 +2,9 @@ package com.cmput301.t05.habilect;
 
 import android.graphics.Bitmap;
 import android.location.Location;
-import android.media.Image;
-import android.util.Log;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.StringTokenizer;
 
 /**
  * @author ioltuszy

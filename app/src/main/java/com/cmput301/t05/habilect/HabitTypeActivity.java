@@ -509,8 +509,14 @@ public class HabitTypeActivity extends AppCompatActivity {
             return rootView;
         }
 
+        /**
+         * Filters the event list such that only the events with the matching habit type remain
+         * @param habitType the habit type you want to filer by
+         * @param eventList the event list you want to filer
+         * @return returns a filter event list
+         */
         private  ArrayList<HabitEvent> filterEventList(HabitType habitType, ArrayList<HabitEvent> eventList) {
-            ArrayList newList = new ArrayList();
+            ArrayList<HabitEvent> newList = new ArrayList<>();
             for (HabitEvent event : eventList) {
                 if(event.getHabitType().equals(habitType.getTitle())) {
                     newList.add(event);
