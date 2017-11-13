@@ -1,0 +1,149 @@
+package com.cmput301.t05.habilect;
+
+import android.app.Activity;
+import android.app.Fragment;
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.location.Location;
+import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.ImageButton;
+import android.widget.ListAdapter;
+import android.widget.TextView;
+
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
+
+/**
+ * This allows a habit event to be displayed in a ListView. It also includes edit and
+ * delete buttons for the row to edit or delete the habit event.
+ */
+public class HabitEventEditListAdapter extends BaseAdapter implements ListAdapter {
+    private ArrayList<HabitEvent> eventList = new ArrayList<>();
+    private Context context;
+
+    private String habitType;
+    private Date date;
+
+    HabitEventEditListAdapter(ArrayList<HabitEvent> eventList, Context context) {
+        this.eventList = eventList;
+        this.context = context;
+    }
+
+    @Override
+    public int getCount() {
+        return eventList.size();
+    }
+
+    @Override
+    public Object getItem(int i) {
+        return eventList.get(i);
+    }
+
+    @Override
+    public long getItemId(int i) {
+        return 0;
+    }
+
+    @Override
+    public View getView(int i, View view, ViewGroup viewGroup) {
+        // inflates the view
+        if (view == null) {
+            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            view = inflater.inflate(R.layout.habit_event_row_with_edit, null);
+        }
+        // gets the counter object that we want to display
+        final HabitEvent event = eventList.get(i);
+
+        TextView habitTitle = view.findViewById(R.id.habitEventRowEditTitle);
+        TextView habitDate = view.findViewById(R.id.habitEventRowEditDate);
+        TextView habitComment = view.findViewById(R.id.habitEventRowEditComment);
+        ImageButton editButton = view.findViewById(R.id.habitEventRowEditEditButton);
+        ImageButton deleteButton = view.findViewById(R.id.habitEventRowEditDeleteButton);
+
+        habitTitle.setText(event.getHabitType());
+        habitDate.setText(event.getCompletionDate().toString());
+        habitComment.setText(event.getComment());
+
+        habitType = habitTitle.getText().toString();
+        date = event.getCompletionDate();
+
+        editButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final EditHabitEventDialog editHabitEventDialog = new EditHabitEventDialog();
+                editHabitEventDialog.setOnEditHabitEventListener(new OnEditHabitEventListener() {
+                    @Override
+                    public void OnAdded() {
+                        // TODO: implement OnAdded
+                        HabitEvent event =
+                                editHabitEventFromBundle(editHabitEventDialog.getResultBundle());
+                        GSONController.GSON_CONTROLLER.editHabitEventInFile(event);
+                    }
+
+                    @Override
+                    public void OnCancelled() {
+                        // do nothing...
+                    }
+                });
+                FragmentActivity activity = (FragmentActivity) context;
+                FragmentManager fragmentManager = activity.getSupportFragmentManager();
+                Bundle bundle = sendHabitInfoToDialog();
+                editHabitEventDialog.setArguments(bundle);
+                editHabitEventDialog.show(fragmentManager, "addHabitEventDialog");
+            }
+        });
+
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                GSONController.GSON_CONTROLLER.deleteHabitEventInFile(event);
+            }
+        });
+
+
+        return view;
+    }
+
+    private Bundle sendHabitInfoToDialog() {
+        Bundle bundle = new Bundle();
+        ArrayList<String> list = new ArrayList<>();
+        list.add(habitType);
+        bundle.putString("Title", habitType);
+        String dateString = new SimpleDateFormat("yyyy_MM_dd", Locale.ENGLISH).format(date);
+        bundle.putString("Date", dateString);
+        bundle.putSerializable("Habit Type", list);
+
+        return bundle;
+    }
+
+    private HabitEvent editHabitEventFromBundle(Bundle bundle) {
+        AddHabitEventDialogInformationGetter getter =
+                new AddHabitEventDialogInformationGetter(bundle);
+        String title = getter.getTitle();
+        String comment = getter.getComment();
+        Location location = getter.getLocation();
+        Date date = getter.getDate();
+        String filePath = getter.getFileName();
+        String directory = getter.getDirectory();
+        Bitmap eventImage = getBitmapFromFilePath(directory, filePath);
+
+        return new HabitEvent(comment, eventImage, location, date, title);
+    }
+
+    private Bitmap getBitmapFromFilePath(String directory, String filePath) {
+        File image = new File(directory, filePath);
+        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+        Bitmap bitmap = BitmapFactory.decodeFile(image.getAbsolutePath(),bmOptions);
+        return bitmap;
+    }
+}

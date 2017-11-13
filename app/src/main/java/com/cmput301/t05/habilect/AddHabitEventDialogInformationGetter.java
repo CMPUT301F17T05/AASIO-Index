@@ -33,7 +33,7 @@ public class AddHabitEventDialogInformationGetter {
 
 
     public Date getDate() {
-        SimpleDateFormat simpleDate = new SimpleDateFormat("yyyy_mm_dd");
+        SimpleDateFormat simpleDate = new SimpleDateFormat("yyyy_MM_dd");
         Date date = new Date();
         try {
             date = simpleDate.parse(bundle.getString("date"));

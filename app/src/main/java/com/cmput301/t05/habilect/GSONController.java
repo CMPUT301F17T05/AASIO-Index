@@ -19,7 +19,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.lang.reflect.Type;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * Facilitates the use of GSON for saving habit types, habit events and user profile information.
@@ -175,7 +178,7 @@ public class GSONController {
             BufferedWriter out = new BufferedWriter(fw);
 
             // if we don't already have the event saved, add it to the list
-            if(!eventInEventList(event)) {
+            if(!eventInEventList(event) && event != null) {
                 eventList.add(event);
                 eventTitleAndDateList.add(event.getHabitType() + "_" + event.getCompletionDate());
             }
@@ -223,11 +226,48 @@ public class GSONController {
      * @param event the habit event you want to delete
      */
     public void deleteHabitEventInFile(HabitEvent event) {
-        if(eventInEventList(event)) {
-            eventList.remove(event);
-            eventTitleAndDateList.remove(event.getHabitType());
-            saveHabitEventListInFile();
+        HabitEvent rmEvent = findHabitEvent(event.getHabitType(), event.getCompletionDate());
+        eventList.remove(rmEvent);
+        saveHabitEventListInFile();
+    }
+
+    public void editHabitEventInFile(HabitEvent event) {
+        try {
+            ContextWrapper cw = new ContextWrapper(context.getApplicationContext());
+            File directory = cw.getDir("userData", Context.MODE_PRIVATE);
+            File myPath = new File(directory, EVENT_FILE_NAME);
+
+            FileWriter fw = new FileWriter(myPath);
+
+            BufferedWriter out = new BufferedWriter(fw);
+
+            HabitEvent rmEvent = findHabitEvent(event.getHabitType(), event.getCompletionDate());
+            eventList.remove(rmEvent);
+            eventList.add(event);
+
+            Gson gson = new Gson();
+            gson.toJson(eventList, out);
+            out.flush();
+
+            fw.close();
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            throw new RuntimeException();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            throw new RuntimeException();
         }
+    }
+
+    private HabitEvent findHabitEvent(String title, Date date) {
+        String inDate = new SimpleDateFormat("yyyy_MM_dd").format(date);
+        for(HabitEvent event : eventList) {
+            String eventDate = new SimpleDateFormat("yyyy_MM_dd").format(event.getCompletionDate());
+            if(title.equals(event.getHabitType()) && inDate.equals(eventDate)) {
+                return event;
+            }
+        }
+        return null;
     }
 
     /**
@@ -305,6 +345,43 @@ public class GSONController {
             typeTitleList.remove(habitType.getTitle());
             saveHabitTypeListInFile();
         }
+    }
+
+    public void editHabitTypeInFile(HabitType habitType) {
+        try {
+            ContextWrapper cw = new ContextWrapper(context.getApplicationContext());
+            File directory = cw.getDir("userData", Context.MODE_PRIVATE);
+            File myPath = new File(directory, TYPE_FILE_NAME);
+
+            FileWriter fw = new FileWriter(myPath);
+
+            BufferedWriter out = new BufferedWriter(fw);
+
+            HabitType rmType= findHabitType(habitType.getTitle());
+            typeList.remove(rmType);
+            typeList.add(habitType);
+
+            Gson gson = new Gson();
+            gson.toJson(eventList, out);
+            out.flush();
+
+            fw.close();
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            throw new RuntimeException();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            throw new RuntimeException();
+        }
+    }
+
+    private HabitType findHabitType(String title) {
+        for(HabitType type : typeList) {
+            if(title.equals(type.getTitle())) {
+                return type;
+            }
+        }
+        return null;
     }
 
     private void saveHabitTypeListInFile() {

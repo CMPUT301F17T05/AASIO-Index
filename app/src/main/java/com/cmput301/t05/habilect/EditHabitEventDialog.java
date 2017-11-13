@@ -48,6 +48,7 @@ import com.google.android.gms.tasks.Task;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -72,6 +73,9 @@ public class EditHabitEventDialog extends DialogFragment {
     private OnEditHabitEventListener onEditHabitEventListener;
     private Bundle resultBundle;
 
+    private String dateString;
+    private Date eventDate;
+
     // layout views
     private TextureView cameraTextureView;
     private ImageButton eventImage;
@@ -94,7 +98,6 @@ public class EditHabitEventDialog extends DialogFragment {
     // location controller
     private FusedLocationProviderClient fusedLocationClient;
     protected Location lastLocation;
-
 
     public void setOnEditHabitEventListener(OnEditHabitEventListener onEditHabitEventListener) {
         this.onEditHabitEventListener = onEditHabitEventListener;
@@ -234,6 +237,8 @@ public class EditHabitEventDialog extends DialogFragment {
 
         context = getContext();
 
+        dateString = getDateFromBundle();
+
         TextView eventTitle = view.findViewById(R.id.editHabitEventDialogTitle);
         spinner = view.findViewById(R.id.editHabitEventSpinner);
         eventImage = view.findViewById(R.id.editHabitEventImageButton);
@@ -304,7 +309,8 @@ public class EditHabitEventDialog extends DialogFragment {
         createButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                 resultBundle = createHabitEventBundle();
+                resultBundle = createHabitEventBundle();
+                onEditHabitEventListener.OnAdded();
                 dialog.dismiss();
             }
         });
@@ -371,7 +377,7 @@ public class EditHabitEventDialog extends DialogFragment {
         }
         // gets comment and makes new date
         comment = commentText.getText().toString();
-        date = new SimpleDateFormat("yyyy_MM_dd", Locale.ENGLISH).format(new Date());
+        date = dateString;
 
         // gets the selected title
         if(spinner.getSelectedItem() != null) {
@@ -389,7 +395,7 @@ public class EditHabitEventDialog extends DialogFragment {
 
         // put all information in bundle
         bundle.putString("comment", comment);
-        bundle.putString("date", date);
+        bundle.putString("date", dateString);
         bundle.putString("latitude", latitude);
         bundle.putString("longitude", longitude);
         bundle.putString("habitType", habitType);
@@ -444,6 +450,15 @@ public class EditHabitEventDialog extends DialogFragment {
             return (ArrayList<String>) getArguments().get("Habit Type");
         } catch (Exception e) {
             return new ArrayList<>();
+        }
+    }
+
+    private String getDateFromBundle() {
+        try {
+            return getArguments().getString("Date");
+        }
+        catch (Exception e) {
+            return "";
         }
     }
 

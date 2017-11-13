@@ -52,7 +52,7 @@ public class HabitTypeActivity extends AppCompatActivity {
 
     private static HabitType habit_type;      // The habit type that has been clicked on for viewing
 
-    private static HabitEventListAdapter eventListAdapter;
+    private static HabitEventEditListAdapter eventListAdapter;
 
     /**
      * sets up the activity and grabs the habit type that was passed in through a different
@@ -487,7 +487,7 @@ public class HabitTypeActivity extends AppCompatActivity {
             eList = GSONController.GSON_CONTROLLER.loadHabitEventFromFile();
             eList = filterEventList(habit_type, eList);
 
-            eventListAdapter = new HabitEventListAdapter(eList, getActivity());
+            eventListAdapter = new HabitEventEditListAdapter(eList, getActivity());
             eventList.setAdapter(eventListAdapter);
 
             return rootView;

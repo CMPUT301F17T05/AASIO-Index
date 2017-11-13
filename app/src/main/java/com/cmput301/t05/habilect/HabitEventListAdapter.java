@@ -12,9 +12,8 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 /**
- * Created by Oliver on 12/11/2017.
+ * This allows a habit event to be displayed in a ListView.
  */
-
 public class HabitEventListAdapter extends BaseAdapter implements ListAdapter {
     private ArrayList<HabitEvent> eventList = new ArrayList<>();
     private Context context;
