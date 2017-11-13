@@ -23,7 +23,14 @@ class HabitEvent {
     private Date completion_date;
     private String habitType;
 
-    // Constructor
+    /**
+     * Creates a new habit event
+     * @param comment comment that goes with the event. Must be less than 20 characters
+     * @param event_picture bitmap image of the event
+     * @param location Location object of the event
+     * @param completion_date Date object of the event
+     * @param habitType The associated habitType for the event
+     */
     public HabitEvent(String comment, Bitmap event_picture, Location location, Date completion_date, String habitType) {
         this.setComment(comment);
         this.setEventPicture(event_picture);

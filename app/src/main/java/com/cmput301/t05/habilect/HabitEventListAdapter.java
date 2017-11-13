@@ -19,6 +19,7 @@ import java.util.Locale;
 
 /**
  * This allows a habit event to be displayed in a ListView.
+ * @author rarog
  */
 public class HabitEventListAdapter extends BaseAdapter implements ListAdapter {
     private ArrayList<HabitEvent> eventList = new ArrayList<>();
@@ -80,6 +81,11 @@ public class HabitEventListAdapter extends BaseAdapter implements ListAdapter {
         return view;
     }
 
+    /**
+     * Using the events information, makes a bundle so the view event activity can be properly filled
+     * @param event the habit event that you want to view
+     * @return a bundle that can be sent off to the activity
+     */
     private Bundle sendHabitInfoToView(HabitEvent event) {
         Bundle bundle = new Bundle();
         bundle.putString("Title", habitType);

@@ -14,6 +14,18 @@ import android.widget.TextView;
 import java.io.File;
 import java.util.ArrayList;
 
+// TODO: maybe load in the information from GSON, get habit event directly
+// TODO: add location and map
+/**
+ * This activity launches when a user wishes to see more information about a particular
+ * habit event. This activity must be passed information about the event in a bundle. The tags are as follow
+ *
+ * Title - the habit type title of the event
+ * Date - the date of completion of the event
+ * Comment - the user inputted comment to the event
+ * File Path - the location where the event image is stored
+ * @author rarog
+ */
 public class ViewHabitEventActivity extends AppCompatActivity {
     private Bundle bundle;
 

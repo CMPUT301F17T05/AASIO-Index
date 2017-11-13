@@ -3,7 +3,6 @@ package com.cmput301.t05.habilect;
 
 import android.content.Context;
 import android.content.ContextWrapper;
-import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -11,16 +10,11 @@ import com.google.gson.reflect.TypeToken;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.lang.reflect.Type;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -33,6 +27,7 @@ import java.util.Date;
  */
 
 public class GSONController {
+    //TODO: find a better way to do this
     public static final GSONController GSON_CONTROLLER = new GSONController();
 
     public static Context context;
@@ -57,9 +52,9 @@ public class GSONController {
             typeTitleList = getAllTypeTitles();
         }
     }
-
+    //region initialization region
     private ArrayList<String> getAllEventTitleAndDate() {
-        ArrayList eventTitleList = new ArrayList();
+        ArrayList<String> eventTitleList = new ArrayList<String>();
         for (HabitEvent event : eventList) {
             eventTitleList.add(event.getHabitType() + "_" + event.getCompletionDate());
         }
@@ -67,7 +62,7 @@ public class GSONController {
     }
 
     private ArrayList<String> getAllTypeTitles() {
-        ArrayList typeTitleList = new ArrayList();
+        ArrayList<String> typeTitleList = new ArrayList<String>();
         for (HabitType type : typeList) {
             typeTitleList.add(type.getTitle());
         }
@@ -162,7 +157,7 @@ public class GSONController {
         }
 
         return eventList == null ? new ArrayList<HabitEvent>() : eventList;
-    }
+    } //endregion
 
     /**
      * Saves a habit event in file if we don't already have it
@@ -198,6 +193,9 @@ public class GSONController {
         }
     }
 
+    /**
+     * Saves the current Habit event list to file
+     */
     private void saveHabitEventListInFile() {
         try {
             ContextWrapper cw = new ContextWrapper(context.getApplicationContext());
@@ -232,6 +230,10 @@ public class GSONController {
         saveHabitEventListInFile();
     }
 
+    /**
+     * If you want to edit a saved event, pass the event to this method
+     * @param event the event you edited
+     */
     public void editHabitEventInFile(HabitEvent event) {
         try {
             ContextWrapper cw = new ContextWrapper(context.getApplicationContext());
@@ -260,6 +262,12 @@ public class GSONController {
         }
     }
 
+    /**
+     * Finds the habit event object that is saved
+     * @param title title of habit event
+     * @param date completion date of habit event
+     * @return
+     */
     private HabitEvent findHabitEvent(String title, Date date) {
         String inDate = new SimpleDateFormat("yyyy_MM_dd").format(date);
         for(HabitEvent event : eventList) {
@@ -348,6 +356,12 @@ public class GSONController {
         }
     }
 
+    /**
+     * If you want to edit a habit event, pass the new habit event and title of the old one
+     * to this method
+     * @param habitType habitType that you edited
+     * @param title old title of the habitType that you edited
+     */
     public void editHabitTypeInFile(HabitType habitType, String title) {
         try {
             ContextWrapper cw = new ContextWrapper(context.getApplicationContext());
@@ -377,6 +391,11 @@ public class GSONController {
         }
     }
 
+    /**
+     * Finds specified HabitType object on file
+     * @param title title of habit type object you want to find
+     * @return
+     */
     private HabitType findHabitType(String title) {
         for(HabitType type : typeList) {
             if(title.equals(type.getTitle())) {
@@ -386,6 +405,9 @@ public class GSONController {
         return null;
     }
 
+    /**
+     * saves the whole habit type list to file
+     */
     private void saveHabitTypeListInFile() {
         try {
             ContextWrapper cw = new ContextWrapper(context.getApplicationContext());
@@ -410,11 +432,21 @@ public class GSONController {
         }
     }
 
+    /**
+     * Sees if there is a particular habit event saved. Finds by title and date
+     * @param event habit event that you want to check
+     * @return boolean indicating whether the event was found in the list
+     */
     private boolean eventInEventList(HabitEvent event) {
         String combined = event.getHabitType() + "_" + event.getCompletionDate();
         return eventTitleAndDateList.contains(combined);
     }
 
+    /**
+     * Sees if there is a particular habit type saved. Finds by title and date
+     * @param type habit type that you want to check
+     * @return boolean indicating whether the type was found in the list
+     */
     private boolean typeInEventList(HabitType type) {
         return typeTitleList.contains(type.getTitle());
     }

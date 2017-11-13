@@ -28,6 +28,7 @@ import java.util.Locale;
 /**
  * This allows a habit event to be displayed in a ListView. It also includes edit and
  * delete buttons for the row to edit or delete the habit event.
+ * @author rarog
  */
 // TODO: when editing or deleting does not immediately update the view
 public class HabitEventEditListAdapter extends BaseAdapter implements ListAdapter {
@@ -129,6 +130,10 @@ public class HabitEventEditListAdapter extends BaseAdapter implements ListAdapte
         return view;
     }
 
+    /**
+     * Using the events information, makes a bundle so the edit dialog can be properly filled
+     * @return a bundle that can be sent off to the dialog
+     */
     private Bundle sendHabitInfoToDialog() {
         Bundle bundle = new Bundle();
         ArrayList<String> list = new ArrayList<>();
@@ -141,6 +146,11 @@ public class HabitEventEditListAdapter extends BaseAdapter implements ListAdapte
         return bundle;
     }
 
+    /**
+     * Using the events information, makes a bundle so the view event activity can be properly filled
+     * @param event the habit event that you want to view
+     * @return a bundle that can be sent off to the activity
+     */
     private Bundle sendHabitInfoToView(HabitEvent event) {
         Bundle bundle = new Bundle();
         bundle.putString("Title", habitType);
@@ -152,6 +162,12 @@ public class HabitEventEditListAdapter extends BaseAdapter implements ListAdapte
         return bundle;
     }
 
+    /**
+     * Makes a new habit event based on the provided information in the bundle
+     * @param bundle a bundle with the result from the dialog
+     * @return a new HabitEvent
+     * @see AddHabitEventDialogInformationGetter
+     */
     private HabitEvent editHabitEventFromBundle(Bundle bundle) {
         AddHabitEventDialogInformationGetter getter =
                 new AddHabitEventDialogInformationGetter(bundle);
@@ -166,6 +182,12 @@ public class HabitEventEditListAdapter extends BaseAdapter implements ListAdapte
         return new HabitEvent(comment, eventImage, location, date, title);
     }
 
+    /**
+     * Gets a bitmap from a file name and directory path
+     * @param directory the directory with the image file
+     * @param filePath the image file name
+     * @return a bitmap of the decoded file
+     */
     private Bitmap getBitmapFromFilePath(String directory, String filePath) {
         File image = new File(directory, filePath);
         BitmapFactory.Options bmOptions = new BitmapFactory.Options();

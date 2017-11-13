@@ -31,6 +31,7 @@ import java.util.ArrayList;
  *
  * @author ioltuszy
  * @author amwhitta
+ * @author rarog
  * @see HabitTypeListener
  * @see HabitType
  * @see HabitEvent
@@ -162,6 +163,12 @@ public class HomePrimaryFragment extends Fragment {
         return rootView;
     }
 
+    /**
+     * From a returning bundle, make a new habit event
+     * @param bundle the bundle which contains the information from AddHabitEventDialog
+     * @return a new HabitEvent
+     * @see AddHabitEventDialog
+     */
     private HabitEvent createHabitEventFromBundle(Bundle bundle) {
         AddHabitEventDialogInformationGetter getter =
                 new AddHabitEventDialogInformationGetter(bundle);
@@ -176,6 +183,12 @@ public class HomePrimaryFragment extends Fragment {
         return new HabitEvent(comment, eventImage, location, date, title);
     }
 
+    /**
+     * Gets a bitmap from a file name and directory path
+     * @param directory the directory with the image file
+     * @param filePath the image file name
+     * @return a bitmap of the decoded file
+     */
     private Bitmap getBitmapFromFilePath(String directory, String filePath) {
         File image = new File(directory, filePath);
         BitmapFactory.Options bmOptions = new BitmapFactory.Options();
@@ -183,6 +196,10 @@ public class HomePrimaryFragment extends Fragment {
         return bitmap;
     }
 
+    /**
+     * Creates a list of string of the titles of all stored habit types
+     * @return An ArrayList String of all habit Type title
+     */
     private ArrayList<String> getHabitTitles() {
         ArrayList<String> list = new ArrayList<>();
         for(HabitType type : all_habit_types) {
@@ -209,6 +226,10 @@ public class HomePrimaryFragment extends Fragment {
 
     }
 
+    /**
+     * From the list of habit types, checks which ones still need to be done today
+     * @return A list of habit types that need to be done
+     */
     private ArrayList<HabitType> getIncompleteHabitTypes() {
 
         Calendar c = Calendar.getInstance();
