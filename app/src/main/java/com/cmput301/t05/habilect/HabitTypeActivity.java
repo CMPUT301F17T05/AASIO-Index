@@ -330,10 +330,16 @@ public class HabitTypeActivity extends AppCompatActivity {
                 @Override
                 public void OnAddedOrEdited(String title, String reason, Date start_date, boolean[] weekly_plan) {
                     try {
-                        if (title.length() > 0) { habit_type.setTitle(title); }
-                        if (reason.length() > 0) { habit_type.setReason(reason); }
-                        habit_type.setStartDate(start_date);
-                        habit_type.setWeeklyPlan(weekly_plan);
+                        HabitType edited_habit_type = new HabitType(habit_type);
+
+                        if (title.length() > 0) { edited_habit_type.setTitle(title); }
+                        if (reason.length() > 0) { edited_habit_type.setReason(reason); }
+                        edited_habit_type.setStartDate(start_date);
+                        edited_habit_type.setWeeklyPlan(weekly_plan);
+
+                        GSONController.GSON_CONTROLLER.editHabitTypeInFile(edited_habit_type, habit_type.getTitle());
+                        habit_type = edited_habit_type;
+
                     } catch (IllegalArgumentException e) {
                         throw e;
                     }

@@ -3,6 +3,7 @@ package com.cmput301.t05.habilect;
 
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -347,7 +348,7 @@ public class GSONController {
         }
     }
 
-    public void editHabitTypeInFile(HabitType habitType) {
+    public void editHabitTypeInFile(HabitType habitType, String title) {
         try {
             ContextWrapper cw = new ContextWrapper(context.getApplicationContext());
             File directory = cw.getDir("userData", Context.MODE_PRIVATE);
@@ -357,12 +358,13 @@ public class GSONController {
 
             BufferedWriter out = new BufferedWriter(fw);
 
-            HabitType rmType= findHabitType(habitType.getTitle());
+            HabitType rmType = findHabitType(title);
+            //Log.d("Debugging:", "retrieved habit type: " + rmType.getTitle());
             typeList.remove(rmType);
             typeList.add(habitType);
 
             Gson gson = new Gson();
-            gson.toJson(eventList, out);
+            gson.toJson(typeList, out);
             out.flush();
 
             fw.close();
