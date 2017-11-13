@@ -37,9 +37,11 @@ public class GSONController {
     private static ArrayList<HabitEvent> eventList;
     private static ArrayList<HabitType> typeList;
 
+    // for easy checking if events are types are already stored
     private static ArrayList<String> eventTitleAndDateList;
     private static ArrayList<String> typeTitleList;
 
+    // file name locations
     private static String EVENT_FILE_NAME = "HabitEventList.sav";
     private static String TYPE_FILE_NAME = "HabitTypeList.sav";
 
@@ -126,6 +128,10 @@ public class GSONController {
         return fullList == null ? new ArrayList<HabitType>() : fullList;
     }
 
+    /**
+     *
+     * @return an ArrayList of all habit events stored on file
+     */
     public ArrayList<HabitEvent> loadHabitEventFromFile() {
         try {
             ContextWrapper cw = new ContextWrapper(context.getApplicationContext());
@@ -154,6 +160,10 @@ public class GSONController {
         return eventList == null ? new ArrayList<HabitEvent>() : eventList;
     }
 
+    /**
+     * Saves a habit event in file if we don't already have it
+     * @param event the habit evnt you want to save
+     */
     public void saveHabitEventInFile(HabitEvent event) {
         try {
             ContextWrapper cw = new ContextWrapper(context.getApplicationContext());
@@ -208,6 +218,10 @@ public class GSONController {
         }
     }
 
+    /**
+     * For deleting a habit event on file
+     * @param event the habit event you want to delete
+     */
     public void deleteHabitEventInFile(HabitEvent event) {
         if(eventInEventList(event)) {
             eventList.remove(event);
@@ -216,6 +230,10 @@ public class GSONController {
         }
     }
 
+    /**
+     *
+     * @return an ArrayList of all habit types stored on file
+     */
     public ArrayList<HabitType> loadHabitTypeFromFile() {
         try {
             ContextWrapper cw = new ContextWrapper(context.getApplicationContext());
@@ -243,6 +261,10 @@ public class GSONController {
         return typeList == null ? new ArrayList<HabitType>() : typeList;
     }
 
+    /**
+     * For saving a habit type on file
+     * @param habitType the habit type you want to save
+     */
     public void saveHabitTypeInFile(HabitType habitType) {
         try {
             ContextWrapper cw = new ContextWrapper(context.getApplicationContext());
@@ -273,6 +295,10 @@ public class GSONController {
         }
     }
 
+    /**
+     * For deleting a habit type on file
+     * @param habitType the habit type you want to save
+     */
     public void deleteHabitTypeInFile(HabitType habitType) {
         if(typeInEventList(habitType)) {
             typeList.remove(habitType);
