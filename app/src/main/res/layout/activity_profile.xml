@@ -100,11 +100,13 @@
                     android:text="Follow Requests" />
 
                 <Button
+                    android:id="@+id/saveChangesButton"
                     android:height="20dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom"
                     android:text="Save Changes"
+                    android:enabled="false"
                     tools:layout_editor_absoluteX="117dp"
                     tools:layout_editor_absoluteY="423dp" />
             </GridLayout>
