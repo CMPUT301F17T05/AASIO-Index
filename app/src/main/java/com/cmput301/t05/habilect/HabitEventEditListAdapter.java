@@ -3,6 +3,7 @@ package com.cmput301.t05.habilect;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
@@ -13,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListAdapter;
 import android.widget.TextView;
@@ -65,6 +67,8 @@ public class HabitEventEditListAdapter extends BaseAdapter implements ListAdapte
         // gets the counter object that we want to display
         final HabitEvent event = eventList.get(i);
 
+        Button viewButton = view.findViewById(R.id.habitEventEditRowSelectButton);
+
         TextView habitTitle = view.findViewById(R.id.habitEventRowEditTitle);
         TextView habitDate = view.findViewById(R.id.habitEventRowEditDate);
         TextView habitComment = view.findViewById(R.id.habitEventRowEditComment);
@@ -111,6 +115,16 @@ public class HabitEventEditListAdapter extends BaseAdapter implements ListAdapte
             }
         });
 
+        viewButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Bundle bundle = sendHabitInfoToView(event);
+                Intent intent = new Intent(view.getContext(), ViewHabitEventActivity.class);
+                intent.putExtras(bundle);
+                view.getContext().startActivity(intent);
+
+            }
+        });
 
         return view;
     }
@@ -123,6 +137,17 @@ public class HabitEventEditListAdapter extends BaseAdapter implements ListAdapte
         String dateString = new SimpleDateFormat("yyyy_MM_dd", Locale.ENGLISH).format(date);
         bundle.putString("Date", dateString);
         bundle.putSerializable("Habit Type", list);
+
+        return bundle;
+    }
+
+    private Bundle sendHabitInfoToView(HabitEvent event) {
+        Bundle bundle = new Bundle();
+        bundle.putString("Title", habitType);
+        String dateString = new SimpleDateFormat("yyyy_MM_dd", Locale.ENGLISH).format(date);
+        bundle.putString("Date", dateString);
+        bundle.putString("Comment", event.getComment());
+        bundle.putString("File Path", habitType.replace(" ", "_") + "_" + dateString);
 
         return bundle;
     }
