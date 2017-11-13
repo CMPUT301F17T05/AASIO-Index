@@ -15,9 +15,12 @@ import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.TextureView;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -57,7 +60,7 @@ public class ProfileActivity extends AppCompatActivity {
     ConstraintLayout secondaryConstraint;
 
     TextureView cameraTextureView;
-    TextView displayNameTextView;
+    TextView displayNameEditText;
     ImageView backgroundImageView;
     ImageView profileImageView;
     ImageView bandImageView;
@@ -120,7 +123,7 @@ public class ProfileActivity extends AppCompatActivity {
         secondaryConstraint = (ConstraintLayout) findViewById(R.id.secondaryConstraint);
 
         cameraTextureView = (TextureView) findViewById(R.id.cameraPreviewTextureView);
-        displayNameTextView = (TextView) findViewById(R.id.displayNameTextView);
+        displayNameEditText = (EditText) findViewById(R.id.displayNameEditText);
         backgroundImageView = (ImageView) findViewById(R.id.backgroundImageView);
         profileImageView = (ImageView) findViewById(R.id.profileImageView);
         saveChangesButton = (Button) findViewById(R.id.saveChangesButton);
@@ -132,6 +135,23 @@ public class ProfileActivity extends AppCompatActivity {
         secondaryConstraint.setClickable(false);
         secondaryConstraint.setFocusable(false);
 
+        displayNameEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
         saveChangesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -142,7 +162,7 @@ public class ProfileActivity extends AppCompatActivity {
         camera = new Camera(cameraTextureView, cameraCaptureSessionCallback, profileImageView);
 
         Typeface openSansFont = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Montserrat-Bold.ttf");
-        displayNameTextView.setTypeface(openSansFont);
+        displayNameEditText.setTypeface(openSansFont);
 
         profileImageView.setOnClickListener(new View.OnClickListener() {
             @Override
