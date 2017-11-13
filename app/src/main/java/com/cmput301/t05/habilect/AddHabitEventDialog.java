@@ -229,10 +229,6 @@ public class AddHabitEventDialog extends DialogFragment {
 
         context = getContext();
 
-        // makes the location can camera handlers
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(context);
-        camera = new Camera(cameraTextureView, cameraCaptureSessionCallback, eventImage);
-
         // creates all of the necessary view controllers
         TextView eventTitle = view.findViewById(R.id.addHabitEventDialogTitle);
         spinner = view.findViewById(R.id.addHabitEventSpinner);
@@ -244,6 +240,10 @@ public class AddHabitEventDialog extends DialogFragment {
         commentWarning = view.findViewById(R.id.addEventCommentWarning);
         Button cancelButton = view.findViewById(R.id.addEventCancelButton);
         createButton = view.findViewById(R.id.addEventCreateButton);
+
+        // makes the location can camera handlers
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(context);
+        camera = new Camera(cameraTextureView, cameraCaptureSessionCallback, eventImage);
 
         // when you click on add image, open the camera and capture button
         eventImage.setOnClickListener(new View.OnClickListener() {

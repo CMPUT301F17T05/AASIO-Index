@@ -84,6 +84,7 @@ public class HabitTypeActivity extends AppCompatActivity {
                         // TODO: implement OnAdded
                         HabitEvent event =
                                 createHabitEventFromBundle(addHabitEventDialog.getResultBundle());
+                        GSONController.GSON_CONTROLLER.saveHabitEventInFile(event);
 
                     }
 
