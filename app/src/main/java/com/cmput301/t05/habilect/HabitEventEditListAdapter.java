@@ -27,6 +27,7 @@ import java.util.Locale;
  * This allows a habit event to be displayed in a ListView. It also includes edit and
  * delete buttons for the row to edit or delete the habit event.
  */
+// TODO: when editing or deleting does not immediately update the view
 public class HabitEventEditListAdapter extends BaseAdapter implements ListAdapter {
     private ArrayList<HabitEvent> eventList = new ArrayList<>();
     private Context context;

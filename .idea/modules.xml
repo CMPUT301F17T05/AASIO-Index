@@ -4,7 +4,6 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Habilect.iml" filepath="$PROJECT_DIR$/Habilect.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://C:\Users\Oliver\Documents\GitHub\Habilect\code.iml" filepath="C:\Users\Oliver\Documents\GitHub\Habilect\code.iml" />
     </modules>
   </component>
 </project>
