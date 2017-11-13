@@ -172,7 +172,7 @@ public class HomePrimaryFragment extends Fragment {
 
         Calendar c = Calendar.getInstance();
         int today = c.get(Calendar.DAY_OF_WEEK);
-        Log.d("Debugging", "today in int:" + Integer.toString(today));
+        //Log.d("Debugging", "today in int:" + Integer.toString(today));
         boolean[] plan;
         ArrayList<HabitType> incomplete_habits = new ArrayList<>();
 

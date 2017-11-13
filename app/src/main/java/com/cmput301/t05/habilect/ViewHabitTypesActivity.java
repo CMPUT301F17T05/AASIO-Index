@@ -3,6 +3,7 @@ package com.cmput301.t05.habilect;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -55,19 +56,20 @@ public class ViewHabitTypesActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
-        habit_types = new ArrayList<>();
         /*ElasticsearchHabitTypeController.GetHabitTypeTask getHabitTypeTask =
           new ElasticsearchHabitTypeController.GetHabitTypeTask();
           habit_types = getHabitTypeTask.execute(null);*/
-        boolean[] plan1 = {true, true, true, true, false, false, false};
-        boolean[] plan2 = {false, false, false, false, false, false, true};
-        HabitType habit1 = new HabitType("clean", "keep the house nice", new Date(), plan1);
-        HabitType habit2 = new HabitType("plan meals", "to save time", new Date(), plan2);
+        //boolean[] plan1 = {true, true, true, true, false, false, false};
+        //boolean[] plan2 = {false, false, false, false, false, false, true};
+        //HabitType habit1 = new HabitType("clean", "keep the house nice", new Date(), plan1);
+        //HabitType habit2 = new HabitType("plan meals", "to save time", new Date(), plan2);
 
+        habit_types = new ArrayList<>();
+        habit_types = GSONController.GSON_CONTROLLER.loadHabitTypeFromFile();
         ArrayAdapter<HabitType> adapter = new ArrayAdapter<>(this, R.layout.habit_type_list_item, habit_types);
         habitTypeList.setAdapter(adapter);
-        habit_types.add(habit1);
-        habit_types.add(habit2);
+
+        //Log.d("Debugging", "habit types list:" + habit_types.get(0).toString());
         adapter.notifyDataSetChanged();
     }
 }
