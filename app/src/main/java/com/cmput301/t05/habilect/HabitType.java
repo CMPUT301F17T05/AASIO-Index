@@ -174,10 +174,20 @@ public class HabitType extends Observable implements Serializable {
         this.recent_habit_event = date;
     }
 
+    /**
+     * Adds a habit event to this habit type.
+     *
+     * @param habitEvent                  the habitEvent which to add
+     */
     public void addHabitEvent(HabitEvent habitEvent){
         this.habitEvents.add(habitEvent);
     }
 
+    /**
+     * Removes a habit event from this habit type.
+     *
+     * @param habitEvent                  the habitEvent which to remove
+     */
     public void removeHabitEvent(HabitEvent habitEvent){
         this.habitEvents.remove(habitEvent);
     }
