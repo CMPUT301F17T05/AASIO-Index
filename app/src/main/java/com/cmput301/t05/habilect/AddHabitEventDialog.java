@@ -1,5 +1,6 @@
 package com.cmput301.t05.habilect;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
@@ -83,6 +84,8 @@ public class AddHabitEventDialog extends DialogFragment {
     Button createButton;
     Spinner spinner;
     CheckBox checkBox;
+    private boolean cameraPermission;
+    private boolean locationPermission;
 
     Camera camera;
     boolean addEventImageViewDebounce = false;
@@ -91,8 +94,10 @@ public class AddHabitEventDialog extends DialogFragment {
     TextureView.SurfaceTextureListener cameraPreviewSurfaceTextureListener = new TextureView.SurfaceTextureListener() {
         @Override
         public void onSurfaceTextureAvailable(SurfaceTexture surfaceTexture, int width, int height) {
-            camera.setup(context, width, height);
-            camera.open(context);
+            if(cameraPermission) {
+                camera.setup(context, width, height);
+                camera.open(context);
+            }
         }
 
         @Override
@@ -114,25 +119,27 @@ public class AddHabitEventDialog extends DialogFragment {
     CameraCaptureSession.CaptureCallback cameraCaptureSessionCallback = new CameraCaptureSession.CaptureCallback() {
         @Override
         public void onCaptureCompleted(CameraCaptureSession session, @NonNull CaptureRequest request, TotalCaptureResult result) {
-            switch (camera.getCameraState()) {
-                case Camera.STATE_PREVIEWING:
-                    break;
-                case Camera.STATE_CAPTURING:
-                    camera.retrieveImage(context);
-                    if (!addEventImageViewDebounce) {
-                        addEventImageViewDebounce = true;
-                        Handler responseHandler = new Handler(Looper.getMainLooper()) {
-                            @Override
-                            public void handleMessage(Message params) {
-                                if (params.obj == null) {
-                                    addEventImageViewDebounce = false;
-                                } else {
-                                    cameraTextureView.setAlpha(1f - 0.8f * MathUtility.EasingOut(System.currentTimeMillis() - ((long[]) params.obj)[0], ((long[]) params.obj)[1], 3));
+            if(cameraPermission) {
+                switch (camera.getCameraState()) {
+                    case Camera.STATE_PREVIEWING:
+                        break;
+                    case Camera.STATE_CAPTURING:
+                        camera.retrieveImage(context);
+                        if (!addEventImageViewDebounce) {
+                            addEventImageViewDebounce = true;
+                            Handler responseHandler = new Handler(Looper.getMainLooper()) {
+                                @Override
+                                public void handleMessage(Message params) {
+                                    if (params.obj == null) {
+                                        addEventImageViewDebounce = false;
+                                    } else {
+                                        cameraTextureView.setAlpha(1f - 0.8f * MathUtility.EasingOut(System.currentTimeMillis() - ((long[]) params.obj)[0], ((long[]) params.obj)[1], 3));
+                                    }
                                 }
-                            }
-                        };
-                        MathUtility.Animate(100, 500, responseHandler);
-                    }
+                            };
+                            MathUtility.Animate(100, 500, responseHandler);
+                        }
+                }
             }
         }
 
@@ -165,9 +172,9 @@ public class AddHabitEventDialog extends DialogFragment {
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
         );
-
-        // if user does not have location permissions set, will ask to enable them
-        if (checkPermissions()) {
+        cameraPermission = checkCameraPermissions();
+        locationPermission = checkLocationPermissions();
+        if(locationPermission) {
             getLastLocation();
         }
     }
@@ -225,12 +232,11 @@ public class AddHabitEventDialog extends DialogFragment {
 
         checkBox = view.findViewById(R.id.addHabitEventCheckBox);
 
-        cameraTextureView = view.findViewById(R.id.addEventCameraPreviewTextureView);
-        camera = new Camera(cameraTextureView, cameraCaptureSessionCallback, eventImage);
-
         final ImageButton captureButton = view.findViewById(R.id.addEventCaptureButton);
         captureButton.setVisibility(ImageButton.INVISIBLE);
 
+        cameraTextureView = view.findViewById(R.id.addEventCameraPreviewTextureView);
+        camera = new Camera(cameraTextureView, cameraCaptureSessionCallback, eventImage);
         eventImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -315,7 +321,9 @@ public class AddHabitEventDialog extends DialogFragment {
 
     @Override
     public void onPause() {
-        camera.close();
+        if(cameraPermission) {
+            camera.close();
+        }
         super.onPause();
     }
 
@@ -324,7 +332,9 @@ public class AddHabitEventDialog extends DialogFragment {
         Intent intent = new Intent();
         String latitude;
         String longitude;
-        if (checkBox.isChecked()) {
+        String habitType;
+
+        if (checkBox.isChecked() && locationPermission) {
             latitude = String.valueOf(mLastLocation.getLatitude());
             longitude = String.valueOf(mLastLocation.getLongitude());
         } else {
@@ -333,7 +343,13 @@ public class AddHabitEventDialog extends DialogFragment {
         }
         String comment = commentText.getText().toString();
         String date = new SimpleDateFormat("yyyy_MM_dd", Locale.ENGLISH).format(new Date());
-        String habitType = spinner.getSelectedItem().toString();
+
+        if(spinner.getSelectedItem() != null) {
+            habitType = spinner.getSelectedItem().toString();
+        } else {
+            habitType = "";
+        }
+
         String filePath = habitType.replace(" ", "_") + "_" + date;
 
         if (eventBitmap != null) {
@@ -409,14 +425,18 @@ public class AddHabitEventDialog extends DialogFragment {
     }
 
 
-    //TODO: onRequestPermissionsResult not currently called if app requests permission because this is DialogFragment, either fix bug or ask for permission on main activity
-
     /**
      * Return the current state of the permissions needed.
      */
-    private boolean checkPermissions() {
+    private boolean checkLocationPermissions() {
         int permissionState = ActivityCompat.checkSelfPermission(context,
-                android.Manifest.permission.ACCESS_COARSE_LOCATION);
+                Manifest.permission.ACCESS_FINE_LOCATION);
+        return permissionState == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private boolean checkCameraPermissions() {
+        int permissionState = ActivityCompat.checkSelfPermission(context,
+                Manifest.permission.CAMERA);
         return permissionState == PackageManager.PERMISSION_GRANTED;
     }
 }

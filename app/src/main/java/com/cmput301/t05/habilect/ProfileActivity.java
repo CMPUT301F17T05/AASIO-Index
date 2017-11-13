@@ -61,6 +61,7 @@ public class ProfileActivity extends AppCompatActivity {
     ImageView backgroundImageView;
     ImageView profileImageView;
     ImageView bandImageView;
+    Button saveChangesButton;
     Button captureButton;
 
     boolean profileImageViewDebounce = false;
@@ -79,6 +80,13 @@ public class ProfileActivity extends AppCompatActivity {
                             public void handleMessage(Message params) {
                                 if (params.obj == null) {
                                     profileImageViewDebounce = false;
+                                    captureButton.setEnabled(false);
+                                    captureButton.setClickable(false);
+                                    captureButton.setFocusable(false);
+                                    secondaryConstraint.setEnabled(false);
+                                    secondaryConstraint.setClickable(false);
+                                    secondaryConstraint.setFocusable(false);
+                                    saveChangesButton.setEnabled(true);
                                 } else {
                                     cameraTextureView.setAlpha(1f - 0.8f * MathUtility.EasingOut(System.currentTimeMillis() - ((long[]) params.obj)[0], ((long[]) params.obj)[1], 3));
                                     mainConstraint.setAlpha(0f + 1f * MathUtility.EasingOut(System.currentTimeMillis() - ((long[]) params.obj)[0], ((long[]) params.obj)[1], 3));
@@ -102,7 +110,9 @@ public class ProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
-        setTitle("Habilect - Social");
+        setTitle("Habilect - Profile");
+
+        UserProfile profile = new UserProfile(getApplicationContext());
 
         Navigation.setup(findViewById(android.R.id.content));
 
@@ -113,7 +123,21 @@ public class ProfileActivity extends AppCompatActivity {
         displayNameTextView = (TextView) findViewById(R.id.displayNameTextView);
         backgroundImageView = (ImageView) findViewById(R.id.backgroundImageView);
         profileImageView = (ImageView) findViewById(R.id.profileImageView);
+        saveChangesButton = (Button) findViewById(R.id.saveChangesButton);
         captureButton = (Button) findViewById(R.id.captureButton);
+        captureButton.setEnabled(false);
+        captureButton.setClickable(false);
+        captureButton.setFocusable(false);
+        secondaryConstraint.setEnabled(false);
+        secondaryConstraint.setClickable(false);
+        secondaryConstraint.setFocusable(false);
+
+        saveChangesButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                saveChangesButton.setEnabled(false);
+            }
+        });
 
         camera = new Camera(cameraTextureView, cameraCaptureSessionCallback, profileImageView);
 
@@ -130,6 +154,12 @@ public class ProfileActivity extends AppCompatActivity {
                         public void handleMessage(Message params) {
                             if (params.obj == null) {
                                 profileImageViewDebounce = false;
+                                captureButton.setEnabled(true);
+                                captureButton.setClickable(true);
+                                captureButton.setFocusable(true);
+                                secondaryConstraint.setEnabled(true);
+                                secondaryConstraint.setClickable(true);
+                                secondaryConstraint.setFocusable(true);
                             } else {
                                 cameraTextureView.setAlpha(0.2f + 0.8f * MathUtility.EasingOut(System.currentTimeMillis() - ((long[]) params.obj)[0], ((long[]) params.obj)[1], 3));
                                 mainConstraint.setAlpha(1f - 1f * MathUtility.EasingOut(System.currentTimeMillis() - ((long[]) params.obj)[0], ((long[]) params.obj)[1], 3));
