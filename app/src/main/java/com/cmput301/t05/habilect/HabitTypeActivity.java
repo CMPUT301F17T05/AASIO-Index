@@ -1,10 +1,13 @@
 package com.cmput301.t05.habilect;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
@@ -122,6 +125,7 @@ public class HabitTypeActivity extends AppCompatActivity {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
+        Context context = this;
         HabitTypeListener habitTypeListener = new HabitTypeListener() {
             @Override
             public void OnAddedOrEdited(String title, String reason, Date start_date, boolean[] weekly_plan) {
@@ -136,8 +140,26 @@ public class HabitTypeActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_delete) {
-            habitTypeListener.OnDeleted();
-            finish();
+            AlertDialog alertDialog = new AlertDialog.Builder(context).create();
+            alertDialog.setTitle("DELETE");
+            alertDialog.setMessage("Are you sure you want to delete this habit type and its " +
+                    "associated habit events?");
+            alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "YES",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            habitTypeListener.OnDeleted();
+                            dialog.dismiss();
+                            finish();
+                        }
+                    });
+            alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "NO",
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int i) {
+                            dialog.dismiss();
+                        }
+                    });
+            alertDialog.show();
             return true;
         }
 
