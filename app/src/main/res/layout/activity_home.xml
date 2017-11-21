@@ -5,7 +5,7 @@
     android:id="@+id/navigationHomeDrawer"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/gray2">
+    android:background="@color/lightgrey">
 
     <android.support.v4.view.ViewPager
         android:id="@+id/homeViewPager"

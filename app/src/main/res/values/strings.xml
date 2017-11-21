@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Habilect</string>
+    <string name="app_name">H a b i l e c t</string>
     <string name="add_habit_title_hint">Enter title:</string>
     <string name="add_habit_reason_hint">Enter reason:</string>
     <string name="monday">Monday</string>

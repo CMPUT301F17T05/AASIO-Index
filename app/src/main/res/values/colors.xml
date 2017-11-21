@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#05344c</color>
+    <color name="colorPrimary">#2E523A</color>
+    <color name="darkblue">#05344c</color>
     <color name="colorPrimaryDark">#6a5a81</color>
     <color name="colorAccent">#696774</color>
     <color name="black">#000000</color>
@@ -9,5 +10,8 @@
     <color name="background_material_light">#817e82</color>
     <color name="blue">#8CD5D6</color>
     <color name="purple">#581845</color>
+    <color name="lightgrey">#DFDBE1</color>
+    <color name="purple2">#603D72</color>
+    <color name="treegreen">#2E523A </color>
 
 </resources>
