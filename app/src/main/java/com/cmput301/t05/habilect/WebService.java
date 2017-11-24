@@ -176,11 +176,12 @@ public class WebService {
      */
     public static class GetHabitTypesTask extends AsyncTask<UserProfile, Void, ArrayList<HabitType>> {
 
+        ArrayList<HabitType> habitTypes = new ArrayList<HabitType>();
+
         @Override
         protected ArrayList<HabitType> doInBackground(UserProfile... userProfile) {
             verifySettings();
 
-            ArrayList<HabitType> habitTypes = new ArrayList<HabitType>();
 
             try {
                 List<HabitType> listOfHabitTypes = getListOfHabitTypes(userProfile[0]);
@@ -188,6 +189,15 @@ public class WebService {
             } catch (Exception e) {
                 Log.i("Error", "");
             }
+            return habitTypes;
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<HabitType> habitTypesList){
+            habitTypes = habitTypesList;
+        }
+        //Call this method after execute to return list of habit types
+        public ArrayList<HabitType> getHabitTypes(){
             return habitTypes;
         }
     }
