@@ -66,10 +66,7 @@ public class ViewHabitTypesActivity extends AppCompatActivity {
 
         habit_types = new ArrayList<>();
         habit_types = GSONController.GSON_CONTROLLER.loadHabitTypeFromFile();
-        ArrayAdapter<HabitType> adapter = new ArrayAdapter<>(this, R.layout.habit_type_list_item, habit_types);
+        HabitTypeListAdapter adapter = new HabitTypeListAdapter(habit_types, this);
         habitTypeList.setAdapter(adapter);
-
-        //Log.d("Debugging", "habit types list:" + habit_types.get(0).toString());
-        adapter.notifyDataSetChanged();
     }
 }

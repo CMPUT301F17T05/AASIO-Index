@@ -223,6 +223,8 @@ public class HomePrimaryFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        getIncompleteHabitTypes();
+        adapter.notifyDataSetChanged();
     }
 
     /**
@@ -235,9 +237,7 @@ public class HomePrimaryFragment extends Fragment {
         int today = c.get(Calendar.DAY_OF_WEEK);
         //Log.d("Debugging", "today in int:" + Integer.toString(today));
         boolean[] plan;
-        for (HabitType type : incomplete_habit_types) {
-            incomplete_habit_types.remove(type);
-        }
+        incomplete_habit_types.clear();
         for (HabitType h : all_habit_types) {
             plan = h.getWeeklyPlan();
             if (today == Calendar.MONDAY && plan[0]) {
