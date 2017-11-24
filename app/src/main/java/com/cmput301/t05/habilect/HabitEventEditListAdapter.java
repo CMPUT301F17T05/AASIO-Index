@@ -91,9 +91,12 @@ public class HabitEventEditListAdapter extends BaseAdapter implements ListAdapte
                     @Override
                     public void OnAdded() {
                         // TODO: implement OnAdded
-                        HabitEvent event =
+                        HabitEvent newEvent =
                                 editHabitEventFromBundle(editHabitEventDialog.getResultBundle());
-                        GSONController.GSON_CONTROLLER.editHabitEventInFile(event);
+                        GSONController.GSON_CONTROLLER.editHabitEventInFile(newEvent);
+                        eventList.remove(event);
+                        eventList.add(newEvent);
+                        notifyDataSetChanged();
                     }
 
                     @Override
@@ -113,6 +116,8 @@ public class HabitEventEditListAdapter extends BaseAdapter implements ListAdapte
             @Override
             public void onClick(View view) {
                 GSONController.GSON_CONTROLLER.deleteHabitEventInFile(event);
+                eventList.remove(event);
+                notifyDataSetChanged();
             }
         });
 

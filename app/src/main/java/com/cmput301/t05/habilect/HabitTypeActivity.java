@@ -51,6 +51,7 @@ public class HabitTypeActivity extends AppCompatActivity {
     private static HabitType habit_type;      // The habit type that has been clicked on for viewing
 
     private static HabitEventEditListAdapter eventListAdapter;
+    private static ArrayList<HabitEvent> eList;
 
     /**
      * sets up the activity and grabs the habit type that was passed in through a different
@@ -69,12 +70,20 @@ public class HabitTypeActivity extends AppCompatActivity {
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
+        habit_type = (HabitType) getIntent().getSerializableExtra("ClickedHabitType");
+
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
+
+        eList = GSONController.GSON_CONTROLLER.loadHabitEventFromFile();
+        eList = filterEventList(habit_type, eList);
+
+        eventListAdapter = new HabitEventEditListAdapter(eList, this);
+
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -88,6 +97,7 @@ public class HabitTypeActivity extends AppCompatActivity {
                         HabitEvent event =
                                 createHabitEventFromBundle(addHabitEventDialog.getResultBundle());
                         GSONController.GSON_CONTROLLER.saveHabitEventInFile(event);
+                        eList.add(event);
                         if(eventListAdapter != null) {
                             eventListAdapter.notifyDataSetChanged();
                         }
@@ -105,8 +115,22 @@ public class HabitTypeActivity extends AppCompatActivity {
                 addHabitEventDialog.show(fragmentManager, "addHabitEventDialog");
             }
         });
+    }
 
-        habit_type = (HabitType) getIntent().getSerializableExtra("ClickedHabitType");
+    /**
+     * Filters the event list such that only the events with the matching habit type remain
+     * @param habitType the habit type you want to filer by
+     * @param eventList the event list you want to filer
+     * @return returns a filter event list
+     */
+    private  ArrayList<HabitEvent> filterEventList(HabitType habitType, ArrayList<HabitEvent> eventList) {
+        ArrayList<HabitEvent> newList = new ArrayList<>();
+        for (HabitEvent event : eventList) {
+            if(event.getHabitType().equals(habitType.getTitle())) {
+                newList.add(event);
+            }
+        }
+        return newList;
     }
 
 
@@ -475,8 +499,6 @@ public class HabitTypeActivity extends AppCompatActivity {
         // The fragment argument representing the section number for this fragment.
         private static final String ARG_SECTION_NUMBER = "section_number";
 
-        ArrayList<HabitEvent> eList;
-
         public HabitTypeEventsFragment() {
         }
 
@@ -499,36 +521,9 @@ public class HabitTypeActivity extends AppCompatActivity {
             View rootView = inflater.inflate(R.layout.fragment_habit_type_options, container, false);
 
             ListView eventList = rootView.findViewById(R.id.fragmentHabitTypeOptionsListView);
-
-            eList = GSONController.GSON_CONTROLLER.loadHabitEventFromFile();
-            eList = filterEventList(habit_type, eList);
-
-            eventListAdapter = new HabitEventEditListAdapter(eList, getActivity());
             eventList.setAdapter(eventListAdapter);
 
             return rootView;
-        }
-
-        /**
-         * Filters the event list such that only the events with the matching habit type remain
-         * @param habitType the habit type you want to filer by
-         * @param eventList the event list you want to filer
-         * @return returns a filter event list
-         */
-        private  ArrayList<HabitEvent> filterEventList(HabitType habitType, ArrayList<HabitEvent> eventList) {
-            ArrayList<HabitEvent> newList = new ArrayList<>();
-            for (HabitEvent event : eventList) {
-                if(event.getHabitType().equals(habitType.getTitle())) {
-                    newList.add(event);
-                }
-            }
-            return newList;
-        }
-
-        @Override
-        public void onStart() {
-            super.onStart();
-            eList = GSONController.GSON_CONTROLLER.loadHabitEventFromFile();
         }
     }
 

@@ -64,6 +64,12 @@ public class HomePrimaryFragment extends Fragment {
             }
         });
 
+        all_habit_types = GSONController.GSON_CONTROLLER.loadHabitTypeFromFile();
+        incomplete_habit_types = getIncompleteHabitTypes();
+        adapter = new ArrayAdapter<>(getActivity(), R.layout.habit_type_list_item, incomplete_habit_types);
+        habitTypeList.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
+
         //habit_types = GSONController.GSON_CONTROLLER.loadHabitTypeFromFile();
         //adapter = new ArrayAdapter<>(getActivity(), R.layout.habit_type_list_item, habit_types);
         //habitTypeList.setAdapter(adapter);
@@ -80,7 +86,7 @@ public class HomePrimaryFragment extends Fragment {
                             HabitType habit_type = new HabitType(title, reason, start_date, weekly_plan);
 
                             GSONController.GSON_CONTROLLER.saveHabitTypeInFile(habit_type);
-                            all_habit_types = GSONController.GSON_CONTROLLER.loadHabitTypeFromFile();
+                            all_habit_types.add(habit_type); // TODO: ?
                             incomplete_habit_types = getIncompleteHabitTypes();
                             adapter.notifyDataSetChanged();
 
@@ -217,12 +223,6 @@ public class HomePrimaryFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-
-        all_habit_types = GSONController.GSON_CONTROLLER.loadHabitTypeFromFile();
-        incomplete_habit_types = getIncompleteHabitTypes();
-        adapter = new ArrayAdapter<>(getActivity(), R.layout.habit_type_list_item, incomplete_habit_types);
-        habitTypeList.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
 
     }
 
