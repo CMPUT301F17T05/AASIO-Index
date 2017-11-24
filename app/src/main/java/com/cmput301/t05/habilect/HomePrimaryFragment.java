@@ -40,10 +40,10 @@ public class HomePrimaryFragment extends Fragment {
     FragmentManager fragmentManager;
 
     private ListView habitTypeList;
-    private ArrayList<HabitType> all_habit_types;
-    private ArrayList<HabitType> incomplete_habit_types;
+    private static ArrayList<HabitType> all_habit_types;
+    private static ArrayList<HabitType> incomplete_habit_types;
     //UserProfile user_profile = new UserProfile(getApplicationContext());
-    ArrayAdapter<HabitType> adapter;
+    HabitTypeListAdapter adapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater,
@@ -65,10 +65,10 @@ public class HomePrimaryFragment extends Fragment {
         });
 
         all_habit_types = GSONController.GSON_CONTROLLER.loadHabitTypeFromFile();
-        incomplete_habit_types = getIncompleteHabitTypes();
-        adapter = new ArrayAdapter<>(getActivity(), R.layout.habit_type_list_item, incomplete_habit_types);
+        incomplete_habit_types = new ArrayList<>();
+        getIncompleteHabitTypes();
+        adapter = new HabitTypeListAdapter(incomplete_habit_types, getContext());
         habitTypeList.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
 
         //habit_types = GSONController.GSON_CONTROLLER.loadHabitTypeFromFile();
         //adapter = new ArrayAdapter<>(getActivity(), R.layout.habit_type_list_item, habit_types);
@@ -86,8 +86,8 @@ public class HomePrimaryFragment extends Fragment {
                             HabitType habit_type = new HabitType(title, reason, start_date, weekly_plan);
 
                             GSONController.GSON_CONTROLLER.saveHabitTypeInFile(habit_type);
-                            all_habit_types.add(habit_type); // TODO: ?
-                            incomplete_habit_types = getIncompleteHabitTypes();
+                            all_habit_types = GSONController.GSON_CONTROLLER.loadHabitTypeFromFile();
+                            getIncompleteHabitTypes();
                             adapter.notifyDataSetChanged();
 
                             /*user_profile.addPlans(habit_type);
@@ -221,47 +221,48 @@ public class HomePrimaryFragment extends Fragment {
      * @see HabitType
      */
     @Override
-    public void onStart() {
-        super.onStart();
-
+    public void onResume() {
+        super.onResume();
     }
 
     /**
      * From the list of habit types, checks which ones still need to be done today
      * @return A list of habit types that need to be done
      */
-    private ArrayList<HabitType> getIncompleteHabitTypes() {
+    private void getIncompleteHabitTypes() {
 
         Calendar c = Calendar.getInstance();
         int today = c.get(Calendar.DAY_OF_WEEK);
         //Log.d("Debugging", "today in int:" + Integer.toString(today));
         boolean[] plan;
-        ArrayList<HabitType> incomplete_habits = new ArrayList<>();
-
+        for (HabitType type : incomplete_habit_types) {
+            incomplete_habit_types.remove(type);
+        }
         for (HabitType h : all_habit_types) {
             plan = h.getWeeklyPlan();
             if (today == Calendar.MONDAY && plan[0]) {
-                incomplete_habits.add(h);
+                incomplete_habit_types.add(h);
             }
             else if (today == Calendar.TUESDAY && plan[1]) {
-                incomplete_habits.add(h);
+                incomplete_habit_types.add(h);
             }
             else if (today == Calendar.WEDNESDAY && plan[2]) {
-                incomplete_habits.add(h);
+                incomplete_habit_types.add(h);
             }
             else if (today == Calendar.THURSDAY && plan[3]) {
-                incomplete_habits.add(h);
+                incomplete_habit_types.add(h);
             }
             else if (today == Calendar.FRIDAY && plan[4]) {
-                incomplete_habits.add(h);
+                incomplete_habit_types.add(h);
             }
             else if (today == Calendar.SATURDAY && plan[5]) {
-                incomplete_habits.add(h);
+                incomplete_habit_types.add(h);
             }
             else if (today == Calendar.SUNDAY && plan[6]) {
-                incomplete_habits.add(h);
+                incomplete_habit_types.add(h);
             }
         }
-        return incomplete_habits;
+
+
     }
 }
