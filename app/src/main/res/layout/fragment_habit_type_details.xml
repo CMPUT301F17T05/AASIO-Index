@@ -44,4 +44,12 @@
         android:layout_marginTop="33dp"
         android:text="TextView" />
 
+    <com.jjoe64.graphview.GraphView
+        android:id="@+id/graphHabitType"
+        android:layout_width="match_parent"
+        android:layout_height="200dip"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/textViewWeeklyPlan"
+        android:layout_marginTop="35dp" />
+
 </RelativeLayout>

@@ -30,9 +30,15 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.helper.StaticLabelsFormatter;
+import com.jjoe64.graphview.series.DataPoint;
+import com.jjoe64.graphview.series.LineGraphSeries;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class HabitTypeActivity extends AppCompatActivity {
 
@@ -87,10 +93,10 @@ public class HabitTypeActivity extends AppCompatActivity {
                 addHabitEventDialog.setOnAddHabitEventListener(new OnAddHabitEventListener() {
                     @Override
                     public void OnAdded() {
-                        // TODO: implement OnAdded
                         HabitEvent event =
                                 createHabitEventFromBundle(addHabitEventDialog.getResultBundle());
                         GSONController.GSON_CONTROLLER.saveHabitEventInFile(event);
+                        habit_type.addHabitEvent(event);
                         if(eventListAdapter != null) {
                             eventListAdapter.notifyDataSetChanged();
                         }
@@ -138,7 +144,9 @@ public class HabitTypeActivity extends AppCompatActivity {
         };
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_edit) {
+
+        }
         if (id == R.id.action_delete) {
             AlertDialog alertDialog = new AlertDialog.Builder(context).create();
             alertDialog.setTitle("DELETE");
@@ -238,6 +246,11 @@ public class HabitTypeActivity extends AppCompatActivity {
 
         // The fragment argument representing the section number for this fragment.
         private static final String ARG_SECTION_NUMBER = "section_number";
+        TextView habitTitle;
+        TextView habitReason;
+        TextView habitStartDate;
+        TextView habitWeeklyPlan;
+        GraphView graph;
 
         public HabitDetailsFragment() {
         }
@@ -267,17 +280,35 @@ public class HabitTypeActivity extends AppCompatActivity {
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_habit_type_details, container, false);
 
-            TextView habitTitle = rootView.findViewById(R.id.textViewTitle);
-            TextView habitReason = rootView.findViewById(R.id.textViewReason);
-            TextView habitStartDate = rootView.findViewById(R.id.textViewStartDate);
-            TextView habitWeeklyPlan = rootView.findViewById(R.id.textViewWeeklyPlan);
+            habitTitle = rootView.findViewById(R.id.textViewTitle);
+            habitReason = rootView.findViewById(R.id.textViewReason);
+            habitStartDate = rootView.findViewById(R.id.textViewStartDate);
+            habitWeeklyPlan = rootView.findViewById(R.id.textViewWeeklyPlan);
+            graph = rootView.findViewById(R.id.graphHabitType);
+
+            return rootView;
+        }
+
+        @Override
+        public void onResume() {
+            super.onResume();
 
             habitTitle.setText(habit_type.getTitle());
             habitReason.setText(habit_type.getReason());
             habitStartDate.setText(habit_type.getStartDate().toString());
             habitWeeklyPlan.setText(habit_type.getWeeklyPlanString());
 
-            return rootView;
+            StatisticsCalculator calculator = new StatisticsCalculator(habit_type);
+            DataPoint[] points = calculator.pastFourWeeks();
+
+            graph.setTitle("Past 4 Weeks of Habit Events");
+
+            LineGraphSeries<DataPoint> series = new LineGraphSeries<>(points);
+            graph.addSeries(series);
+
+            StaticLabelsFormatter staticLabelsFormatter = new StaticLabelsFormatter(graph);
+            staticLabelsFormatter.setHorizontalLabels(new String[] {"4", "3", "2", "1", "current"});
+            graph.getGridLabelRenderer().setLabelFormatter(staticLabelsFormatter);
         }
     }
 
@@ -289,14 +320,14 @@ public class HabitTypeActivity extends AppCompatActivity {
         // The fragment argument representing the section number for this fragment.
         private static final String ARG_SECTION_NUMBER = "section_number";
         private HabitTypeListener habitTypeListener;
-        boolean[] weekly_plan = habit_type.getWeeklyPlan();
-        CheckBox newMonday;
-        CheckBox newTuesday;
-        CheckBox newWednesday;
-        CheckBox newThursday;
-        CheckBox newFriday;
-        CheckBox newSaturday;
-        CheckBox newSunday;
+        private boolean[] weekly_plan = habit_type.getWeeklyPlan();
+        private CheckBox newMonday;
+        private CheckBox newTuesday;
+        private CheckBox newWednesday;
+        private CheckBox newThursday;
+        private CheckBox newFriday;
+        private CheckBox newSaturday;
+        private CheckBox newSunday;
 
         public EditHabitFragment() {
         }
@@ -333,7 +364,7 @@ public class HabitTypeActivity extends AppCompatActivity {
             newFriday = rootView.findViewById(R.id.checkBoxEditFriday);
             newSaturday = rootView.findViewById(R.id.checkBoxEditSaturday);
             newSunday = rootView.findViewById(R.id.checkBoxEditSunday);
-            setCheckboxes();
+            //setCheckboxes();
 
             ArrayList<CheckBox> checkboxes = new ArrayList<>();
             checkboxes.add(newMonday);
@@ -419,6 +450,13 @@ public class HabitTypeActivity extends AppCompatActivity {
             return rootView;
         }
 
+        @Override
+        public void onResume() {
+            super.onResume();
+
+            setCheckboxes();
+
+        }
         /**
          * sets the CheckBoxes to the values in the habit type weekly plan
          *
@@ -518,7 +556,7 @@ public class HabitTypeActivity extends AppCompatActivity {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_habit_type_options, container, false);
+            View rootView = inflater.inflate(R.layout.fragment_habit_type_events, container, false);
 
             ListView eventList = rootView.findViewById(R.id.fragmentHabitTypeOptionsListView);
 

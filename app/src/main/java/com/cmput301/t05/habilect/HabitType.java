@@ -2,6 +2,8 @@ package com.cmput301.t05.habilect;
 
 import android.util.Log;
 
+import com.jjoe64.graphview.series.DataPoint;
+
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -97,6 +99,8 @@ public class HabitType extends Observable implements Serializable {
     public List<UserProfile> getFollowers() {
         return this.followers;
     }
+    public Date getRecentHabitEvent() { return this.recent_habit_event; }
+    public List<HabitEvent> getHabitEvents() { return this.habitEvents; }
 
     // SETTERS
 
@@ -193,48 +197,6 @@ public class HabitType extends Observable implements Serializable {
     }
 
     // BEHAVIOURS
-
-    /**
-     * counts up the number of days in the habit type's weekly plan that have passed
-     * since the start date to determine how many times the user could have created a
-     * habit event if they were following their plan perfectly
-     *
-     * @return      an int specifying the number of total opportunities
-     *              to create a habit event
-     */
-    public int totalEventOpportunities() {
-        int count = 0;
-        Calendar start = Calendar.getInstance();
-        Calendar today = Calendar.getInstance();
-        start.setTime(start_date);
-        while (start.before(today)) {
-            switch (start.get(Calendar.DAY_OF_WEEK)) {
-                case Calendar.MONDAY:
-                    if (this.weekly_plan[0]) { ++count; }
-                    break;
-                case Calendar.TUESDAY:
-                    if (this.weekly_plan[1]) { ++count; }
-                    break;
-                case Calendar.WEDNESDAY:
-                    if (this.weekly_plan[2]) { ++count; }
-                    break;
-                case Calendar.THURSDAY:
-                    if (this.weekly_plan[3]) { ++count; }
-                    break;
-                case Calendar.FRIDAY:
-                    if (this.weekly_plan[4]) { ++count; }
-                    break;
-                case Calendar.SATURDAY:
-                    if (this.weekly_plan[5]) { ++count; }
-                    break;
-                case Calendar.SUNDAY:
-                    if (this.weekly_plan[6]) { ++count; }
-                    break;
-            }
-            start.add(Calendar.DATE, 1);
-        }
-        return count;
-    }
 
     /**
      * lets the Observers of this habit type know that it has been created, edited, or deleted

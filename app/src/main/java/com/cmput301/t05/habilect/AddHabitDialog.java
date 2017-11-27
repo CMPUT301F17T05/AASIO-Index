@@ -109,7 +109,6 @@ public class AddHabitDialog extends DialogFragment {
                 .setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                habitTypeListener.OnDeleted();
                 dialog.dismiss();
             }
         });
