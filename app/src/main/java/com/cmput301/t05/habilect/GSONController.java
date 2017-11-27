@@ -18,6 +18,7 @@ import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 
 /**
  * Facilitates the use of GSON for saving habit types, habit events and user profile information.
@@ -327,9 +328,21 @@ public class GSONController {
     public void deleteHabitTypeInFile(HabitType habitType) {
         if(typeInEventList(habitType)) {
             HabitType rmType = findHabitType(habitType.getTitle());
+            deleteAllAssociatedHabitEvent(habitType.getTitle());
+            saveHabitEventListInFile();
             typeList.remove(rmType);
             typeTitleList.remove(habitType.getTitle());
             saveHabitTypeListInFile();
+        }
+    }
+
+    public void deleteAllAssociatedHabitEvent(String habitType) {
+        Iterator<HabitEvent> iterator = eventList.iterator();
+        while(iterator.hasNext()) {
+            HabitEvent event = iterator.next();
+            if(event.getHabitType().equals(habitType)) {
+                iterator.remove();
+            }
         }
     }
 
@@ -350,6 +363,8 @@ public class GSONController {
             BufferedWriter out = new BufferedWriter(fw);
 
             HabitType rmType = findHabitType(title);
+            editAllAssociatedHabitEvent(title, habitType.getTitle());
+            saveHabitEventListInFile();
             //Log.d("Debugging:", "retrieved habit type: " + rmType.getTitle());
             typeList.remove(rmType);
             typeList.add(habitType);
@@ -362,6 +377,16 @@ public class GSONController {
         } catch (Exception e) {
             // TODO Auto-generated catch block
             throw new RuntimeException();
+        }
+    }
+
+    public void editAllAssociatedHabitEvent(String habitType, String newTitle) {
+        Iterator<HabitEvent> iterator = eventList.iterator();
+        while(iterator.hasNext()) {
+            HabitEvent event = iterator.next();
+            if(event.getHabitType().equals(habitType)) {
+                event.setHabitType(newTitle);
+            }
         }
     }
 

@@ -1,8 +1,10 @@
 package com.cmput301.t05.habilect;
 
+import android.app.ActionBar;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,8 +25,6 @@ public class HistoryFilterFragment extends Fragment {
     ArrayList<HabitEvent> allHabitEvents;
     SearchView searchView;
 
-
-
     @Override
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -44,7 +44,6 @@ public class HistoryFilterFragment extends Fragment {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
-
                 eventListAdapter.getFilter().filter(s);
                 return false;
             }
