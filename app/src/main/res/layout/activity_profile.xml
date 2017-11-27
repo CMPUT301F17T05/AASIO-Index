@@ -89,6 +89,14 @@
                 app:layout_constraintTop_toBottomOf="@+id/displayNameEditText"
                 app:layout_constraintVertical_bias="0.0">
 
+
+                <ImageView
+                    android:id="@+id/treeGrowthImageView"
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    app:srcCompat="@android:drawable/star_big_off"
+                    />
+
                 <Button
                     android:id="@+id/saveChangesButton"
                     android:layout_width="match_parent"

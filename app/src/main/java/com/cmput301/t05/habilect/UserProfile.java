@@ -21,16 +21,17 @@ import java.util.UUID;
 
 public class UserProfile {
     public static final String HABILECT_USER_INFO = "HABILECT_USER_INFO";
-
     public static final String HABILECT_USER_INSTALL_ID = "HABILECT_USER_INSTALL_ID";
     public static final String HABILECT_USER_DISPLAY_NAME = "HABILECT_USER_DISPLAY_NAME";
     public static final String HABILECT_USER_PICTURE = "HABILECT_USER_PICTURE";
+    public static final String HABILECT_USER_TREE_GROWTH = "HABILECT_USER_TREE_GROWTH";
 
     Context context;
 
     String identifier;
     String displayName;
     String profilePicture;
+    TreeGrowth treeGrowth = new TreeGrowth();
     List<HabitType> plans = new ArrayList<>();
 
     boolean isNewUser = false;
@@ -41,6 +42,7 @@ public class UserProfile {
         this.setIdentifier(this.Lookup(context, HABILECT_USER_INSTALL_ID));
         this.setDisplayName(this.Lookup(context, HABILECT_USER_DISPLAY_NAME));
         this.setProfilePicture(this.Lookup(context, HABILECT_USER_PICTURE));
+        this.setTreeGrowth(this.Lookup(context, HABILECT_USER_TREE_GROWTH));
 
         if (isNewUser) {
             WebService.AddUserProfileTask addUserProfileTask = new WebService.AddUserProfileTask();
@@ -93,6 +95,10 @@ public class UserProfile {
         this.identifier = identifier;
     }
 
+    public void setTreeGrowth(String nutrientLevel){
+        this.treeGrowth.setNutrientLevel(Integer.parseInt(nutrientLevel));
+    }
+
     static String Lookup(Context context, String preferenceKey) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(HABILECT_USER_INFO, Context.MODE_PRIVATE);
         String preference = sharedPreferences.getString(preferenceKey, null);
@@ -114,6 +120,11 @@ public class UserProfile {
                     break;
                 case HABILECT_USER_PICTURE:
                     newPreference = null;
+                    editor.putString(preferenceKey, newPreference);
+                    editor.commit();
+                    break;
+                case HABILECT_USER_TREE_GROWTH:
+                    newPreference = "0";
                     editor.putString(preferenceKey, newPreference);
                     editor.commit();
                     break;
