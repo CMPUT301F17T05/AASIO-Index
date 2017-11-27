@@ -8,7 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.ImageButton;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ListAdapter;
 import android.widget.TextView;
 
@@ -21,8 +22,9 @@ import java.util.Locale;
  * This allows a habit event to be displayed in a ListView.
  * @author rarog
  */
-public class HabitEventListAdapter extends BaseAdapter implements ListAdapter {
+public class HabitEventListAdapter extends BaseAdapter implements ListAdapter, Filterable {
     private ArrayList<HabitEvent> eventList = new ArrayList<>();
+    private ArrayList<HabitEvent> allEventList = new ArrayList<>();
     private Context context;
     private String habitType;
     private Date date;
@@ -30,6 +32,7 @@ public class HabitEventListAdapter extends BaseAdapter implements ListAdapter {
     HabitEventListAdapter(ArrayList<HabitEvent> eventList, Context context) {
         this.eventList = eventList;
         this.context = context;
+        allEventList = this.eventList;
     }
 
     @Override
@@ -95,5 +98,40 @@ public class HabitEventListAdapter extends BaseAdapter implements ListAdapter {
         bundle.putString("File Path", habitType.replace(" ", "_") + "_" + dateString);
 
         return bundle;
+    }
+
+    @Override
+    public Filter getFilter() {
+        eventList = allEventList;
+        Filter filter = new Filter() {
+
+            @SuppressWarnings("unchecked")
+            @Override
+            protected void publishResults(CharSequence constraint, FilterResults results) {
+                eventList = (ArrayList<HabitEvent>) results.values;
+                notifyDataSetChanged();
+            }
+
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+                FilterResults results = new FilterResults();
+                ArrayList<HabitEvent> filteredEvents = new ArrayList<>();
+
+                constraint = constraint.toString().toLowerCase();
+                for (HabitEvent event : eventList) {
+                    String comment = event.getComment();
+                    if (comment.toLowerCase().contains(constraint.toString()))  {
+                        filteredEvents.add(event);
+                    }
+                }
+
+                results.count = filteredEvents.size();
+                results.values = filteredEvents;
+
+                return results;
+            }
+        };
+
+        return filter;
     }
 }
