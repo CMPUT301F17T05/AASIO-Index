@@ -8,116 +8,21 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.cmput301.t05.habilect.HabitTypeActivity$EditHabitFragment">
 
-    <EditText
-        android:id="@+id/editTextEditHabitTypeTitle"
+    <com.jjoe64.graphview.GraphView
+        android:id="@+id/graphHabitType"
+        android:layout_width="match_parent"
+        android:layout_height="200dip"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="91dp" />
+
+    <TextView
+        android:id="@+id/textViewAverageStat"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:ems="10"
-        android:hint="@string/add_habit_title_hint"
-        android:inputType="textPersonName" />
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="82dp"
+        android:text="TextView" />
 
-    <EditText
-        android:id="@+id/editTextEditHabitTypeReason"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/editTextEditHabitTypeTitle"
-        android:ems="10"
-        android:hint="@string/add_habit_reason_hint"
-        android:inputType="textPersonName" />
-
-    <DatePicker
-        android:id="@+id/datePickerEditHabitTypeStartDate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/editTextEditHabitTypeTitle"
-        android:layout_marginTop="22dp"
-        android:datePickerMode="spinner" />
-
-    <CheckBox
-        android:id="@+id/checkBoxEditMonday"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/datePickerEditHabitTypeStartDate"
-        android:text="@string/monday"
-        android:textSize="@dimen/font_size_small"
-        android:fontFamily="sans-serif-thin"/>
-
-    <CheckBox
-        android:id="@+id/checkBoxEditTuesday"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/datePickerEditHabitTypeStartDate"
-        android:layout_toEndOf="@+id/checkBoxEditMonday"
-        android:fontFamily="sans-serif-thin"
-        android:text="@string/tuesday"
-        android:textSize="@dimen/font_size_small" />
-
-    <CheckBox
-        android:id="@+id/checkBoxEditWednesday"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/checkBoxEditTuesday"
-        android:layout_alignBottom="@+id/checkBoxEditTuesday"
-        android:layout_toEndOf="@+id/checkBoxEditTuesday"
-        android:fontFamily="sans-serif-thin"
-        android:text="@string/wednesday"
-        android:textSize="@dimen/font_size_small" />
-
-    <CheckBox
-        android:id="@+id/checkBoxEditThursday"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/checkBoxEditMonday"
-        android:fontFamily="sans-serif-thin"
-        android:text="@string/thursday"
-        android:textSize="@dimen/font_size_small" />
-
-    <CheckBox
-        android:id="@+id/checkBoxEditFriday"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/checkBoxEditThursday"
-        android:layout_alignBottom="@+id/checkBoxEditThursday"
-        android:layout_toEndOf="@+id/checkBoxEditThursday"
-        android:fontFamily="sans-serif-thin"
-        android:text="@string/friday"
-        android:textSize="@dimen/font_size_small" />
-
-    <CheckBox
-        android:id="@+id/checkBoxEditSaturday"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/checkBoxEditWednesday"
-        android:layout_below="@+id/checkBoxEditTuesday"
-        android:fontFamily="sans-serif-thin"
-        android:text="@string/saturday"
-        android:textSize="@dimen/font_size_small" />
-
-    <CheckBox
-        android:id="@+id/checkBoxEditSunday"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/checkBoxEditTuesday"
-        android:layout_toEndOf="@+id/checkBoxEditSaturday"
-        android:fontFamily="sans-serif-thin"
-        android:text="@string/sunday"
-        android:textSize="@dimen/font_size_small" />
-
-    <Button
-        android:id="@+id/buttonSaveHabitTypeEdits"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_below="@+id/datePickerEditHabitTypeStartDate"
-        android:background="@color/colorPrimary"
-        android:fontFamily="sans-serif-thin"
-        android:text="@string/save"
-        android:textColor="@color/white"
-        android:textSize="@dimen/font_size_medium" />
 </RelativeLayout>

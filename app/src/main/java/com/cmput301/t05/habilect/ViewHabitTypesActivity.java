@@ -81,18 +81,19 @@ public class ViewHabitTypesActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        WebService.GetHabitTypesTask getHabitTypesTask = new WebService.GetHabitTypesTask();
+        //WebService.GetHabitTypesTask getHabitTypesTask = new WebService.GetHabitTypesTask();
 
-        try {
+        habit_types = GSONController.GSON_CONTROLLER.loadHabitTypeFromFile();
+
+        /*try {
             habit_types = getHabitTypesTask.execute(user_profile).get();
-            habit_types = GSONController.GSON_CONTROLLER.loadHabitTypeFromFile();
         } catch (InterruptedException e) {
             // load from file
             habit_types = GSONController.GSON_CONTROLLER.loadHabitTypeFromFile();
         } catch (ExecutionException e) {
             // load from file
             habit_types = GSONController.GSON_CONTROLLER.loadHabitTypeFromFile();
-        }
+        }*/
 
 
         // load from file

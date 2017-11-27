@@ -73,6 +73,13 @@ public class StatisticsCalculator {
         return events.size();
     }
 
+    public int averageCompletion() {
+        if (totalEventOpportunities() == 0) {
+            return 0;
+        }
+        return ((totalEvents() / totalEventOpportunities()) * 100);
+    }
+
     public DataPoint[] pastFourWeeks() {
 
         DataPoint[] points = new DataPoint[5];
