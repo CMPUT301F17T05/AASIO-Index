@@ -16,17 +16,12 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.DatePicker;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -38,7 +33,6 @@ import com.jjoe64.graphview.series.LineGraphSeries;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 public class HabitTypeActivity extends AppCompatActivity {
 
@@ -319,7 +313,7 @@ public class HabitTypeActivity extends AppCompatActivity {
 
             habitTitle.setText(habit_type.getTitle());
             habitReason.setText(habit_type.getReason());
-            habitStartDate.setText(habit_type.getStartDate().toString());
+            habitStartDate.setText(habit_type.getStartDateString());
             habitWeeklyPlan.setText(habit_type.getWeeklyPlanString());
         }
     }
@@ -327,22 +321,22 @@ public class HabitTypeActivity extends AppCompatActivity {
     /**
      * The fragment that allows the user to edit the details of the habit type
      */
-    public static class EditHabitFragment extends Fragment {
+    public static class HabitStatsFragment extends Fragment {
 
         // The fragment argument representing the section number for this fragment.
         private static final String ARG_SECTION_NUMBER = "section_number";
         private GraphView graph;
         private TextView displayAverage;
 
-        public EditHabitFragment() {
+        public HabitStatsFragment() {
         }
 
         /**
          * Returns a new instance of this fragment for the given section
          * number.
          */
-        public static EditHabitFragment newInstance(int sectionNumber) {
-            EditHabitFragment fragment = new EditHabitFragment();
+        public static HabitStatsFragment newInstance(int sectionNumber) {
+            HabitStatsFragment fragment = new HabitStatsFragment();
             Bundle args = new Bundle();
             args.putInt(ARG_SECTION_NUMBER, sectionNumber);
             fragment.setArguments(args);
@@ -352,7 +346,7 @@ public class HabitTypeActivity extends AppCompatActivity {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_edit_habit_type, container, false);
+            View rootView = inflater.inflate(R.layout.fragment_habit_type_stats, container, false);
             graph = rootView.findViewById(R.id.graphHabitType);
             displayAverage = rootView.findViewById(R.id.textViewAverageStat);
             return rootView;
@@ -364,7 +358,7 @@ public class HabitTypeActivity extends AppCompatActivity {
             DataPoint[] points = calculator.pastFourWeeks();
 
             int average = calculator.averageCompletion();
-            displayAverage.setText(Integer.toString(average));
+            displayAverage.setText(Integer.toString(average) + "%");
 
             graph.setTitle("Past 4 Weeks of Habit Events");
 
@@ -374,6 +368,11 @@ public class HabitTypeActivity extends AppCompatActivity {
             StaticLabelsFormatter staticLabelsFormatter = new StaticLabelsFormatter(graph);
             staticLabelsFormatter.setHorizontalLabels(new String[] {"4", "3", "2", "1", "current"});
             graph.getGridLabelRenderer().setLabelFormatter(staticLabelsFormatter);
+
+            graph.getGridLabelRenderer().setPadding(100);
+
+            graph.getGridLabelRenderer().setVerticalAxisTitle("# Events Created");
+            graph.getGridLabelRenderer().setHorizontalAxisTitle("Week(s) ago");
             super.onResume();
 
         }
@@ -463,7 +462,7 @@ public class HabitTypeActivity extends AppCompatActivity {
                 return new HabitDetailsFragment();
             }
             else if (position == 1) {
-                return new EditHabitFragment();
+                return new HabitStatsFragment();
             }
             else if (position == 2) {
                 return new HabitTypeEventsFragment();

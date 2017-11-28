@@ -72,6 +72,10 @@ public class HabitType extends Observable implements Serializable {
     public Date getStartDate() {
         return this.start_date;
     }
+    public String getStartDateString() {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("E',' MMMM d',' y");
+        return simpleDateFormat.format(this.start_date);
+    }
     public boolean[] getWeeklyPlan() {
         return this.weekly_plan;
     }
