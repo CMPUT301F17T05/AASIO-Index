@@ -91,11 +91,11 @@ public class HabitEventListAdapter extends BaseAdapter implements ListAdapter, F
      */
     private Bundle sendHabitInfoToView(HabitEvent event) {
         Bundle bundle = new Bundle();
-        bundle.putString("Title", habitType);
-        String dateString = new SimpleDateFormat("yyyy_MM_dd", Locale.ENGLISH).format(date);
+        bundle.putString("Title", event.getHabitType());
+        String dateString = new SimpleDateFormat("yyyy_MM_dd", Locale.ENGLISH).format(event.getCompletionDate());
         bundle.putString("Date", dateString);
         bundle.putString("Comment", event.getComment());
-        bundle.putString("File Path", habitType.replace(" ", "_") + "_" + dateString);
+        bundle.putString("File Path", event.getHabitType().replace(" ", "_") + "_" + dateString);
 
         return bundle;
     }

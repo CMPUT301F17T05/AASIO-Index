@@ -155,7 +155,8 @@ public class GSONController {
      * Saves a habit event in file if we don't already have it
      * @param event the habit evnt you want to save
      */
-    void saveHabitEventInFile(HabitEvent event) {
+    boolean saveHabitEventInFile(HabitEvent event){
+        boolean result = false;
         try {
             ContextWrapper cw = new ContextWrapper(context.getApplicationContext());
             File directory = cw.getDir("userData", Context.MODE_PRIVATE);
@@ -169,13 +170,14 @@ public class GSONController {
             if(!eventInEventList(event) && event != null) {
                 eventList.add(event);
                 eventTitleAndDateList.add(event.getHabitType() + "_" + event.getCompletionDate());
+                result =  true;
             }
-
             Gson gson = new Gson();
             gson.toJson(eventList, out);
             out.flush();
 
             fw.close();
+            return result;
         } catch (Exception e) {
             // TODO Auto-generated catch block
             throw new RuntimeException();
@@ -285,7 +287,7 @@ public class GSONController {
 
         } catch (FileNotFoundException e) {
             // TODO Auto-generated catch block
-            typeList = new ArrayList<HabitType>();
+            typeList = new ArrayList<>();
         }
         return typeList == null ? new ArrayList<>() : typeList;
     }
