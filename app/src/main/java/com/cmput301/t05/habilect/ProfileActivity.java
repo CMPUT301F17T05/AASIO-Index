@@ -300,12 +300,13 @@ public class ProfileActivity extends AppCompatActivity {
 
         int nutrientLevel = profileTreeGrowth.getNutrientLevel();
 
+        Log.i("NUTRIENTLEVEL: ", "" + nutrientLevel);
         //tmp drawables until have actual images
         if (nutrientLevel < 25) {
             treeGrowthImageView.setImageResource(R.drawable.home);
         } else if (nutrientLevel >= 25 && nutrientLevel < 50) {
             treeGrowthImageView.setImageResource(R.drawable.profile);
-        } else if (nutrientLevel >= 50 && nutrientLevel < 75) {
+        } else if (nutrientLevel >= 50) {
             treeGrowthImageView.setImageResource(R.drawable.history);
         }
     }

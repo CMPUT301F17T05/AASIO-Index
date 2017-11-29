@@ -1,5 +1,6 @@
 package com.cmput301.t05.habilect;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
@@ -52,6 +53,7 @@ public class HabitTypeActivity extends AppCompatActivity {
 
     private static HabitEventEditListAdapter eventListAdapter;
 
+    private static Context mContext;
     /**
      * sets up the activity and grabs the habit type that was passed in through a different
      * activity
@@ -63,6 +65,7 @@ public class HabitTypeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_habit_type);
 
+        mContext = getApplicationContext();
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         // Create the adapter that will return a fragment for each of the three
@@ -503,7 +506,7 @@ public class HabitTypeActivity extends AppCompatActivity {
             eList = GSONController.GSON_CONTROLLER.loadHabitEventFromFile();
             eList = filterEventList(habit_type, eList);
 
-            eventListAdapter = new HabitEventEditListAdapter(eList, getActivity());
+            eventListAdapter = new HabitEventEditListAdapter(eList, getActivity(), mContext);
             eventList.setAdapter(eventListAdapter);
 
             return rootView;
