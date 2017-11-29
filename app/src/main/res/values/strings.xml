@@ -16,4 +16,7 @@
     <string name="habit_type_options_tab">Options</string>
     <string name="save">Save</string>
     <string name="habit_type">Habit Type</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

@@ -49,5 +49,14 @@ public class Navigation {
                 context.getContext().startActivity(intent);
             }
         });
+        final Button navigateMapButton = (Button) context.findViewById(R.id.navigateMap);
+        navigateMapButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((DrawerLayout)(view.getParent().getParent())).closeDrawer(Gravity.START);
+                Intent intent = new Intent(context.getContext(), ViewHabitMapActivity.class);
+                context.getContext().startActivity(intent);
+            }
+        });
     }
 }
