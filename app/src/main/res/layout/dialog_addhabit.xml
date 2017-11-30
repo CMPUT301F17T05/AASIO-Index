@@ -95,12 +95,12 @@
         android:id="@+id/add_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Add"
-        android:fontFamily="sans-serif-thin"
-        android:textSize="35sp"
-        android:textColor="@color/white"
+        android:layout_marginTop="10dp"
         android:background="@color/colorPrimary"
-        android:layout_marginTop="10dp"/>
+        android:fontFamily="sans-serif-thin"
+        android:text="@string/save"
+        android:textColor="@color/white"
+        android:textSize="35sp" />
 
     <Button
         android:id="@+id/cancel_button"

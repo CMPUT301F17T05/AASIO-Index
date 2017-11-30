@@ -41,4 +41,5 @@ dependencies {
     compile 'com.android.support:support-core-utils:26.1.0'
     compile 'com.google.android.gms:play-services-location:11.6.0'
     compile 'com.android.support:design:26.1.0'
+    compile 'com.jjoe64:graphview:4.2.1'
 }

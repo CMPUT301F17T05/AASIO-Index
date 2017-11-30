@@ -370,7 +370,7 @@ public class GSONController {
      * @param title title of habit type object you want to find
      * @return returns the found habit type
      */
-    private HabitType findHabitType(String title) {
+    public HabitType findHabitType(String title) {
         for(HabitType type : typeList) {
             if(title.equals(type.getTitle())) {
                 return type;

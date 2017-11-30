@@ -16,4 +16,10 @@
     <string name="habit_type_options_tab">Options</string>
     <string name="save">Save</string>
     <string name="habit_type">Habit Type</string>
+    <string name="action_edit">Edit</string>
+    <string name="title">Title:</string>
+    <string name="reason">Reason:</string>
+    <string name="start_date">Start Date:</string>
+    <string name="weekly_plan">Weekly Plan:</string>
+    <string name="completion_average">Completion Average:</string>
 </resources>
