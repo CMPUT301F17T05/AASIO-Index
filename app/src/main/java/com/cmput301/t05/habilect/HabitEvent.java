@@ -3,8 +3,10 @@ package com.cmput301.t05.habilect;
 import android.graphics.Bitmap;
 import android.location.Location;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 /**
  * @author ioltuszy
@@ -48,6 +50,11 @@ class HabitEvent {
     }
     public Date getCompletionDate() {
         return completion_date;
+    }
+    public String getCompletionDateString() {
+        Locale locale = new Locale("English", "Canada");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEEE',' MMMM d',' yyyy", locale);
+        return simpleDateFormat.format(this.completion_date);
     }
     public String getHabitType() { return habitType; }
 

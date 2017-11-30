@@ -314,7 +314,7 @@ public class HabitTypeActivity extends AppCompatActivity {
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_habit_type_events, container, false);
 
-            ListView eventList = rootView.findViewById(R.id.fragmentHabitTypeOptionsListView);
+            ListView eventList = rootView.findViewById(R.id.fragmentHabitTypeEventsListView);
 
             eList = GSONController.GSON_CONTROLLER.loadHabitEventFromFile();
             eList = filterEventList(habit_type, eList);

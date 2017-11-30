@@ -242,6 +242,7 @@ public class EditHabitEventDialog extends DialogFragment {
         final ImageButton captureButton = view.findViewById(R.id.editEventCaptureButton);
         checkBox = view.findViewById(R.id.editHabitEventCheckBox);
         commentText = view.findViewById(R.id.editEventCommentText);
+        commentText.setText(getCommentFromBundle());
         commentWarning = view.findViewById(R.id.editEventCommentWarning);
         Button cancelButton = view.findViewById(R.id.editEventCancelButton);
         createButton = view.findViewById(R.id.editEventCreateButton);
@@ -373,6 +374,7 @@ public class EditHabitEventDialog extends DialogFragment {
         }
         // gets comment and makes new date
         comment = commentText.getText().toString();
+        if (comment.equals("")) { comment = "[no comment]"; }
         date = dateString;
 
         // gets the selected title
@@ -435,6 +437,14 @@ public class EditHabitEventDialog extends DialogFragment {
         }
     }
 
+    private String getCommentFromBundle() {
+        try {
+            return getArguments().getString("Comment");
+        }
+        catch (Exception e) {
+            return "";
+        }
+    }
     /**
      *
      * @return an ArrayList with all of the passed habit types. If calling from main activity,

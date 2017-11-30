@@ -390,6 +390,7 @@ public class AddHabitEventDialog extends DialogFragment {
         }
         // gets comment and makes new date
         comment = commentText.getText().toString();
+        if (comment.equals("")) { comment = "[no comment]"; }
         date = new SimpleDateFormat("yyyy_MM_dd", Locale.ENGLISH).format(new Date());
 
         // gets the selected title
