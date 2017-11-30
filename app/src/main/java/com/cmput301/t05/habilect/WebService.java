@@ -191,4 +191,31 @@ public class WebService {
             return habitTypes;
         }
     }
+
+    //region UserProfile services
+    /**
+     * Task that adds a new user profile to elastic search.
+     */
+    public static class AddHabitTypeTask extends AsyncTask<UserProfile, Void, Void> {
+
+        @Override
+        protected Void doInBackground(UserProfile... userProfile) {
+            verifySettings();
+
+            userProfile[0].setContext();
+            Index index = new Index.Builder(userProfile[0]).index("user").build();
+
+            try {
+                DocumentResult result = client.execute(index);
+                if (result.isSucceeded()) {
+                    Log.i("Success", "Success creating");
+                } else {
+                    Log.i("Error", "Error creating");
+                }
+            } catch (Exception e) {
+                Log.i("Error", "");
+            }
+            return null;
+        }
+    }
 }

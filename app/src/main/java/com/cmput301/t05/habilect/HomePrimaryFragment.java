@@ -1,7 +1,5 @@
 package com.cmput301.t05.habilect;
 
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -9,7 +7,6 @@ import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,7 +39,7 @@ public class HomePrimaryFragment extends Fragment {
     private ListView habitTypeList;
     private ArrayList<HabitType> all_habit_types;
     private ArrayList<HabitType> incomplete_habit_types;
-    //UserProfile user_profile = new UserProfile(getApplicationContext());
+    private UserProfile user_profile;
     ArrayAdapter<HabitType> adapter;
 
     @Override
@@ -53,13 +50,14 @@ public class HomePrimaryFragment extends Fragment {
 
         fragmentManager = getActivity().getSupportFragmentManager();
         habitTypeList = rootView.findViewById(R.id.incompleteHabitsListView);
+        user_profile = new UserProfile(getActivity().getApplicationContext());
 
 
         habitTypeList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Intent intent = new Intent(getActivity(), HabitTypeActivity.class);
-                intent.putExtra("ClickedHabitType", incomplete_habit_types.get(i));
+                intent.putExtra("ClickedHabitType", incomplete_habit_types.get(i).getTitle());
                 startActivity(intent);
             }
         });
@@ -72,21 +70,35 @@ public class HomePrimaryFragment extends Fragment {
         addHabitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final AddHabitDialog addHabitDialog = new AddHabitDialog();
+                final AddHabitTypeDialog addHabitDialog = new AddHabitTypeDialog();
                 addHabitDialog.setHabitTypeListener(new HabitTypeListener() {
                     @Override
                     public void OnAddedOrEdited(String title, String reason, Date start_date, boolean[] weekly_plan) {
                         try {
-                            HabitType habit_type = new HabitType(title, reason, start_date, weekly_plan);
+                            // check to make sure title is unique
+                            all_habit_types = GSONController.GSON_CONTROLLER.loadHabitTypeFromFile();
 
+                            for (HabitType h: all_habit_types) {
+                                if (title.equals(h.getTitle())) {
+                                    throw new IllegalArgumentException("title");
+                                }
+                            }
+                            //WebService.AddHabitTypesTask getHabitTypesTask = new WebService.GetHabitTypesTask();
+                            HabitType habit_type = new HabitType(title, reason, start_date, weekly_plan);
+                            /*try {
+                                habit_types = getHabitTypesTask.execute(user_profile).get();
+                            } catch (InterruptedException e) {
+                                // load from file
+                                habit_types = GSONController.GSON_CONTROLLER.loadHabitTypeFromFile();
+                            } catch (ExecutionException e) {
+                                // load from file
+                                habit_types = GSONController.GSON_CONTROLLER.loadHabitTypeFromFile();
+                            }*/
                             GSONController.GSON_CONTROLLER.saveHabitTypeInFile(habit_type);
                             all_habit_types = GSONController.GSON_CONTROLLER.loadHabitTypeFromFile();
                             incomplete_habit_types = getIncompleteHabitTypes();
                             adapter.notifyDataSetChanged();
 
-                            /*user_profile.addPlans(habit_type);
-                            WebService.UpdateUserProfileTask updateUserProfileTask = new WebService.UpdateUserProfileTask();
-                            updateUserProfileTask.execute(user_profile);*/
 
                         } catch (IllegalArgumentException e) {
                             throw e;
@@ -143,6 +155,9 @@ public class HomePrimaryFragment extends Fragment {
                         // TODO: implement OnAdded
                         HabitEvent event =
                                 createHabitEventFromBundle(addHabitEventDialog.getResultBundle());
+                        HabitType habit_type = GSONController.GSON_CONTROLLER.findHabitType(event.getHabitType());
+                        habit_type.addHabitEvent(event);
+                        GSONController.GSON_CONTROLLER.editHabitTypeInFile(habit_type, habit_type.getTitle());
                         GSONController.GSON_CONTROLLER.saveHabitEventInFile(event);
                     }
 
@@ -215,8 +230,8 @@ public class HomePrimaryFragment extends Fragment {
      * @see HabitType
      */
     @Override
-    public void onStart() {
-        super.onStart();
+    public void onResume() {
+        super.onResume();
 
         all_habit_types = GSONController.GSON_CONTROLLER.loadHabitTypeFromFile();
         incomplete_habit_types = getIncompleteHabitTypes();

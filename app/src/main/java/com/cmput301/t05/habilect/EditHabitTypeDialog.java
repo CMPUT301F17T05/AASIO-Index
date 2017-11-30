@@ -1,8 +1,11 @@
 package com.cmput301.t05.habilect;
 
 import android.app.Dialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.support.v4.app.DialogFragment ;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,17 +23,18 @@ import java.util.Date;
  */
 
 public class EditHabitTypeDialog extends DialogFragment {
+
     private HabitTypeListener habitTypeListener;        // the controller for adding or editing
     private EditText habitTitleText;
     private EditText habitReasonText;
     private DatePicker habitStartDate;
-    //private CheckBox checkMonday, checkTuesday, checkWednesday,
-    //        checkThursday, checkFriday, checkSaturday, checkSunday;
     private boolean[] weekly_plan = {true,true,true,true,true,true,true}; // initialize all checkboxes to checked
+
 
     public void setHabitTypeListener(HabitTypeListener habitTypeListener) {
         this.habitTypeListener = habitTypeListener;
     }
+
 
     @Override
     public void onStart() {
@@ -42,12 +46,13 @@ public class EditHabitTypeDialog extends DialogFragment {
         );
     }
 
+
     /**
      * ADD BUTTON: will retrieve the information from the view and pass it on
      * to the habitTypeListener, which will try creating a new HabitType with the given
      * information. If any errors are thrown, they will be caught here.
      *
-     * CANCEL BUTTON: method has not been implemented in habitTypeListener yet
+     * CANCEL BUTTON: closes the dialog.
      *
      * @see HomePrimaryFragment
      * @see HabitTypeListener
@@ -84,6 +89,7 @@ public class EditHabitTypeDialog extends DialogFragment {
                 .setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        Context context = getActivity();
                         String title = habitTitleText.getText().toString();
                         String reason = habitReasonText.getText().toString();
                         Date start_date = new Date(habitStartDate.getYear(), habitStartDate.getMonth(),
@@ -93,13 +99,21 @@ public class EditHabitTypeDialog extends DialogFragment {
                             dialog.dismiss();
                         } catch (IllegalArgumentException e) {
                             if (e.getMessage().equals("title")) {
-                                habitTitleText.setError("This field cannot be greater than 20 characters");
+                                habitTitleText.setError("This field cannot be greater than 20 characters. The title has to be unique.");
                             }
                             if (e.getMessage().equals("reason")) {
                                 habitReasonText.setError("This field cannot be greater than 30 characters");
                             }
                             if (e.getMessage().equals("plan")) {
-                                //TODO: implement an error dialog
+                                AlertDialog alertDialog = new AlertDialog.Builder(context).create();
+                                alertDialog.setMessage("You must select at least one day for your weekly plan.");
+                                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                                        new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                dialog.dismiss();
+                                            }
+                                        });
+                                alertDialog.show();
                             }
                         }
                     }
@@ -115,6 +129,7 @@ public class EditHabitTypeDialog extends DialogFragment {
 
         return dialog;
     }
+
 
     /**
      * The method called by the OnClickListener of each CheckBox. Changes the boolean value of
@@ -148,8 +163,8 @@ public class EditHabitTypeDialog extends DialogFragment {
                 weekly_plan[6] = checked;
                 break;
         }
-        //Log.d("Debugging", "plan:"+ Arrays.toString(weekly_plan));
     }
+
 
     /**
      * Sets OnClickListeners for each CheckBox object in the ArrayList. The onClick method

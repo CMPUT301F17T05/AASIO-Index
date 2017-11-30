@@ -52,9 +52,9 @@ public class HabitTypeActivity extends AppCompatActivity {
     private ViewPager mViewPager;
 
     private static HabitType habit_type;      // The habit type that has been clicked on for viewing
-
     private static HabitEventEditListAdapter eventListAdapter;
     FragmentManager fragmentManager;
+
     /**
      * sets up the activity and grabs the habit type that was passed in through a different
      * activity
@@ -68,20 +68,23 @@ public class HabitTypeActivity extends AppCompatActivity {
 
         fragmentManager = this.getSupportFragmentManager();
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         // Set up the ViewPager with the sections adapter.
-        mViewPager = (ViewPager) findViewById(R.id.container);
+        mViewPager = findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+        TabLayout tabLayout = findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        String habit_type_title = getIntent().getStringExtra("ClickedHabitType");
+        habit_type = GSONController.GSON_CONTROLLER.findHabitType(habit_type_title);
+
+        FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -91,8 +94,9 @@ public class HabitTypeActivity extends AppCompatActivity {
                     public void OnAdded() {
                         HabitEvent event =
                                 createHabitEventFromBundle(addHabitEventDialog.getResultBundle());
-                        GSONController.GSON_CONTROLLER.saveHabitEventInFile(event);
                         habit_type.addHabitEvent(event);
+                        GSONController.GSON_CONTROLLER.saveHabitEventInFile(event);
+                        GSONController.GSON_CONTROLLER.editHabitTypeInFile(habit_type, habit_type.getTitle());
                         if(eventListAdapter != null) {
                             eventListAdapter.notifyDataSetChanged();
                         }
@@ -110,8 +114,6 @@ public class HabitTypeActivity extends AppCompatActivity {
                 addHabitEventDialog.show(fragmentManager, "addHabitEventDialog");
             }
         });
-
-        habit_type = (HabitType) getIntent().getSerializableExtra("ClickedHabitType");
     }
 
 
@@ -122,22 +124,13 @@ public class HabitTypeActivity extends AppCompatActivity {
         return true;
     }
 
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         Context context = this;
-        HabitTypeListener habitTypeListener = new HabitTypeListener() {
-            @Override
-            public void OnAddedOrEdited(String title, String reason, Date start_date, boolean[] weekly_plan) {
-            }
-
-            @Override
-            public void OnDeleted() {
-                GSONController.GSON_CONTROLLER.deleteHabitTypeInFile(habit_type);
-            }
-        };
         int id = item.getItemId();
 
         if (id == R.id.action_edit) {
@@ -146,6 +139,12 @@ public class HabitTypeActivity extends AppCompatActivity {
                 @Override
                 public void OnAddedOrEdited(String title, String reason, Date start_date, boolean[] weekly_plan) {
                     try {
+                        ArrayList<HabitType> all_habit_types = GSONController.GSON_CONTROLLER.loadHabitTypeFromFile();
+                        for (HabitType h: all_habit_types) {
+                            if (title.equals(h.getTitle())) {
+                                throw new IllegalArgumentException("title");
+                            }
+                        }
                         HabitType edited_habit_type = new HabitType(habit_type);
 
                         if (title.length() > 0) { edited_habit_type.setTitle(title); }
@@ -154,7 +153,7 @@ public class HabitTypeActivity extends AppCompatActivity {
                         edited_habit_type.setWeeklyPlan(weekly_plan);
 
                         GSONController.GSON_CONTROLLER.editHabitTypeInFile(edited_habit_type, habit_type.getTitle());
-                        habit_type = edited_habit_type;
+                        habit_type = new HabitType(edited_habit_type);
 
                     } catch (IllegalArgumentException e) {
                         throw e;
@@ -162,12 +161,22 @@ public class HabitTypeActivity extends AppCompatActivity {
                 }
                 @Override
                 public void OnDeleted() {
-                    // TODO: implement OnDeleted
+                    // N/A
                 }
             });
             editHabitTypeDialog.show(fragmentManager, "editHabitTypeDialog");
         }
         if (id == R.id.action_delete) {
+            HabitTypeListener habitTypeListener = new HabitTypeListener() {
+                @Override
+                public void OnAddedOrEdited(String title, String reason, Date start_date, boolean[] weekly_plan) {
+                }
+
+                @Override
+                public void OnDeleted() {
+                    GSONController.GSON_CONTROLLER.deleteHabitTypeInFile(habit_type);
+                }
+            };
             AlertDialog alertDialog = new AlertDialog.Builder(context).create();
             alertDialog.setTitle("DELETE");
             alertDialog.setMessage("Are you sure you want to delete this habit type and its " +
@@ -194,96 +203,18 @@ public class HabitTypeActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private Bundle sendHabitInfoToDialog() {
-        Bundle bundle = new Bundle();
-        ArrayList<String> list = new ArrayList<>();
-        list.add(habit_type.getTitle());
-        bundle.putString("Title", habit_type.getTitle());
-        bundle.putSerializable("Habit Type", list);
-
-        return bundle;
-    }
-
-    private HabitEvent createHabitEventFromBundle(Bundle bundle) {
-        AddHabitEventDialogInformationGetter getter =
-                new AddHabitEventDialogInformationGetter(bundle);
-        String title = getter.getTitle();
-        String comment = getter.getComment();
-        Location location = getter.getLocation();
-        Date date = getter.getDate();
-        String filePath = getter.getFileName();
-        String directory = getter.getDirectory();
-        Bitmap eventImage = getBitmapFromFilePath(directory, filePath);
-
-        return new HabitEvent(comment, eventImage, location, date, title);
-    }
-
-    private Bitmap getBitmapFromFilePath(String directory, String filePath) {
-        File image = new File(directory, filePath);
-        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-        Bitmap bitmap = BitmapFactory.decodeFile(image.getAbsolutePath(),bmOptions);
-        return bitmap;
-    }
 
     /**
-     * A placeholder fragment containing a simple view.
-     */
-    public static class PlaceholderFragment extends Fragment {
-
-        // The fragment argument representing the section number for this fragment.
-        private static final String ARG_SECTION_NUMBER = "section_number";
-
-        public PlaceholderFragment() {
-        }
-
-        /**
-         * Returns a new instance of this fragment for the given section
-         * number.
-         */
-        public static PlaceholderFragment newInstance(int sectionNumber) {
-            PlaceholderFragment fragment = new PlaceholderFragment();
-            Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-            fragment.setArguments(args);
-            return fragment;
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.placeholder_fragment, container, false);
-            TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-            textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
-            return rootView;
-        }
-    }
-
-    /**
-     * The fragment that displays all of the details of the habit type, including the
-     * statistics on how closely the user is following the habit type weekly plan.
+     * The fragment that displays all of the details of the habit type (excluding stats).
      */
     public static class HabitDetailsFragment extends Fragment {
 
-        // The fragment argument representing the section number for this fragment.
-        private static final String ARG_SECTION_NUMBER = "section_number";
         TextView habitTitle;
         TextView habitReason;
         TextView habitStartDate;
         TextView habitWeeklyPlan;
 
         public HabitDetailsFragment() {
-        }
-
-        /**
-         * Returns a new instance of this fragment for the given section
-         * number.
-         */
-        public static HabitDetailsFragment newInstance(int sectionNumber) {
-            HabitDetailsFragment fragment = new HabitDetailsFragment();
-            Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-            fragment.setArguments(args);
-            return fragment;
         }
 
         /**
@@ -319,29 +250,16 @@ public class HabitTypeActivity extends AppCompatActivity {
     }
 
     /**
-     * The fragment that allows the user to edit the details of the habit type
+     * The fragment that allows the user to see the habit type statistics.
      */
     public static class HabitStatsFragment extends Fragment {
 
-        // The fragment argument representing the section number for this fragment.
-        private static final String ARG_SECTION_NUMBER = "section_number";
         private GraphView graph;
         private TextView displayAverage;
 
         public HabitStatsFragment() {
         }
 
-        /**
-         * Returns a new instance of this fragment for the given section
-         * number.
-         */
-        public static HabitStatsFragment newInstance(int sectionNumber) {
-            HabitStatsFragment fragment = new HabitStatsFragment();
-            Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-            fragment.setArguments(args);
-            return fragment;
-        }
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -352,13 +270,17 @@ public class HabitTypeActivity extends AppCompatActivity {
             return rootView;
         }
 
+
         @Override
         public void onResume() {
+            super.onResume();
+
             StatisticsCalculator calculator = new StatisticsCalculator(habit_type);
             DataPoint[] points = calculator.pastFourWeeks();
 
             int average = calculator.averageCompletion();
-            displayAverage.setText(Integer.toString(average) + "%");
+            String displayed_average = Integer.toString(average) + "%";
+            displayAverage.setText(displayed_average);
 
             graph.setTitle("Past 4 Weeks of Habit Events");
 
@@ -373,37 +295,20 @@ public class HabitTypeActivity extends AppCompatActivity {
 
             graph.getGridLabelRenderer().setVerticalAxisTitle("# Events Created");
             graph.getGridLabelRenderer().setHorizontalAxisTitle("Week(s) ago");
-            super.onResume();
-
         }
     }
 
     /**
-     * A fragment that allows the user to delete, set shared, or something else -- might delete
+     * A fragment that allows the user to see their habit events.
      */
     public static class HabitTypeEventsFragment extends Fragment {
-
-        // The fragment argument representing the section number for this fragment.
-        private static final String ARG_SECTION_NUMBER = "section_number";
 
         ArrayList<HabitEvent> eList;
 
         public HabitTypeEventsFragment() {
         }
 
-        /**
-         * Returns a new instance of this fragment for the given section
-         * number.
-         */
-        public static HabitTypeEventsFragment newInstance(int sectionNumber) {
-            HabitTypeEventsFragment fragment = new HabitTypeEventsFragment();
-            Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-            fragment.setArguments(args);
-            return fragment;
-        }
 
-        // TODO: does not upadate the list view automatically when you make event, must exit out of activity then reopen habit type
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
@@ -419,6 +324,7 @@ public class HabitTypeActivity extends AppCompatActivity {
 
             return rootView;
         }
+
 
         /**
          * Filters the event list such that only the events with the matching habit type remain
@@ -436,6 +342,7 @@ public class HabitTypeActivity extends AppCompatActivity {
             return newList;
         }
 
+
         @Override
         public void onStart() {
             super.onStart();
@@ -449,15 +356,13 @@ public class HabitTypeActivity extends AppCompatActivity {
      */
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
-        public SectionsPagerAdapter(FragmentManager fm) {
+        SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
         }
 
-        //TODO: fix issue where details and edit fragments aren't updated upon changing tabs
+
         @Override
         public Fragment getItem(int position) {
-            // getItem is called to instantiate the fragment for the given page.
-            // if something goes wrong, return placeholder
             if (position == 0) {
                 return new HabitDetailsFragment();
             }
@@ -468,15 +373,17 @@ public class HabitTypeActivity extends AppCompatActivity {
                 return new HabitTypeEventsFragment();
             }
             else {
-                return PlaceholderFragment.newInstance(position + 1);
+                return null;
             }
         }
+
 
         @Override
         public int getCount() {
             // Show 3 total pages.
             return 3;
         }
+
 
         @Override
         public CharSequence getPageTitle(int position) {
@@ -490,5 +397,35 @@ public class HabitTypeActivity extends AppCompatActivity {
             }
             return null;
         }
+    }
+
+    private Bundle sendHabitInfoToDialog() {
+        Bundle bundle = new Bundle();
+        ArrayList<String> list = new ArrayList<>();
+        list.add(habit_type.getTitle());
+        bundle.putString("Title", habit_type.getTitle());
+        bundle.putSerializable("Habit Type", list);
+
+        return bundle;
+    }
+
+    private HabitEvent createHabitEventFromBundle(Bundle bundle) {
+        AddHabitEventDialogInformationGetter getter =
+                new AddHabitEventDialogInformationGetter(bundle);
+        String title = getter.getTitle();
+        String comment = getter.getComment();
+        Location location = getter.getLocation();
+        Date date = getter.getDate();
+        String filePath = getter.getFileName();
+        String directory = getter.getDirectory();
+        Bitmap eventImage = getBitmapFromFilePath(directory, filePath);
+
+        return new HabitEvent(comment, eventImage, location, date, title);
+    }
+
+    private Bitmap getBitmapFromFilePath(String directory, String filePath) {
+        File image = new File(directory, filePath);
+        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+        return BitmapFactory.decodeFile(image.getAbsolutePath(),bmOptions);
     }
 }

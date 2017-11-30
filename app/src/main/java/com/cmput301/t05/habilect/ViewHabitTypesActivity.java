@@ -45,7 +45,7 @@ public class ViewHabitTypesActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Intent intent = new Intent(ViewHabitTypesActivity.this, HabitTypeActivity.class);
-                intent.putExtra("ClickedHabitType", habit_types.get(i));
+                intent.putExtra("ClickedHabitType", habit_types.get(i).getTitle());
                 startActivity(intent);
             }
         });
@@ -83,9 +83,7 @@ public class ViewHabitTypesActivity extends AppCompatActivity {
 
         //WebService.GetHabitTypesTask getHabitTypesTask = new WebService.GetHabitTypesTask();
 
-        habit_types = GSONController.GSON_CONTROLLER.loadHabitTypeFromFile();
-
-        /*try {
+/*        try {
             habit_types = getHabitTypesTask.execute(user_profile).get();
         } catch (InterruptedException e) {
             // load from file
@@ -97,7 +95,7 @@ public class ViewHabitTypesActivity extends AppCompatActivity {
 
 
         // load from file
-        //habit_types = GSONController.GSON_CONTROLLER.loadHabitTypeFromFile();
+        habit_types = GSONController.GSON_CONTROLLER.loadHabitTypeFromFile();
 
         // load from elasticsearch
         //habit_types = webService.getListOfHabitTypes(user_profile);

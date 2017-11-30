@@ -28,6 +28,8 @@ public class HabitType extends Observable implements Serializable {
     private List<UserProfile> followers;
     private Date recent_habit_event;
     private List<HabitEvent> habitEvents = new ArrayList<>();
+    private static int MAX_TITLE_LEN = 20;
+    private static int MAX_REASON_LEN = 30;
 
     /**
      * The Constructor for HabitType
@@ -73,7 +75,8 @@ public class HabitType extends Observable implements Serializable {
         return this.start_date;
     }
     public String getStartDateString() {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("E',' MMMM d',' y");
+        Locale locale = new Locale("English", "Canada");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEEE',' MMMM d',' yyyy", locale);
         return simpleDateFormat.format(this.start_date);
     }
     public boolean[] getWeeklyPlan() {
@@ -115,7 +118,7 @@ public class HabitType extends Observable implements Serializable {
      * @param title                 a String with 0 < length <= 20
      */
     public void setTitle(String title) {
-        if (title.length() == 0 || title.length() > 20) {
+        if (title.length() == 0 || title.length() > MAX_TITLE_LEN) {
             throw new IllegalArgumentException("title");
         } else {
             this.title = title;
@@ -129,7 +132,7 @@ public class HabitType extends Observable implements Serializable {
      * @param reason                a String with 0 < length <= 30
      */
     public void setReason(String reason) {
-        if (reason.length() == 0 || reason.length() > 30) {
+        if (reason.length() == 0 || reason.length() > MAX_REASON_LEN) {
             throw new IllegalArgumentException("reason");
         } else {
             this.reason = reason;
@@ -200,16 +203,6 @@ public class HabitType extends Observable implements Serializable {
         this.habitEvents.remove(habitEvent);
     }
 
-    // BEHAVIOURS
-
-    /**
-     * lets the Observers of this habit type know that it has been created, edited, or deleted
-     */
-    public void notifyViews() {
-        this.setChanged();
-        this.notifyObservers();
-    }
-
     /**
      * specifies the way habit types should be presented in views such as ListView
      *
@@ -217,6 +210,6 @@ public class HabitType extends Observable implements Serializable {
      */
     @Override
     public String toString() {
-        return this.getTitle();
+        return this.getTitle() + '\n' + this.getWeeklyPlanString();
     }
 }
