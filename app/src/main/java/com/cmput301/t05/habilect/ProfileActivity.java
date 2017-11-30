@@ -27,6 +27,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.io.ByteArrayOutputStream;
@@ -75,6 +76,9 @@ public class ProfileActivity extends AppCompatActivity {
     ImageView backgroundImageView;
     ImageView profileImageView;
     ImageView bandImageView;
+    TextView nutrientLevelTextView;
+    ProgressBar nutrientLevelProgressBar;
+    TextView nutrientLevelToNextTierTextView;
     ImageView treeGrowthImageView;
     Button saveChangesButton;
     Button captureButton;
@@ -156,6 +160,9 @@ public class ProfileActivity extends AppCompatActivity {
         displayNameWarning = (TextView) findViewById(R.id.displayNameWarning);
         backgroundImageView = (ImageView) findViewById(R.id.backgroundImageView);
         profileImageView = (ImageView) findViewById(R.id.profileImageView);
+        nutrientLevelTextView = (TextView) findViewById(R.id.nutrientLevelTextView);
+        nutrientLevelProgressBar = (ProgressBar) findViewById(R.id.nutrientLevelProgressBar);
+        nutrientLevelToNextTierTextView = (TextView) findViewById(R.id.nutrientLevelToNextTierTextView);
         treeGrowthImageView = (ImageView) findViewById(R.id.treeGrowthImageView);
         saveChangesButton = (Button) findViewById(R.id.saveChangesButton);
         captureButton = (Button) findViewById(R.id.captureButton);
@@ -300,13 +307,26 @@ public class ProfileActivity extends AppCompatActivity {
 
         int nutrientLevel = profileTreeGrowth.getNutrientLevel();
 
+        int tier1Threshold = 25;
+        int tier2Threshold = 50;
+        int tier3Threshold;
         Log.i("NUTRIENTLEVEL: ", "" + nutrientLevel);
         //tmp drawables until have actual images
-        if (nutrientLevel < 25) {
+        nutrientLevelTextView.setText("Nutrient Level: " + nutrientLevel);
+        if (nutrientLevel < tier1Threshold) {
+            nutrientLevelProgressBar.setMax(tier1Threshold);
+            nutrientLevelProgressBar.setProgress(nutrientLevel);
+            nutrientLevelToNextTierTextView.setText(nutrientLevel + "/" + tier1Threshold);
             treeGrowthImageView.setImageResource(R.drawable.home);
-        } else if (nutrientLevel >= 25 && nutrientLevel < 50) {
+        } else if (nutrientLevel >= tier1Threshold && nutrientLevel < tier2Threshold) {
+            nutrientLevelProgressBar.setMax(tier2Threshold);
+            nutrientLevelProgressBar.setProgress(nutrientLevel);
+            nutrientLevelToNextTierTextView.setText(nutrientLevel + "/" + tier2Threshold);
             treeGrowthImageView.setImageResource(R.drawable.profile);
-        } else if (nutrientLevel >= 50) {
+        } else if (nutrientLevel >= tier2Threshold) {
+            nutrientLevelProgressBar.setMax(tier2Threshold);
+            nutrientLevelProgressBar.setProgress(nutrientLevel);
+            nutrientLevelToNextTierTextView.setText("MAXED");
             treeGrowthImageView.setImageResource(R.drawable.history);
         }
     }
