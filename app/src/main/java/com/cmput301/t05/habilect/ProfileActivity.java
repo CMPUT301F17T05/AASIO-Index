@@ -21,6 +21,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Base64;
+import android.util.Log;
 import android.view.TextureView;
 import android.view.View;
 import android.widget.Button;
@@ -74,6 +75,7 @@ public class ProfileActivity extends AppCompatActivity {
     ImageView backgroundImageView;
     ImageView profileImageView;
     ImageView bandImageView;
+    ImageView treeGrowthImageView;
     Button saveChangesButton;
     Button captureButton;
 
@@ -154,6 +156,7 @@ public class ProfileActivity extends AppCompatActivity {
         displayNameWarning = (TextView) findViewById(R.id.displayNameWarning);
         backgroundImageView = (ImageView) findViewById(R.id.backgroundImageView);
         profileImageView = (ImageView) findViewById(R.id.profileImageView);
+        treeGrowthImageView = (ImageView) findViewById(R.id.treeGrowthImageView);
         saveChangesButton = (Button) findViewById(R.id.saveChangesButton);
         captureButton = (Button) findViewById(R.id.captureButton);
         captureButton.setEnabled(false);
@@ -168,9 +171,14 @@ public class ProfileActivity extends AppCompatActivity {
          */
         final UserProfile profile = new UserProfile(getApplicationContext());
         displayNameEditText.setText(profile.getDisplayName());
-        if (profile.getProfilePicture()!=null) {
+        if (profile.getProfilePicture() != null) {
             profileImageView.setImageBitmap(profile.getProfilePicture());
         }
+
+        /**
+         * Sets the user's tree growth image based on acquired level
+         */
+        setTreeGrowthImageView();
 
         /**
          * Subscribes the display name's EditText view to a listener that validates its input
@@ -271,13 +279,34 @@ public class ProfileActivity extends AppCompatActivity {
             cameraTextureView.setSurfaceTextureListener(cameraPreviewSurfaceTextureListener);
         } else {
             camera.setup(this, cameraTextureView.getWidth(), cameraTextureView.getHeight());
-            camera.open((Activity)ProfileActivity.this);
+            camera.open((Activity) ProfileActivity.this);
         }
+
+        setTreeGrowthImageView();
+
     }
 
     @Override
     protected void onPause() {
         camera.close();
         super.onPause();
+    }
+
+    private void setTreeGrowthImageView(){
+
+        final UserProfile profile = new UserProfile(getApplicationContext());
+
+        TreeGrowth profileTreeGrowth = profile.treeGrowth;
+
+        int nutrientLevel = profileTreeGrowth.getNutrientLevel();
+
+        //tmp drawables until have actual images
+        if (nutrientLevel < 25) {
+            treeGrowthImageView.setImageResource(R.drawable.home);
+        } else if (nutrientLevel >= 25 && nutrientLevel < 50) {
+            treeGrowthImageView.setImageResource(R.drawable.profile);
+        } else if (nutrientLevel >= 50 && nutrientLevel < 75) {
+            treeGrowthImageView.setImageResource(R.drawable.history);
+        }
     }
 }
