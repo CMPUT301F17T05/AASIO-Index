@@ -1,6 +1,7 @@
 package com.cmput301.t05.habilect;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -27,6 +28,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.io.ByteArrayOutputStream;
@@ -40,6 +42,10 @@ public class ProfileActivity extends AppCompatActivity {
 
     Camera camera;
 
+    private int previousNutrientLevel = 0;
+    private final int tier1Threshold = 25;
+    private final int tier2Threshold = 50;
+    private final int tier3Threshold = 0;
     /**
      * Sets up the camera to begin updating the texture surface once it is available
      */
@@ -75,6 +81,9 @@ public class ProfileActivity extends AppCompatActivity {
     ImageView backgroundImageView;
     ImageView profileImageView;
     ImageView bandImageView;
+    TextView nutrientLevelTextView;
+    ProgressBar nutrientLevelProgressBar;
+    TextView nutrientLevelToNextTierTextView;
     ImageView treeGrowthImageView;
     Button saveChangesButton;
     Button captureButton;
@@ -156,6 +165,9 @@ public class ProfileActivity extends AppCompatActivity {
         displayNameWarning = (TextView) findViewById(R.id.displayNameWarning);
         backgroundImageView = (ImageView) findViewById(R.id.backgroundImageView);
         profileImageView = (ImageView) findViewById(R.id.profileImageView);
+        nutrientLevelTextView = (TextView) findViewById(R.id.nutrientLevelTextView);
+        nutrientLevelProgressBar = (ProgressBar) findViewById(R.id.nutrientLevelProgressBar);
+        nutrientLevelToNextTierTextView = (TextView) findViewById(R.id.nutrientLevelToNextTierTextView);
         treeGrowthImageView = (ImageView) findViewById(R.id.treeGrowthImageView);
         saveChangesButton = (Button) findViewById(R.id.saveChangesButton);
         captureButton = (Button) findViewById(R.id.captureButton);
@@ -292,7 +304,7 @@ public class ProfileActivity extends AppCompatActivity {
         super.onPause();
     }
 
-    private void setTreeGrowthImageView(){
+    private void setTreeGrowthImageView() {
 
         final UserProfile profile = new UserProfile(getApplicationContext());
 
@@ -300,13 +312,46 @@ public class ProfileActivity extends AppCompatActivity {
 
         int nutrientLevel = profileTreeGrowth.getNutrientLevel();
 
+        Log.i("NUTRIENTLEVEL: ", "" + nutrientLevel);
         //tmp drawables until have actual images
-        if (nutrientLevel < 25) {
+        nutrientLevelTextView.setText("Nutrient Level: " + nutrientLevel);
+        if (nutrientLevel < tier1Threshold) {
+            nutrientLevelProgressBar.setMax(tier1Threshold);
+            nutrientLevelProgressBar.setProgress(nutrientLevel);
+            nutrientLevelToNextTierTextView.setText(nutrientLevel + "/" + tier1Threshold);
             treeGrowthImageView.setImageResource(R.drawable.home);
-        } else if (nutrientLevel >= 25 && nutrientLevel < 50) {
+        } else if (nutrientLevel >= tier1Threshold && nutrientLevel < tier2Threshold) {
+            //if true, trigger rank up popup
+            if (previousNutrientLevel < tier1Threshold) {
+                previousNutrientLevel = nutrientLevel;
+                buildRankUpDialog(2);
+            }
+            nutrientLevelProgressBar.setMax(tier2Threshold);
+            nutrientLevelProgressBar.setProgress(nutrientLevel);
+            nutrientLevelToNextTierTextView.setText(nutrientLevel + "/" + tier2Threshold);
             treeGrowthImageView.setImageResource(R.drawable.profile);
-        } else if (nutrientLevel >= 50 && nutrientLevel < 75) {
+        } else if (nutrientLevel >= tier2Threshold) {
+            if (previousNutrientLevel < tier2Threshold) {
+                previousNutrientLevel = nutrientLevel;
+                buildRankUpDialog(3);
+            }
+            nutrientLevelProgressBar.setMax(tier2Threshold);
+            nutrientLevelProgressBar.setProgress(nutrientLevel);
+            nutrientLevelToNextTierTextView.setText("MAXED");
             treeGrowthImageView.setImageResource(R.drawable.history);
         }
+
+        previousNutrientLevel = nutrientLevel;
+
+    }
+
+    private void buildRankUpDialog(int tier){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Rank Up!");
+        builder.setMessage("Congratulations! Your tree has reached tier " + tier + ".");
+        builder.setNegativeButton("OK", null);
+        AlertDialog dialog = builder.create();
+        dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
+        dialog.show();
     }
 }

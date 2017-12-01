@@ -56,6 +56,7 @@ public class HabitTypeActivity extends AppCompatActivity {
     FragmentManager fragmentManager;
     private static ArrayList<HabitEvent> eList;
 
+    private static Context mContext;
     /**
      * sets up the activity and grabs the habit type that was passed in through a different
      * activity
@@ -70,6 +71,9 @@ public class HabitTypeActivity extends AppCompatActivity {
         fragmentManager = this.getSupportFragmentManager();
 
         Toolbar toolbar = findViewById(R.id.toolbar);
+
+        mContext = getApplicationContext();
+
         setSupportActionBar(toolbar);
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
@@ -88,7 +92,7 @@ public class HabitTypeActivity extends AppCompatActivity {
 
         eList = GSONController.GSON_CONTROLLER.loadHabitEventFromFile();
         eList = filterEventList(habit_type, eList);
-        eventListAdapter = new HabitEventEditListAdapter(eList, this);
+        eventListAdapter = new HabitEventEditListAdapter(eList, this, mContext);
 
         FloatingActionButton fab = findViewById(R.id.fab);
 
@@ -352,7 +356,7 @@ public class HabitTypeActivity extends AppCompatActivity {
             eList = GSONController.GSON_CONTROLLER.loadHabitEventFromFile();
             eList = filterEventList(habit_type, eList);
 
-            eventListAdapter = new HabitEventEditListAdapter(eList, getActivity());
+            eventListAdapter = new HabitEventEditListAdapter(eList, getActivity(), mContext);
             eventList.setAdapter(eventListAdapter);
 
             return rootView;

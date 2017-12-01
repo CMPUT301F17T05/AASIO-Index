@@ -13,6 +13,15 @@ import android.widget.Button;
 
 public class Navigation {
     public static void setup(final View context) {
+        final Button navigateHome = (Button) context.findViewById(R.id.navigateHome);
+        navigateHome.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((DrawerLayout)(view.getParent().getParent())).closeDrawer(Gravity.START);
+                Intent intent = new Intent(context.getContext(), HomeActivity.class);
+                view.getContext().startActivity(intent);
+            }
+        });
         final Button navigateHabitTypes = (Button) context.findViewById(R.id.navigateHabitTypes);
         navigateHabitTypes.setOnClickListener(new View.OnClickListener() {
             @Override
