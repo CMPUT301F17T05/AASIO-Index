@@ -41,7 +41,7 @@
         android:layout_marginStart="35dp"
         android:layout_marginTop="12dp"
         android:text="Show Only 5km"
-        app:layout_constraintBottom_toTopOf="@+id/button2"
+        app:layout_constraintBottom_toTopOf="@+id/resetMapButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/myhabiteventsbutton"
         app:layout_constraintTop_toBottomOf="@+id/mapFragment" />
@@ -56,12 +56,12 @@
         android:layout_marginTop="7dp"
         android:text="FriendHabitEvents"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/button2"
+        app:layout_constraintEnd_toStartOf="@+id/resetMapButton"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/myhabiteventsbutton" />
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/resetMapButton"
         android:layout_width="137dp"
         android:layout_height="47dp"
         android:layout_marginBottom="14dp"

@@ -76,7 +76,6 @@ public class ViewHabitMapActivity extends AppCompatActivity implements OnMapRead
 
         if (googleServicesAvailable()) {
             Toast.makeText(this, "GoogleMaps Working!", Toast.LENGTH_LONG).show();
-            setContentView(R.layout.activity_view_habit_map);
             initMap();
         }else {
             Toast.makeText(this, "No Google Maps Layout!", Toast.LENGTH_LONG).show();
