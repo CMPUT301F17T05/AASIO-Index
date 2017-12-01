@@ -69,7 +69,12 @@ public class HabitEventListAdapter extends BaseAdapter implements ListAdapter, F
 
         habitTitle.setText(event.getHabitType());
         habitDate.setText(event.getCompletionDateString());
-        habitComment.setText(event.getComment());
+        String comment = event.getComment();
+        if(comment.equals("")) {
+            habitComment.setText("[no comment]");
+        } else {
+            habitComment.setText(comment);
+        }
 
         viewButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -93,8 +98,12 @@ public class HabitEventListAdapter extends BaseAdapter implements ListAdapter, F
         Bundle bundle = new Bundle();
         bundle.putString("Title", event.getHabitType());
         String dateString = new SimpleDateFormat("yyyy_MM_dd", Locale.ENGLISH).format(event.getCompletionDate());
-        bundle.putString("Date", dateString);
-        bundle.putString("Comment", event.getComment());
+        String comment = event.getComment();
+        if(comment.equals("")) {
+            comment = "[no comment]";
+        }
+        bundle.putString("Date", event.getCompletionDateString());
+        bundle.putString("Comment", comment);
         bundle.putString("File Path", event.getHabitType().replace(" ", "_") + "_" + dateString);
 
         return bundle;

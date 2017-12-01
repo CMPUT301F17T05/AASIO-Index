@@ -375,7 +375,6 @@ public class EditHabitEventDialog extends DialogFragment {
         }
         // gets comment and makes new date
         comment = commentText.getText().toString();
-        if (comment.equals("")) { comment = "[no comment]"; }
         date = dateString;
 
         // gets the selected title
