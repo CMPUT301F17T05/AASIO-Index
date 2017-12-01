@@ -128,4 +128,11 @@
         android:layout_alignBottom="@+id/addEventCameraPreviewTextureView"
         android:layout_centerHorizontal="true" />
 
+    <TextView
+        android:id="@+id/addEventHabitTypeTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/addEventCameraPreviewTextureView"
+        android:layout_alignEnd="@+id/addHabitEventSpinner" />
+
 </RelativeLayout>

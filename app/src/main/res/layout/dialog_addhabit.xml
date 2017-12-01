@@ -1,14 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:weightSum="1">
+    android:paddingBottom="24dp">
 
     <EditText
         android:id="@+id/enterHabitTypeTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="24dp"
+        android:layout_marginRight="24dp"
+        android:layout_marginTop="24dp"
         android:ems="10"
         android:hint="@string/add_habit_title_hint"
         android:inputType="textPersonName" />
@@ -17,6 +24,9 @@
         android:id="@+id/enterHabitTypeReason"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginRight="24dp"
+        android:layout_alignStart="@+id/enterHabitTypeTitle"
+        android:layout_below="@+id/enterHabitTypeTitle"
         android:ems="10"
         android:hint="@string/add_habit_reason_hint"
         android:inputType="textPersonName" />
@@ -25,92 +35,105 @@
         android:id="@+id/datePickerStartDate"
         android:layout_width="match_parent"
         android:layout_height="102dp"
+        android:layout_above="@+id/checkBoxMonday"
+        android:layout_alignParentStart="true"
         android:calendarViewShown="false"
         android:datePickerMode="spinner" />
 
     <CheckBox
         android:id="@+id/checkBoxMonday"
-        android:checked="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="20sp"
+        android:layout_above="@+id/checkBoxTuesday"
+        android:layout_alignStart="@+id/enterHabitTypeReason"
+        android:checked="true"
         android:fontFamily="sans-serif-thin"
-        android:text="@string/monday" />
+        android:text="@string/monday"
+        android:textSize="20sp" />
 
     <CheckBox
         android:id="@+id/checkBoxTuesday"
-        android:checked="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="20sp"
+        android:layout_above="@+id/checkBoxWednesday"
+        android:layout_alignStart="@+id/checkBoxMonday"
+        android:checked="true"
         android:fontFamily="sans-serif-thin"
-        android:text="@string/tuesday" />
+        android:text="@string/tuesday"
+        android:textSize="20sp" />
 
     <CheckBox
         android:id="@+id/checkBoxWednesday"
-        android:checked="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="20sp"
+        android:layout_above="@+id/checkBoxThursday"
+        android:layout_alignStart="@+id/checkBoxTuesday"
+        android:checked="true"
         android:fontFamily="sans-serif-thin"
-        android:text="@string/wednesday" />
+        android:text="@string/wednesday"
+        android:textSize="20sp" />
 
     <CheckBox
         android:id="@+id/checkBoxThursday"
-        android:checked="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="20sp"
+        android:layout_above="@+id/checkBoxFriday"
+        android:layout_alignStart="@+id/checkBoxWednesday"
+        android:checked="true"
         android:fontFamily="sans-serif-thin"
-        android:text="@string/thursday" />
+        android:text="@string/thursday"
+        android:textSize="20sp" />
 
     <CheckBox
         android:id="@+id/checkBoxFriday"
-        android:checked="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="20sp"
+        android:layout_above="@+id/checkBoxSaturday"
+        android:layout_alignStart="@+id/checkBoxThursday"
+        android:checked="true"
         android:fontFamily="sans-serif-thin"
-        android:text="@string/friday" />
+        android:text="@string/friday"
+        android:textSize="20sp" />
 
     <CheckBox
         android:id="@+id/checkBoxSaturday"
-        android:checked="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="20sp"
+        android:layout_above="@+id/checkBoxSunday"
+        android:layout_alignStart="@+id/checkBoxFriday"
+        android:checked="true"
         android:fontFamily="sans-serif-thin"
-        android:text="@string/saturday" />
+        android:text="@string/saturday"
+        android:textSize="20sp" />
 
     <CheckBox
         android:id="@+id/checkBoxSunday"
-        android:checked="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="20sp"
+        android:layout_above="@+id/cancel_button"
+        android:layout_alignStart="@+id/checkBoxSaturday"
+        android:checked="true"
         android:fontFamily="sans-serif-thin"
-        android:text="@string/sunday" />
+        android:text="@string/sunday"
+        android:textSize="20sp" />
 
     <Button
         android:id="@+id/add_button"
-        android:layout_width="match_parent"
+        style="@style/Widget.AppCompat.Button.Borderless.Colored"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:background="@color/colorPrimary"
-        android:fontFamily="sans-serif-thin"
-        android:text="@string/save"
-        android:textColor="@color/white"
-        android:textSize="35sp" />
+        android:layout_alignEnd="@+id/enterHabitTypeReason"
+        android:layout_alignParentBottom="true"
+        android:background="@android:color/transparent"
+        android:text="@string/save" />
 
     <Button
         android:id="@+id/cancel_button"
-        android:layout_width="match_parent"
+        style="@style/Widget.AppCompat.Button.Borderless.Colored"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Cancel"
-        android:fontFamily="sans-serif-thin"
-        android:textSize="35sp"
-        android:textColor="@color/white"
-        android:background="@color/colorPrimary"
-        android:layout_marginTop="10dp"/>
-
-</LinearLayout>
+        android:layout_alignParentBottom="true"
+        android:layout_toStartOf="@+id/add_button"
+        android:background="@android:color/transparent"
+        android:text="@android:string/cancel" />
+</RelativeLayout>

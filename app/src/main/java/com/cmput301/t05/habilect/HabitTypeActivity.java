@@ -31,8 +31,10 @@ import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Locale;
 
 public class HabitTypeActivity extends AppCompatActivity {
 
@@ -95,41 +97,45 @@ public class HabitTypeActivity extends AppCompatActivity {
         eventListAdapter = new HabitEventEditListAdapter(eList, this, mContext);
 
         FloatingActionButton fab = findViewById(R.id.fab);
+        if(checkIfHabitDoneToday()) {
+            fab.setEnabled(false);
+        } else {
+            fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    final AddHabitEventDialog addHabitEventDialog = new AddHabitEventDialog();
+                    addHabitEventDialog.setOnAddHabitEventListener(new OnAddHabitEventListener() {
+                        @Override
+                        public void OnAdded() {
+                            HabitEvent event =
+                                    createHabitEventFromBundle(addHabitEventDialog.getResultBundle());
 
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                final AddHabitEventDialog addHabitEventDialog = new AddHabitEventDialog();
-                addHabitEventDialog.setOnAddHabitEventListener(new OnAddHabitEventListener() {
-                    @Override
-                    public void OnAdded() {
-                        HabitEvent event =
-                                createHabitEventFromBundle(addHabitEventDialog.getResultBundle());
+                            habit_type.addHabitEvent(event);
 
-                        habit_type.addHabitEvent(event);
+                            GSONController.GSON_CONTROLLER.editHabitTypeInFile(habit_type, habit_type.getTitle());
+                            boolean saveSuccess = GSONController.GSON_CONTROLLER.saveHabitEventInFile(event);
+                            if(saveSuccess) {
+                                eList.add(event);
+                            }
+                            if(eventListAdapter != null) {
+                                eventListAdapter.notifyDataSetChanged();
+                            }
 
-                        GSONController.GSON_CONTROLLER.editHabitTypeInFile(habit_type, habit_type.getTitle());
-                        boolean saveSuccess = GSONController.GSON_CONTROLLER.saveHabitEventInFile(event);
-                        if(saveSuccess) {
-                            eList.add(event);
                         }
-                        if(eventListAdapter != null) {
-                            eventListAdapter.notifyDataSetChanged();
+
+                        @Override
+                        public void OnCancelled() {
+                            // do nothing...
                         }
+                    });
+                    FragmentManager fragmentManager = getSupportFragmentManager();
+                    Bundle bundle = sendHabitInfoToDialog();
+                    addHabitEventDialog.setArguments(bundle);
+                    addHabitEventDialog.show(fragmentManager, "addHabitEventDialog");
+                }
+            });
+        }
 
-                    }
-
-                    @Override
-                    public void OnCancelled() {
-                        // do nothing...
-                    }
-                });
-                FragmentManager fragmentManager = getSupportFragmentManager();
-                Bundle bundle = sendHabitInfoToDialog();
-                addHabitEventDialog.setArguments(bundle);
-                addHabitEventDialog.show(fragmentManager, "addHabitEventDialog");
-            }
-        });
 	Navigation.setup(findViewById(android.R.id.content));
     }
 
@@ -464,5 +470,18 @@ public class HabitTypeActivity extends AppCompatActivity {
         File image = new File(directory, filePath);
         BitmapFactory.Options bmOptions = new BitmapFactory.Options();
         return BitmapFactory.decodeFile(image.getAbsolutePath(),bmOptions);
+    }
+
+    private boolean checkIfHabitDoneToday() {
+        ArrayList<HabitEvent> eventList = habit_type.getHabitEvents();
+        Locale locale = new Locale("English", "Canada");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEEE',' MMMM d',' yyyy", locale);
+        String currentDate = simpleDateFormat.format(new Date());
+        for(HabitEvent event : eventList) {
+            if(currentDate.equals(event.getCompletionDateString())) {
+                return true;
+            }
+        }
+        return false;
     }
 }

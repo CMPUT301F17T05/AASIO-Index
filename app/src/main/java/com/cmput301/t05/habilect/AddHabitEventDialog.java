@@ -236,6 +236,7 @@ public class AddHabitEventDialog extends DialogFragment {
         mContext = getActivity().getApplicationContext();
         final UserProfile profile = new UserProfile(mContext);
         TreeGrowth profileTreeGrowth = profile.treeGrowth;
+
         // creates all of the necessary view controllers
         TextView eventTitle = view.findViewById(R.id.addHabitEventDialogTitle);
         spinner = view.findViewById(R.id.addHabitEventSpinner);
@@ -294,6 +295,13 @@ public class AddHabitEventDialog extends DialogFragment {
         // gets the passed information from calling activity
         String title = getTitleFromBundle();
         ArrayList<String> habits = getHabitTypesFromBundle();
+        if(habits.size() <= 1) {
+            spinner.setFocusable(false);
+            spinner.setVisibility(View.INVISIBLE);
+            spinner.setClickable(false);
+            TextView titleText = view.findViewById(R.id.addEventHabitTypeTextView);
+            titleText.setText(habits.get(0));
+        }
 
         // sets list adapter for the spinner
         ListAdapter listAdapter = new ArrayAdapter<>(context,
