@@ -30,7 +30,7 @@
         android:layout_height="wrap_content"
         android:background="@color/white"
         android:drawablePadding="0dp"
-        android:drawableStart="@drawable/view_habits"
+        android:drawableStart="@drawable/home"
         android:paddingEnd="32dp"
         android:paddingStart="16dp"
         android:paddingTop="5dp"
