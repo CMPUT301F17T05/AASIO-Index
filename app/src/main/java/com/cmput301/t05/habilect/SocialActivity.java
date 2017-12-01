@@ -21,7 +21,7 @@ public class SocialActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_social);
 
-        setTitle("Habilect - Social");
+        setTitle("H a b i l e c t - Social");
 
         Navigation.setup(findViewById(android.R.id.content));
 

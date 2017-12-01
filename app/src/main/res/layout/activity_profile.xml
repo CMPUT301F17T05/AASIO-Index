@@ -89,6 +89,38 @@
                 app:layout_constraintTop_toBottomOf="@+id/displayNameEditText"
                 app:layout_constraintVertical_bias="0.0">
 
+                <TextView
+                    android:id="@+id/nutrientLevelTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="TextView"
+                    tools:layout_editor_absoluteX="31dp"
+                    tools:layout_editor_absoluteY="298dp" />
+                <ProgressBar
+                    android:id="@+id/nutrientLevelProgressBar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:max="25"
+                    style="@android:style/Widget.Holo.Light.ProgressBar.Horizontal"
+                    android:progressTint="#ff0600"
+                    android:progress="0"/>
+                <TextView
+                    android:id="@+id/nutrientLevelToNextTierTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="10/50"
+                    android:layout_toRightOf="@id/nutrientLevelProgressBar"
+                    android:layout_alignBottom="@id/nutrientLevelProgressBar"
+                    android:fontFamily="sans-serif-thin"
+                    android:textSize="10dp"
+                    android:textStyle="italic"
+                    />
+                <ImageView
+                    android:id="@+id/treeGrowthImageView"
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    app:srcCompat="@android:drawable/star_big_off" />
+
                 <Button
                     android:id="@+id/saveChangesButton"
                     android:layout_width="match_parent"
@@ -96,8 +128,7 @@
                     android:layout_gravity="bottom"
                     android:height="20dp"
                     android:enabled="false"
-                    android:text="Save Changes"
-                    />
+                    android:text="Save Changes" />
             </GridLayout>
 
             <android.support.constraint.Guideline
@@ -122,9 +153,9 @@
                 android:id="@+id/displayNameWarning"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:visibility="invisible"
                 android:text="Display name cannot be more than 48 characters!"
                 android:textColor="@color/red"
+                android:visibility="invisible"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
@@ -153,6 +184,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent" />
+
 
         </android.support.constraint.ConstraintLayout>
 

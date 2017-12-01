@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.SurfaceTexture;
@@ -52,6 +53,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
+import static com.cmput301.t05.habilect.UserProfile.HABILECT_USER_INFO;
+
 /**
  * This dialog facilitates the creation of habit events. If creating an event outside of a habit type
  * you must pass an ArrayList of String with the titles of all possible habit types in a bundle
@@ -86,6 +89,7 @@ public class AddHabitEventDialog extends DialogFragment {
     CheckBox checkBox;
 
     private static final String TAG = "Add event dialog";
+    private static Context mContext;
 
     private boolean cameraPermission;
     private boolean locationPermission;
@@ -101,7 +105,7 @@ public class AddHabitEventDialog extends DialogFragment {
     TextureView.SurfaceTextureListener cameraPreviewSurfaceTextureListener = new TextureView.SurfaceTextureListener() {
         @Override
         public void onSurfaceTextureAvailable(SurfaceTexture surfaceTexture, int width, int height) {
-            if(cameraPermission) {
+            if (cameraPermission) {
                 camera.setup(context, width, height);
                 camera.open(context);
             }
@@ -126,7 +130,7 @@ public class AddHabitEventDialog extends DialogFragment {
     CameraCaptureSession.CaptureCallback cameraCaptureSessionCallback = new CameraCaptureSession.CaptureCallback() {
         @Override
         public void onCaptureCompleted(CameraCaptureSession session, @NonNull CaptureRequest request, TotalCaptureResult result) {
-            if(cameraPermission) {
+            if (cameraPermission) {
                 switch (camera.getCameraState()) {
                     case Camera.STATE_PREVIEWING:
                         break;
@@ -174,7 +178,7 @@ public class AddHabitEventDialog extends DialogFragment {
         );
         cameraPermission = checkCameraPermissions();
         locationPermission = checkLocationPermissions();
-        if(locationPermission) {
+        if (locationPermission) {
             getLastLocation();
         }
     }
@@ -229,7 +233,9 @@ public class AddHabitEventDialog extends DialogFragment {
         dialog.setContentView(view);
 
         context = getContext();
-
+        mContext = getActivity().getApplicationContext();
+        final UserProfile profile = new UserProfile(mContext);
+        TreeGrowth profileTreeGrowth = profile.treeGrowth;
         // creates all of the necessary view controllers
         TextView eventTitle = view.findViewById(R.id.addHabitEventDialogTitle);
         spinner = view.findViewById(R.id.addHabitEventSpinner);
@@ -304,6 +310,21 @@ public class AddHabitEventDialog extends DialogFragment {
                 resultBundle = createHabitEventBundle();
                 onAddHabitEventListener.OnAdded();
                 dialog.dismiss();
+
+                SharedPreferences sharedPreferences = context.getSharedPreferences(HABILECT_USER_INFO, Context.MODE_PRIVATE);
+                String preference = sharedPreferences.getString(UserProfile.HABILECT_USER_TREE_GROWTH, null);
+
+                int nutrientLevel = Integer.parseInt(preference);
+
+                //test numbers
+                nutrientLevel += 30;
+
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                profile.setTreeGrowth(Integer.toString(nutrientLevel));
+                editor.putString(UserProfile.HABILECT_USER_TREE_GROWTH, Integer.toString(nutrientLevel));
+                editor.commit();
+                Log.i("NUTRIENTLEVEL: ", "" + profileTreeGrowth.getNutrientLevel());
+
             }
         });
 
@@ -331,7 +352,7 @@ public class AddHabitEventDialog extends DialogFragment {
 
     @Override
     public void onPause() {
-        if(cameraPermission) {
+        if (cameraPermission) {
             camera.close();
         }
         super.onPause();
@@ -358,7 +379,6 @@ public class AddHabitEventDialog extends DialogFragment {
     }
 
     /**
-     *
      * @return returns a bundle with all of the information that the user specified
      * in creating the event
      */
@@ -368,12 +388,11 @@ public class AddHabitEventDialog extends DialogFragment {
 
 
     /**
-     *
      * @return Creates a resultBundle, which holds all of the information the user inputted
      * in creating the event
      */
     private Bundle createHabitEventBundle() {
-        Bundle bundle= new Bundle();
+        Bundle bundle = new Bundle();
         String latitude;
         String longitude;
         String habitType;
@@ -394,7 +413,7 @@ public class AddHabitEventDialog extends DialogFragment {
         date = new SimpleDateFormat("yyyy_MM_dd", Locale.ENGLISH).format(new Date());
 
         // gets the selected title
-        if(spinner.getSelectedItem() != null) {
+        if (spinner.getSelectedItem() != null) {
             habitType = spinner.getSelectedItem().toString();
         } else {
             habitType = "";
@@ -441,20 +460,17 @@ public class AddHabitEventDialog extends DialogFragment {
     }
 
     /**
-     *
      * @return a String representing the habit event title if there is one
      */
     private String getTitleFromBundle() {
         try {
             return getArguments().getString("Title");
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return "";
         }
     }
 
     /**
-     *
      * @return an ArrayList with all of the passed habit types. If calling from main activity,
      * will be list of all of the users created habit types
      */
@@ -485,8 +501,8 @@ public class AddHabitEventDialog extends DialogFragment {
     }
 
     // TODO: Maybe have all of the permission handling / asking in a separate class
+
     /**
-     *
      * @return a boolean representing if we have permission to access user location
      */
     private boolean checkLocationPermissions() {
@@ -496,7 +512,6 @@ public class AddHabitEventDialog extends DialogFragment {
     }
 
     /**
-     *
      * @return a boolean representing if we have permission to access the camera
      */
     private boolean checkCameraPermissions() {
