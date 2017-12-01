@@ -463,7 +463,8 @@ public class AddHabitEventDialog extends DialogFragment {
      */
     private String getTitleFromBundle() {
         try {
-            return getArguments().getString("Title");
+            String title = getArguments().getString("Title");
+            return title == null ? "" : title;
         } catch (Exception e) {
             return "";
         }

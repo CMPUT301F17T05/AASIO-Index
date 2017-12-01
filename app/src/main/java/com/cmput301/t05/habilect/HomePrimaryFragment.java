@@ -14,6 +14,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -155,11 +156,17 @@ public class HomePrimaryFragment extends Fragment {
                     }
                 });
                 ArrayList<String> titleList = getHabitTitles();
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("Habit Type", titleList);
-                addHabitEventDialog.setArguments(bundle);
-                addHabitEventDialog.show(fragmentManager, "addHabitEventDialog");
+                if(all_habit_types.size() < 1) {
+                    Toast.makeText(getContext(), "You do not have any habits to make events for!", Toast.LENGTH_SHORT).show();
+                } else if(titleList.size() < 1) {
+                    Toast.makeText(getContext(), "You have already completed all of your habits today!", Toast.LENGTH_SHORT).show();
+                } else {
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("Habit Type", titleList);
+                    addHabitEventDialog.setArguments(bundle);
+                    addHabitEventDialog.show(fragmentManager, "addHabitEventDialog");
 
+                }
             }
         });
 
@@ -206,6 +213,9 @@ public class HomePrimaryFragment extends Fragment {
     private ArrayList<String> getHabitTitles() {
         ArrayList<String> list = new ArrayList<>();
         for(HabitType type : all_habit_types) {
+            if(checkIfHabitDoneToday(type)) {
+                continue;
+            }
             list.add(type.getTitle());
         }
         return list;
