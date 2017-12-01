@@ -11,7 +11,7 @@
         android:id="@+id/addHabitEventDialogTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/black"
+        android:textColor="@color/colorPrimaryDark"
         android:textSize="@dimen/font_size_large"
         android:textStyle="bold"
         android:layout_marginLeft="24dp"
@@ -24,11 +24,11 @@
         android:id="@+id/addHabitEventDialogHabitTypeText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/habit_type"
-        android:textSize="@dimen/font_size_medium"
-        android:layout_below="@+id/addHabitEventDialogTitle"
         android:layout_alignStart="@+id/addHabitEventDialogTitle"
-        android:layout_marginTop="27dp" />
+        android:layout_below="@+id/addHabitEventDialogTitle"
+        android:layout_marginTop="27dp"
+        android:text="@string/habit_type"
+        android:textSize="18sp" />
 
     <Spinner
         android:id="@+id/addHabitEventSpinner"
@@ -65,10 +65,11 @@
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Enable Location"
-        android:layout_below="@+id/addHabitEventImageButton"
         android:layout_alignStart="@+id/addHabitEventImageButton"
-        android:layout_marginTop="16dp" />
+        android:layout_below="@+id/addHabitEventImageButton"
+        android:layout_marginTop="16dp"
+        android:text="Enable Location"
+        android:textSize="18sp" />
 
     <CheckBox
         android:id="@+id/addHabitEventCheckBox"
@@ -90,24 +91,24 @@
         android:layout_alignEnd="@+id/addHabitEventCheckBox" />
 
     <Button
-        style="@style/Widget.AppCompat.Button.Borderless.Colored"
-        android:background="@android:color/transparent"
         android:id="@+id/addEventCreateButton"
+        style="@style/Widget.AppCompat.Button.Borderless.Colored"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Create"
+        android:layout_alignEnd="@+id/addEventCommentText"
         android:layout_alignParentBottom="true"
-        android:layout_alignEnd="@+id/addEventCommentText" />
+        android:background="@android:color/transparent"
+        android:text="@string/save" />
 
     <Button
-        style="@style/Widget.AppCompat.Button.Borderless.Colored"
-        android:background="@android:color/transparent"
         android:id="@+id/addEventCancelButton"
+        style="@style/Widget.AppCompat.Button.Borderless.Colored"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Cancel"
         android:layout_alignParentBottom="true"
-        android:layout_toStartOf="@+id/addEventCreateButton" />
+        android:layout_toStartOf="@+id/addEventCreateButton"
+        android:background="@android:color/transparent"
+        android:text="@android:string/cancel" />
 
     <TextView
         android:id="@+id/addEventCommentWarning"

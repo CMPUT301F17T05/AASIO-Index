@@ -68,7 +68,7 @@ public class HabitEventListAdapter extends BaseAdapter implements ListAdapter, F
         Button viewButton = view.findViewById(R.id.habitEventRowSelectButton);
 
         habitTitle.setText(event.getHabitType());
-        habitDate.setText(event.getCompletionDate().toString());
+        habitDate.setText(event.getCompletionDateString());
         habitComment.setText(event.getComment());
 
         viewButton.setOnClickListener(new View.OnClickListener() {

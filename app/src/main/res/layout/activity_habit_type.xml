@@ -5,8 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/navigationHabitTypeDrawer"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/lightgrey">
+    android:layout_height="match_parent">
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/main_content"
@@ -55,6 +54,7 @@
             android:layout_margin="@dimen/fab_margin"
             android:layout_marginBottom="32dp"
             android:layout_marginEnd="32dp"
+            app:backgroundTint="@color/lightgrey"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:srcCompat="@mipmap/add_button" />

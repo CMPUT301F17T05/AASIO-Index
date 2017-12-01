@@ -87,7 +87,7 @@ public class HabitEventEditListAdapter extends BaseAdapter implements ListAdapte
         ImageButton deleteButton = view.findViewById(R.id.habitEventRowEditDeleteButton);
 
         habitTitle.setText(event.getHabitType());
-        habitDate.setText(event.getCompletionDate().toString());
+        habitDate.setText(event.getCompletionDateString());
         habitComment.setText(event.getComment());
 
         habitType = habitTitle.getText().toString();

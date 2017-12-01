@@ -106,8 +106,10 @@ public class EditHabitTypeDialog extends DialogFragment {
                         Context context = getActivity();
                         String title = habitTitleText.getText().toString();
                         String reason = habitReasonText.getText().toString();
-                        Date start_date = new Date(habitStartDate.getYear(), habitStartDate.getMonth(),
-                                habitStartDate.getDayOfMonth());
+                        Calendar calendar = Calendar.getInstance();
+                        calendar.set(habitStartDate.getYear(),
+                                habitStartDate.getMonth(), habitStartDate.getDayOfMonth());
+                        Date start_date = calendar.getTime();
                         try {
                             habitTypeListener.OnAddedOrEdited(title, reason, start_date, weekly_plan);
                             dialog.dismiss();

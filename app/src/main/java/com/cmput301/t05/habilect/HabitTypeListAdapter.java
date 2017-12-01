@@ -56,8 +56,10 @@ public class HabitTypeListAdapter extends BaseAdapter implements ListAdapter {
         final HabitType habitType = typeList.get(i);
 
         TextView title = view.findViewById(R.id.habitTypeListTitle);
+        TextView plan = view.findViewById(R.id.habitTypeListPlan);
 
         title.setText(habitType.getTitle());
+        plan.setText(habitType.getWeeklyPlanString());
 
         return view;
     }
