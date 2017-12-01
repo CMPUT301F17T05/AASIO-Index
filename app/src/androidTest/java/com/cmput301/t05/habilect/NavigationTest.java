@@ -98,7 +98,6 @@ public class NavigationTest extends ActivityInstrumentationTestCase2<HomeActivit
     public void testNavigateDialogs() {
         solo.waitForActivity("HomeActivity", 1000);
         solo.assertCurrentActivity("wrong activity", HomeActivity.class);
-        solo.clickOnView(((Button) solo.getCurrentActivity().findViewById(R.id.viewHabitButton)));
         solo.waitForView(solo.getCurrentActivity().findViewById(R.layout.dialog_viewhabit));
         solo.clickOnView(solo.getView(R.id.followRequestButton));
         solo.goBack();
@@ -117,7 +116,6 @@ public class NavigationTest extends ActivityInstrumentationTestCase2<HomeActivit
         solo.clickOnView(((DrawerLayout) solo.getView(navigationHomeDrawer)).findViewById(R.id.navigateHistory));
         solo.assertCurrentActivity("wrong activity", HistoryActivity.class);
         solo.sleep(1000);
-        solo.clickOnView(((Button) solo.getCurrentActivity().findViewById(R.id.viewHabitButton)));
         solo.waitForView(solo.getCurrentActivity().findViewById(R.layout.dialog_viewhabit));
         solo.clickOnView(solo.getView(R.id.followRequestButton));
         solo.goBack();

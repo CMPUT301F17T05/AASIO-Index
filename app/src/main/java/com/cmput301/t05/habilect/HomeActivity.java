@@ -2,6 +2,7 @@ package com.cmput301.t05.habilect;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -12,6 +13,10 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.Toast;
+
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 
 /**
  * @author ioltuszy
@@ -45,6 +50,10 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+//        if (googleServicesAvailable()){
+//            Toast.makeText(this, "Google services available!", Toast.LENGTH_LONG).show();
+//        }
+
         homeViewPagerAdapter = new ViewPagerHomeAdapter(fragmentManager);
         ViewPager mHomeViewPager = (ViewPager) findViewById(R.id.homeViewPager);
         mHomeViewPager.setAdapter(homeViewPagerAdapter);
@@ -54,6 +63,20 @@ public class HomeActivity extends AppCompatActivity {
 
         Navigation.setup(findViewById(android.R.id.content));
     }
+
+//    public boolean googleServicesAvailable() {
+//        GoogleApiAvailability api = GoogleApiAvailability.getInstance();
+//        int isAvailable = api.isGooglePlayServicesAvailable(this);
+//        if (isAvailable == ConnectionResult.SUCCESS){
+//            return true;
+//        } else if (api.isUserResolvableError(isAvailable)){
+//            Dialog dialog = api.getErrorDialog(this, isAvailable, 0);
+//            dialog.show();
+//        } else {
+//            Toast.makeText(this, "Cannot connect to play services", Toast.LENGTH_LONG).show();
+//        }
+//        return false;
+//    }
 
     /**
      * Return the current state of the permissions needed.
