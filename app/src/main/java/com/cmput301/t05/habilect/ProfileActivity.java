@@ -312,8 +312,6 @@ public class ProfileActivity extends AppCompatActivity {
 
         int nutrientLevel = profileTreeGrowth.getNutrientLevel();
 
-        previousNutrientLevel = nutrientLevel;
-
         Log.i("NUTRIENTLEVEL: ", "" + nutrientLevel);
         //tmp drawables until have actual images
         nutrientLevelTextView.setText("Nutrient Level: " + nutrientLevel);
@@ -342,6 +340,9 @@ public class ProfileActivity extends AppCompatActivity {
             nutrientLevelToNextTierTextView.setText("MAXED");
             treeGrowthImageView.setImageResource(R.drawable.history);
         }
+
+        previousNutrientLevel = nutrientLevel;
+
     }
 
     private void buildRankUpDialog(int tier){
