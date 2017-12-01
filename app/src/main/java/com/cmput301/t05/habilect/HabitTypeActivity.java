@@ -83,6 +83,7 @@ public class HabitTypeActivity extends AppCompatActivity {
         tabLayout.setupWithViewPager(mViewPager);
 
         String habit_type_title = getIntent().getStringExtra("ClickedHabitType");
+        setTitle("Habilect - " + habit_type_title);
         habit_type = GSONController.GSON_CONTROLLER.findHabitType(habit_type_title);
 
         eList = GSONController.GSON_CONTROLLER.loadHabitEventFromFile();
