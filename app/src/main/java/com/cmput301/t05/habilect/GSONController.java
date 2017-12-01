@@ -213,9 +213,15 @@ public class GSONController {
      * @param event the habit event you want to delete
      */
     void deleteHabitEventInFile(HabitEvent event) {
-        HabitEvent rmEvent = findHabitEvent(event.getHabitType(), event.getCompletionDate());
-        eventList.remove(rmEvent);
-        saveHabitEventListInFile();
+        try{
+            HabitEvent rmEvent = findHabitEvent(event.getHabitType(), event.getCompletionDate());
+            eventList.remove(rmEvent);
+            String combined = event.getHabitType() + "_" + event.getCompletionDate();
+            eventTitleAndDateList.remove(combined);
+            saveHabitEventListInFile();
+        } catch (Exception e) {
+        }
+
     }
 
     /**

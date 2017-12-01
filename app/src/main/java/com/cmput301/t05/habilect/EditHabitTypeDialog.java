@@ -147,6 +147,7 @@ public class EditHabitTypeDialog extends DialogFragment {
     private void setHabitType() {
         try {
             String title = getArguments().getString("Habit Title");
+            // TODO: GSON
             habit_type = GSONController.GSON_CONTROLLER.findHabitType(title);
         }
         catch (Exception e) {

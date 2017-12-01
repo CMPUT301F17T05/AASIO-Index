@@ -94,6 +94,7 @@ public class ViewHabitTypesActivity extends AppCompatActivity {
 
 
         // load from file
+        //TODO: GSON
         habit_types = GSONController.GSON_CONTROLLER.loadHabitTypeFromFile();
 
         // load from elasticsearch

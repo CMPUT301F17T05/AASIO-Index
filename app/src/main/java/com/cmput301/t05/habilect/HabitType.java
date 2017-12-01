@@ -27,7 +27,7 @@ public class HabitType extends Observable implements Serializable {
     private boolean shared;
     private List<UserProfile> followers;
     private Date recent_habit_event;
-    private List<HabitEvent> habitEvents = new ArrayList<>();
+    private ArrayList<HabitEvent> habitEvents = new ArrayList<>();
     private static int MAX_TITLE_LEN = 20;
     private static int MAX_REASON_LEN = 30;
 
@@ -107,7 +107,7 @@ public class HabitType extends Observable implements Serializable {
         return this.followers;
     }
     public Date getRecentHabitEvent() { return this.recent_habit_event; }
-    public List<HabitEvent> getHabitEvents() { return this.habitEvents; }
+    public ArrayList<HabitEvent> getHabitEvents() { return this.habitEvents; }
 
     // SETTERS
 

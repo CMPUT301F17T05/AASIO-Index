@@ -16,9 +16,11 @@ import android.widget.Button;
 import android.widget.ListView;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.ArrayList;
+import java.util.Locale;
 
 /**
  * Shows a list of habit types that can be completed today, allows the user to navigate to
@@ -62,6 +64,7 @@ public class HomePrimaryFragment extends Fragment {
             }
         });
 
+        //TODO: GSON
         all_habit_types = GSONController.GSON_CONTROLLER.loadHabitTypeFromFile();
         incomplete_habit_types = new ArrayList<>();
         getIncompleteHabitTypes();
@@ -82,6 +85,7 @@ public class HomePrimaryFragment extends Fragment {
                     public void OnAddedOrEdited(String title, String reason, Date start_date, boolean[] weekly_plan) {
                         try {
                             // check to make sure title is unique
+                            //TODO: GSON
                             all_habit_types = GSONController.GSON_CONTROLLER.loadHabitTypeFromFile();
 
                             for (HabitType h: all_habit_types) {
@@ -100,7 +104,9 @@ public class HomePrimaryFragment extends Fragment {
                                 // load from file
                                 habit_types = GSONController.GSON_CONTROLLER.loadHabitTypeFromFile();
                             }*/
+                            //TODO: GSON
                             GSONController.GSON_CONTROLLER.saveHabitTypeInFile(habit_type);
+                            //TODO: GSON
                             all_habit_types = GSONController.GSON_CONTROLLER.loadHabitTypeFromFile();
                             getIncompleteHabitTypes();
                             adapter.notifyDataSetChanged();
@@ -132,10 +138,15 @@ public class HomePrimaryFragment extends Fragment {
                         // TODO: implement OnAdded
                         HabitEvent event =
                                 createHabitEventFromBundle(addHabitEventDialog.getResultBundle());
+                        //TODO: GSON
                         HabitType habit_type = GSONController.GSON_CONTROLLER.findHabitType(event.getHabitType());
                         habit_type.addHabitEvent(event);
+                        //TODO: GSON
                         GSONController.GSON_CONTROLLER.editHabitTypeInFile(habit_type, habit_type.getTitle());
+                        //TODO: GSON
                         GSONController.GSON_CONTROLLER.saveHabitEventInFile(event);
+                        getIncompleteHabitTypes();
+                        adapter.notifyDataSetChanged();
                     }
 
                     @Override
@@ -209,7 +220,6 @@ public class HomePrimaryFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-
         getIncompleteHabitTypes();
         adapter.notifyDataSetChanged();
     }
@@ -226,6 +236,10 @@ public class HomePrimaryFragment extends Fragment {
         boolean[] plan;
         incomplete_habit_types.clear();
         for (HabitType h : all_habit_types) {
+            boolean doneToday = checkIfHabitDoneToday(h);
+            if(doneToday) {
+                continue;
+            }
             plan = h.getWeeklyPlan();
             if (today == Calendar.MONDAY && plan[0]) {
                 incomplete_habit_types.add(h);
@@ -249,7 +263,18 @@ public class HomePrimaryFragment extends Fragment {
                 incomplete_habit_types.add(h);
             }
         }
+    }
 
-
+    private boolean checkIfHabitDoneToday(HabitType habit) {
+        ArrayList<HabitEvent> eventList = habit.getHabitEvents();
+        Locale locale = new Locale("English", "Canada");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEEE',' MMMM d',' yyyy", locale);
+        String currentDate = simpleDateFormat.format(new Date());
+        for(HabitEvent event : eventList) {
+            if(currentDate.equals(event.getCompletionDateString())) {
+                return true;
+            }
+        }
+        return false;
     }
 }

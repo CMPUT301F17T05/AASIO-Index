@@ -103,6 +103,7 @@ public class HabitEventEditListAdapter extends BaseAdapter implements ListAdapte
                         // TODO: implement OnAdded
                         HabitEvent newEvent =
                                 editHabitEventFromBundle(editHabitEventDialog.getResultBundle());
+                        // TODO: GSON
                         GSONController.GSON_CONTROLLER.editHabitEventInFile(newEvent);
                         eventList.remove(event);
                         eventList.add(newEvent);
@@ -125,6 +126,7 @@ public class HabitEventEditListAdapter extends BaseAdapter implements ListAdapte
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //TODO: GSON
                 GSONController.GSON_CONTROLLER.deleteHabitEventInFile(event);
 
                 eventList.remove(event);
