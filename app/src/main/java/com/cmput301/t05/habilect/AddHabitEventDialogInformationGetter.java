@@ -36,7 +36,7 @@ public class AddHabitEventDialogInformationGetter {
      */
     public String getComment() {
         String comment = bundle.getString("comment");
-        return comment == null ? "[no comment]" : comment ;
+        return comment == null ? "" : comment ;
     }
 
     /**

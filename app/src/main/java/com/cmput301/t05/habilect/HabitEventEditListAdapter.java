@@ -88,7 +88,12 @@ public class HabitEventEditListAdapter extends BaseAdapter implements ListAdapte
 
         habitTitle.setText(event.getHabitType());
         habitDate.setText(event.getCompletionDateString());
-        habitComment.setText(event.getComment());
+        String comment = event.getComment();
+        if(comment.equals("")) {
+            habitComment.setText("[no comment]");
+        } else {
+            habitComment.setText(comment);
+        }
 
         habitType = habitTitle.getText().toString();
         date = event.getCompletionDate();
