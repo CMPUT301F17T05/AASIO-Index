@@ -23,9 +23,9 @@
 
     <DatePicker
         android:id="@+id/datePickerStartDate"
-        android:layout_width="wrap_content"
-        android:calendarViewShown="false"
+        android:layout_width="match_parent"
         android:layout_height="102dp"
+        android:calendarViewShown="false"
         android:datePickerMode="spinner" />
 
     <CheckBox
