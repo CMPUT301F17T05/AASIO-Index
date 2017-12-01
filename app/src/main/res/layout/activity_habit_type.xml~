@@ -47,6 +47,4 @@
         android:layout_margin="@dimen/fab_margin"
         app:srcCompat="@mipmap/add_button" />
 
-    <include layout="@layout/navigation_drawer"/>
-
 </android.support.design.widget.CoordinatorLayout>

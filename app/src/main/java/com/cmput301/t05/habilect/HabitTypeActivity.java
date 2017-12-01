@@ -125,6 +125,7 @@ public class HabitTypeActivity extends AppCompatActivity {
                 addHabitEventDialog.show(fragmentManager, "addHabitEventDialog");
             }
         });
+	Navigation.setup(findViewById(android.R.id.content));
     }
 
     /**
