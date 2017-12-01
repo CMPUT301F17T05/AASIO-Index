@@ -33,6 +33,7 @@ import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListAdapter;
 import android.widget.Spinner;
@@ -77,7 +78,7 @@ public class EditHabitEventDialog extends DialogFragment {
     private ImageButton eventImage;
     private Bitmap eventBitmap;
     Context context;
-    TextView commentText;
+    EditText commentText;
     TextView commentWarning;
     Button createButton;
     Spinner spinner;

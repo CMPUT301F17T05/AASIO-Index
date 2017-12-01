@@ -7,26 +7,6 @@
     tools:context="com.cmput301.t05.habilect.HomeActivity">
 
     <Button
-        android:id="@+id/viewHabitButton"
-        android:layout_width="140dp"
-        android:layout_height="50dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:background="@color/colorPrimary"
-        android:fontFamily="sans-serif-light"
-        android:padding="5dp"
-        android:text="View My Habits"
-        android:textColor="@color/white"
-        android:textSize="16sp"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/imageView"
-        app:layout_constraintTop_toBottomOf="@+id/incompleteHabitsListView" />
-
-    <Button
         android:id="@+id/addHabitButton"
         android:layout_width="140dp"
         android:layout_height="50dp"
@@ -42,26 +22,27 @@
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="@+id/imageView"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintStart_toEndOf="@+id/imageView"
-        app:layout_constraintTop_toBottomOf="@+id/viewHabitButton" />
+        app:layout_constraintTop_toBottomOf="@+id/addHabitEvent"
+        app:layout_constraintVertical_bias="1.0" />
 
     <Button
         android:id="@+id/addHabitEvent"
         android:layout_width="140dp"
         android:layout_height="50dp"
-        android:layout_marginBottom="8dp"
         android:layout_marginEnd="16dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="156dp"
         android:background="@color/colorPrimary"
         android:fontFamily="sans-serif-light"
         android:padding="5dp"
         android:text="Make Progress"
         android:textColor="@color/white"
         android:textSize="16sp"
-        app:layout_constraintBottom_toTopOf="@+id/viewHabitButton"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintStart_toEndOf="@+id/imageView"
         app:layout_constraintTop_toBottomOf="@+id/incompleteHabitsListView" />

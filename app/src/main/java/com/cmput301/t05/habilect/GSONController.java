@@ -18,6 +18,7 @@ import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 
 /**
  * Facilitates the use of GSON for saving habit types, habit events and user profile information.
@@ -154,7 +155,8 @@ public class GSONController {
      * Saves a habit event in file if we don't already have it
      * @param event the habit evnt you want to save
      */
-    void saveHabitEventInFile(HabitEvent event) {
+    boolean saveHabitEventInFile(HabitEvent event){
+        boolean result = false;
         try {
             ContextWrapper cw = new ContextWrapper(context.getApplicationContext());
             File directory = cw.getDir("userData", Context.MODE_PRIVATE);
@@ -168,13 +170,14 @@ public class GSONController {
             if(!eventInEventList(event) && event != null) {
                 eventList.add(event);
                 eventTitleAndDateList.add(event.getHabitType() + "_" + event.getCompletionDate());
+                result =  true;
             }
-
             Gson gson = new Gson();
             gson.toJson(eventList, out);
             out.flush();
 
             fw.close();
+            return result;
         } catch (Exception e) {
             // TODO Auto-generated catch block
             throw new RuntimeException();
@@ -284,7 +287,7 @@ public class GSONController {
 
         } catch (FileNotFoundException e) {
             // TODO Auto-generated catch block
-            typeList = new ArrayList<HabitType>();
+            typeList = new ArrayList<>();
         }
         return typeList == null ? new ArrayList<>() : typeList;
     }
@@ -327,9 +330,21 @@ public class GSONController {
     public void deleteHabitTypeInFile(HabitType habitType) {
         if(typeInEventList(habitType)) {
             HabitType rmType = findHabitType(habitType.getTitle());
+            deleteAllAssociatedHabitEvent(habitType.getTitle());
+            saveHabitEventListInFile();
             typeList.remove(rmType);
             typeTitleList.remove(habitType.getTitle());
             saveHabitTypeListInFile();
+        }
+    }
+
+    public void deleteAllAssociatedHabitEvent(String habitType) {
+        Iterator<HabitEvent> iterator = eventList.iterator();
+        while(iterator.hasNext()) {
+            HabitEvent event = iterator.next();
+            if(event.getHabitType().equals(habitType)) {
+                iterator.remove();
+            }
         }
     }
 
@@ -350,6 +365,8 @@ public class GSONController {
             BufferedWriter out = new BufferedWriter(fw);
 
             HabitType rmType = findHabitType(title);
+            editAllAssociatedHabitEvent(title, habitType.getTitle());
+            saveHabitEventListInFile();
             //Log.d("Debugging:", "retrieved habit type: " + rmType.getTitle());
             typeList.remove(rmType);
             typeList.add(habitType);
@@ -362,6 +379,16 @@ public class GSONController {
         } catch (Exception e) {
             // TODO Auto-generated catch block
             throw new RuntimeException();
+        }
+    }
+
+    public void editAllAssociatedHabitEvent(String habitType, String newTitle) {
+        Iterator<HabitEvent> iterator = eventList.iterator();
+        while(iterator.hasNext()) {
+            HabitEvent event = iterator.next();
+            if(event.getHabitType().equals(habitType)) {
+                event.setHabitType(newTitle);
+            }
         }
     }
 

@@ -34,7 +34,7 @@ import java.util.Locale;
 public class HabitEventEditListAdapter extends BaseAdapter implements ListAdapter {
     private ArrayList<HabitEvent> eventList = new ArrayList<>();
     private Context context;
-
+    private HabitEvent event;
     private String habitType;
     private Date date;
 
@@ -66,7 +66,7 @@ public class HabitEventEditListAdapter extends BaseAdapter implements ListAdapte
             view = inflater.inflate(R.layout.habit_event_row_with_edit, null);
         }
         // gets the counter object that we want to display
-        final HabitEvent event = eventList.get(i);
+        event = eventList.get(i);
 
         Button viewButton = view.findViewById(R.id.habitEventEditRowSelectButton);
 
@@ -91,9 +91,12 @@ public class HabitEventEditListAdapter extends BaseAdapter implements ListAdapte
                     @Override
                     public void OnAdded() {
                         // TODO: implement OnAdded
-                        HabitEvent event =
+                        HabitEvent newEvent =
                                 editHabitEventFromBundle(editHabitEventDialog.getResultBundle());
-                        GSONController.GSON_CONTROLLER.editHabitEventInFile(event);
+                        GSONController.GSON_CONTROLLER.editHabitEventInFile(newEvent);
+                        eventList.remove(event);
+                        eventList.add(newEvent);
+                        notifyDataSetChanged();
                     }
 
                     @Override
@@ -113,6 +116,8 @@ public class HabitEventEditListAdapter extends BaseAdapter implements ListAdapte
             @Override
             public void onClick(View view) {
                 GSONController.GSON_CONTROLLER.deleteHabitEventInFile(event);
+                eventList.remove(event);
+                notifyDataSetChanged();
             }
         });
 
@@ -139,6 +144,7 @@ public class HabitEventEditListAdapter extends BaseAdapter implements ListAdapte
         ArrayList<String> list = new ArrayList<>();
         list.add(habitType);
         bundle.putString("Title", habitType);
+        bundle.putString("Comment", event.getComment());
         String dateString = new SimpleDateFormat("yyyy_MM_dd", Locale.ENGLISH).format(date);
         bundle.putString("Date", dateString);
         bundle.putSerializable("Habit Type", list);

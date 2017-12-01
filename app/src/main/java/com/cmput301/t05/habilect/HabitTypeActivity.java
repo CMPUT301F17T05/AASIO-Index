@@ -54,6 +54,7 @@ public class HabitTypeActivity extends AppCompatActivity {
     private static HabitType habit_type;      // The habit type that has been clicked on for viewing
     private static HabitEventEditListAdapter eventListAdapter;
     FragmentManager fragmentManager;
+    private static ArrayList<HabitEvent> eList;
 
     /**
      * sets up the activity and grabs the habit type that was passed in through a different
@@ -84,7 +85,12 @@ public class HabitTypeActivity extends AppCompatActivity {
         String habit_type_title = getIntent().getStringExtra("ClickedHabitType");
         habit_type = GSONController.GSON_CONTROLLER.findHabitType(habit_type_title);
 
+        eList = GSONController.GSON_CONTROLLER.loadHabitEventFromFile();
+        eList = filterEventList(habit_type, eList);
+        eventListAdapter = new HabitEventEditListAdapter(eList, this);
+
         FloatingActionButton fab = findViewById(R.id.fab);
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -94,9 +100,14 @@ public class HabitTypeActivity extends AppCompatActivity {
                     public void OnAdded() {
                         HabitEvent event =
                                 createHabitEventFromBundle(addHabitEventDialog.getResultBundle());
+
                         habit_type.addHabitEvent(event);
-                        GSONController.GSON_CONTROLLER.saveHabitEventInFile(event);
+
                         GSONController.GSON_CONTROLLER.editHabitTypeInFile(habit_type, habit_type.getTitle());
+                        boolean saveSuccess = GSONController.GSON_CONTROLLER.saveHabitEventInFile(event);
+                        if(saveSuccess) {
+                            eList.add(event);
+                        }
                         if(eventListAdapter != null) {
                             eventListAdapter.notifyDataSetChanged();
                         }
@@ -114,6 +125,22 @@ public class HabitTypeActivity extends AppCompatActivity {
                 addHabitEventDialog.show(fragmentManager, "addHabitEventDialog");
             }
         });
+    }
+
+    /**
+     * Filters the event list such that only the events with the matching habit type remain
+     * @param habitType the habit type you want to filer by
+     * @param eventList the event list you want to filer
+     * @return returns a filter event list
+     */
+    private  ArrayList<HabitEvent> filterEventList(HabitType habitType, ArrayList<HabitEvent> eventList) {
+        ArrayList<HabitEvent> newList = new ArrayList<>();
+        for (HabitEvent event : eventList) {
+            if(event.getHabitType().equals(habitType.getTitle())) {
+                newList.add(event);
+            }
+        }
+        return newList;
     }
 
 
@@ -164,6 +191,9 @@ public class HabitTypeActivity extends AppCompatActivity {
                     // N/A
                 }
             });
+            Bundle bundle = new Bundle();
+            bundle.putString("Habit Title", habit_type.getTitle());
+            editHabitTypeDialog.setArguments(bundle);
             editHabitTypeDialog.show(fragmentManager, "editHabitTypeDialog");
         }
         if (id == R.id.action_delete) {
@@ -304,6 +334,7 @@ public class HabitTypeActivity extends AppCompatActivity {
     public static class HabitTypeEventsFragment extends Fragment {
 
         ArrayList<HabitEvent> eList;
+
 
         public HabitTypeEventsFragment() {
         }

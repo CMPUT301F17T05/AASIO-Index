@@ -18,7 +18,7 @@ import java.util.concurrent.ExecutionException;
 public class ViewHabitTypesActivity extends AppCompatActivity {
 
     private ListView habitTypeList;
-    private List<HabitType> habit_types;
+    private ArrayList<HabitType> habit_types;
     private Context context;
     private UserProfile user_profile;
 
@@ -49,7 +49,6 @@ public class ViewHabitTypesActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
     }
 
     /**
@@ -100,10 +99,7 @@ public class ViewHabitTypesActivity extends AppCompatActivity {
         // load from elasticsearch
         //habit_types = webService.getListOfHabitTypes(user_profile);
 
-        ArrayAdapter<HabitType> adapter = new ArrayAdapter<>(this, R.layout.habit_type_list_item, habit_types);
+        HabitTypeListAdapter adapter = new HabitTypeListAdapter(habit_types, this);
         habitTypeList.setAdapter(adapter);
-
-        //Log.d("Debugging", "habit types list:" + habit_types.get(0).toString());
-        adapter.notifyDataSetChanged();
     }
 }

@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.support.v4.app.DialogFragment ;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -25,10 +27,11 @@ import java.util.Date;
 public class EditHabitTypeDialog extends DialogFragment {
 
     private HabitTypeListener habitTypeListener;        // the controller for adding or editing
+    private HabitType habit_type;
     private EditText habitTitleText;
     private EditText habitReasonText;
     private DatePicker habitStartDate;
-    private boolean[] weekly_plan = {true,true,true,true,true,true,true}; // initialize all checkboxes to checked
+    private boolean[] weekly_plan; // initialize all checkboxes to checked
 
 
     public void setHabitTypeListener(HabitTypeListener habitTypeListener) {
@@ -64,6 +67,9 @@ public class EditHabitTypeDialog extends DialogFragment {
         View view = inflater.inflate(R.layout.dialog_addhabit, null);
         dialog.setContentView(view);
 
+        setHabitType();
+        weekly_plan = habit_type.getWeeklyPlan();
+
         habitTitleText = dialog.findViewById(R.id.enterHabitTypeTitle);
         habitReasonText = dialog.findViewById(R.id.enterHabitTypeReason);
         habitStartDate = dialog.findViewById(R.id.datePickerStartDate);
@@ -83,7 +89,15 @@ public class EditHabitTypeDialog extends DialogFragment {
         checkboxes.add(checkFriday);
         checkboxes.add(checkSaturday);
         checkboxes.add(checkSunday);
-        setListeners(checkboxes);
+
+        setListenersAndValues(checkboxes);
+        Date start_date = habit_type.getStartDate();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(start_date);
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+        habitStartDate.updateDate(year, month, day);
 
         ((Button)dialog.findViewById(R.id.add_button))
                 .setOnClickListener(new View.OnClickListener() {
@@ -130,6 +144,15 @@ public class EditHabitTypeDialog extends DialogFragment {
         return dialog;
     }
 
+    private void setHabitType() {
+        try {
+            String title = getArguments().getString("Habit Title");
+            habit_type = GSONController.GSON_CONTROLLER.findHabitType(title);
+        }
+        catch (Exception e) {
+            habit_type = null;
+        }
+    }
 
     /**
      * The method called by the OnClickListener of each CheckBox. Changes the boolean value of
@@ -172,14 +195,17 @@ public class EditHabitTypeDialog extends DialogFragment {
      *
      * @param checkboxes            an ArrayList of CheckBox objects in the view that need listeners
      */
-    public void setListeners(ArrayList<CheckBox> checkboxes) {
+    public void setListenersAndValues(ArrayList<CheckBox> checkboxes) {
+        int i = 0;
         for (CheckBox c : checkboxes) {
+            c.setChecked(weekly_plan[i]);
             c.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     onCheckboxClicked(view);
                 }
             });
+            ++i;
         }
     }
 }
