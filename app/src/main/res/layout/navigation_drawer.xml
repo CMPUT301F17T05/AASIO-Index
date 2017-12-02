@@ -98,11 +98,14 @@
         android:layout_height="wrap_content"
         android:background="@color/white"
         android:drawablePadding="0dp"
-        android:drawableStart="@drawable/history"
+        android:drawableStart="@android:drawable/ic_dialog_map"
+        android:drawableTint="@color/black"
         android:paddingEnd="32dp"
         android:paddingStart="16dp"
         android:text="M a p"
-        android:theme="@style/AppTheme"
-        android:textColor="@color/colorPrimary"/>
+        android:textColor="@color/colorPrimary"
+        android:theme="@style/AppTheme" />
+
+
 
     </LinearLayout>
