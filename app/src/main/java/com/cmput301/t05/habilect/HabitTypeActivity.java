@@ -6,7 +6,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.support.design.widget.TabLayout;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -22,8 +21,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.helper.StaticLabelsFormatter;
@@ -57,7 +58,7 @@ public class HabitTypeActivity extends AppCompatActivity {
     private static HabitEventEditListAdapter eventListAdapter;
     FragmentManager fragmentManager;
     private static ArrayList<HabitEvent> eList;
-
+    private static Context context;
     private static Context mContext;
     /**
      * sets up the activity and grabs the habit type that was passed in through a different
@@ -69,7 +70,7 @@ public class HabitTypeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_habit_type);
-
+        context = this;
         fragmentManager = this.getSupportFragmentManager();
 
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -96,11 +97,17 @@ public class HabitTypeActivity extends AppCompatActivity {
         eList = filterEventList(habit_type, eList);
         eventListAdapter = new HabitEventEditListAdapter(eList, this, mContext);
 
-        FloatingActionButton fab = findViewById(R.id.fab);
+        ImageButton addEventButton = findViewById(R.id.habitTypeAddEventButton);
         if(checkIfHabitDoneToday()) {
-            fab.setEnabled(false);
+            addEventButton.setImageResource(R.mipmap.add_button_greyed_out);
+            addEventButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Toast.makeText(context, "You've already completed this habit today!", Toast.LENGTH_SHORT).show();
+                }
+            });
         } else {
-            fab.setOnClickListener(new View.OnClickListener() {
+            addEventButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     final AddHabitEventDialog addHabitEventDialog = new AddHabitEventDialog();
