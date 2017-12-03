@@ -53,7 +53,7 @@
         android:layout_marginTop="24dp"
         android:fontFamily="sans-serif-medium"
         android:singleLine="true"
-        android:text="- - - - - - - - - - - - Daily Todo List - - - - - - - - - - - -"
+        android:text="                        Daily Todo List                        "
         android:textAlignment="center"
         android:textColor="@color/colorPrimaryDark"
         android:textSize="25sp"
@@ -73,6 +73,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
+        android:background="@layout/listview_border"
         app:layout_constraintTop_toBottomOf="@+id/textView" />
 
 </android.support.constraint.ConstraintLayout>
