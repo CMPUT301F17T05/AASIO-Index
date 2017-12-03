@@ -111,7 +111,6 @@
                     android:text="10/50"
                     android:layout_toRightOf="@id/nutrientLevelProgressBar"
                     android:layout_alignBottom="@id/nutrientLevelProgressBar"
-                    android:fontFamily="sans-serif-thin"
                     android:textSize="10dp"
                     android:textStyle="italic"
                     />
