@@ -25,6 +25,7 @@ public class UserProfile {
     public static final String HABILECT_USER_DISPLAY_NAME = "HABILECT_USER_DISPLAY_NAME";
     public static final String HABILECT_USER_PICTURE = "HABILECT_USER_PICTURE";
     public static final String HABILECT_USER_TREE_GROWTH = "HABILECT_USER_TREE_GROWTH";
+    public static final String HABILECT_USER_PREVIOUS_NUTRIENT_LEVEL_TIER_RANK_UP = "HABILECT_USER_PREVIOUS_NUTRIENT_LEVEL_TIER_RANK_UP";
 
     Context context;
 
@@ -43,6 +44,7 @@ public class UserProfile {
         this.setDisplayName(this.Lookup(context, HABILECT_USER_DISPLAY_NAME));
         this.setProfilePicture(this.Lookup(context, HABILECT_USER_PICTURE));
         this.setTreeGrowth(this.Lookup(context, HABILECT_USER_TREE_GROWTH));
+        this.setPreviousNutrientLevelTierRankUp(this.Lookup(context, HABILECT_USER_PREVIOUS_NUTRIENT_LEVEL_TIER_RANK_UP));
 
         if (isNewUser) {
             WebService.AddUserProfileTask addUserProfileTask = new WebService.AddUserProfileTask();
@@ -99,6 +101,10 @@ public class UserProfile {
         this.treeGrowth.setNutrientLevel(Integer.parseInt(nutrientLevel));
     }
 
+    public void setPreviousNutrientLevelTierRankUp(String level){
+        this.treeGrowth.setPreviousNutrientLevelTierRankUp(Integer.parseInt(level));
+    }
+
     static String Lookup(Context context, String preferenceKey) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(HABILECT_USER_INFO, Context.MODE_PRIVATE);
         String preference = sharedPreferences.getString(preferenceKey, null);
@@ -124,6 +130,12 @@ public class UserProfile {
                     editor.commit();
                     break;
                 case HABILECT_USER_TREE_GROWTH:
+                    newPreference = "0";
+                    editor.putString(preferenceKey, newPreference);
+                    editor.putString(HABILECT_USER_PREVIOUS_NUTRIENT_LEVEL_TIER_RANK_UP, newPreference);
+                    editor.commit();
+                    break;
+                case HABILECT_USER_PREVIOUS_NUTRIENT_LEVEL_TIER_RANK_UP:
                     newPreference = "0";
                     editor.putString(preferenceKey, newPreference);
                     editor.commit();

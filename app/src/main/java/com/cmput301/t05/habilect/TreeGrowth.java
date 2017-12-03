@@ -6,9 +6,10 @@ package com.cmput301.t05.habilect;
 
 public class TreeGrowth {
     int nutrientLevel;
-
+    int previousNutrientLevelTierRankUp;
     public TreeGrowth() {
         this.nutrientLevel = 0;
+        this.previousNutrientLevelTierRankUp = 0;
     }
 
     public int getNutrientLevel() {
@@ -19,6 +20,9 @@ public class TreeGrowth {
         this.nutrientLevel = nutrientLevel;
     }
 
+    public void setPreviousNutrientLevelTierRankUp(int level){
+        this.previousNutrientLevelTierRankUp = level;
+    }
     public void increaseNutrientLevel(int amount) {
         this.nutrientLevel += amount;
     }

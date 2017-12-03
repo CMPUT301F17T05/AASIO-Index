@@ -3,6 +3,7 @@ package com.cmput301.t05.habilect;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -37,6 +38,9 @@ import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.cmput301.t05.habilect.UserProfile.HABILECT_USER_INFO;
+import static com.cmput301.t05.habilect.UserProfile.HABILECT_USER_PREVIOUS_NUTRIENT_LEVEL_TIER_RANK_UP;
+
 /**
  * @author ioltuszy
  */
@@ -64,7 +68,6 @@ public class ProfileActivity extends AppCompatActivity {
         put(15, 408);
         put(16, 478);
     }};
-    private int previousNutrientLevelTierRankUp = 0;
 
     /**
      * Sets up the camera to begin updating the texture surface once it is available
@@ -333,7 +336,7 @@ public class ProfileActivity extends AppCompatActivity {
         int nutrientLevel = profileTreeGrowth.getNutrientLevel();
 
         Log.i("NUTRIENTLEVEL: ", "" + nutrientLevel);
-        //tmp drawables until have actual images
+
         nutrientLevelTextView.setText("Nutrient Level: " + nutrientLevel);
 
         //Base Tier 0
@@ -381,26 +384,27 @@ public class ProfileActivity extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle("Rank Up!");
         builder.setMessage("Congratulations! You have reached tier " + tier + ".");
-        builder.setNegativeButton("OK", null);
+        builder.setNegativeButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
         if(tier == 4){
             ImageView completedTreeImage = new ImageView(context);
             completedTreeImage.setImageResource(R.drawable.green_3);
-//            builder.setIcon(R.mipmap.green_3);
             builder.setView(completedTreeImage);
         } else if(tier == 8){
             ImageView completedTreeImage = new ImageView(context);
             completedTreeImage.setImageResource(R.drawable.orange_3);
-//            completedTreeImage.setImageResource(R.drawable.orange_3);
             builder.setView(completedTreeImage);
         }else if(tier == 12){
             ImageView completedTreeImage = new ImageView(context);
             completedTreeImage.setImageResource(R.drawable.purple_3);
-//            completedTreeImage.setImageResource(R.drawable.purple_3);
             builder.setView(completedTreeImage);
         }else if(tier == 16){
             ImageView completedTreeImage = new ImageView(context);
             completedTreeImage.setImageResource(R.drawable.rainbow_3);
-//            completedTreeImage.setImageResource(R.drawable.rainbow_3);
             builder.setView(completedTreeImage);
         }
         AlertDialog dialog = builder.create();
@@ -410,9 +414,14 @@ public class ProfileActivity extends AppCompatActivity {
 
     private void checkAndAdjustTierProperties(int nutrientLevel, int tier) {
         Log.i("INFORMATION", "nutlevel: " + nutrientLevel + " tier: " + tier);
+
+        SharedPreferences sharedPreferences = context.getSharedPreferences(HABILECT_USER_INFO, Context.MODE_PRIVATE);
+        String preference = sharedPreferences.getString(HABILECT_USER_PREVIOUS_NUTRIENT_LEVEL_TIER_RANK_UP, null);
         //if true, trigger rank up popup
-        if (previousNutrientLevelTierRankUp < tierThresholds.get(tier)) {
-            previousNutrientLevelTierRankUp = nutrientLevel;
+        if (Integer.parseInt(preference) < tierThresholds.get(tier)) {
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString(UserProfile.HABILECT_USER_PREVIOUS_NUTRIENT_LEVEL_TIER_RANK_UP, Integer.toString(nutrientLevel));
+            editor.commit();
             buildRankUpDialog(tier);
         }
         if(tier == 16){
@@ -427,8 +436,6 @@ public class ProfileActivity extends AppCompatActivity {
 
             switch(tier){
                 case 1:
-//                    treeGrowthImageView.setImageBitmap(
-//                            decodeSampledBitmapFromResource(getResources(), R.mipmap.green_3, 100, 100));
                     treeGrowthImageView.setImageResource(R.drawable.level_02);
                     break;
                 case 2:
