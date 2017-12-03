@@ -95,7 +95,12 @@ public class ViewHabitTypesActivity extends AppCompatActivity {
 
         // load from file
         //TODO: GSON
-        habit_types = GSONController.GSON_CONTROLLER.loadHabitTypeFromFile();
+        UserAccount localUser = new UserAccount().load(context);
+        /*UserAccount remoteUser = UserAccount.fromId(localUser.getId());
+        if (remoteUser!=null) {
+            habit_types = new ArrayList<>(remoteUser.getHabits());
+        }*/
+        habit_types = new ArrayList<>(localUser.getHabits());
 
         // load from elasticsearch
         //habit_types = webService.getListOfHabitTypes(user_profile);

@@ -37,6 +37,7 @@ import android.widget.TextView;
 import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import static com.cmput301.t05.habilect.UserProfile.HABILECT_USER_INFO;
 import static com.cmput301.t05.habilect.UserProfile.HABILECT_USER_PREVIOUS_NUTRIENT_LEVEL_TIER_RANK_UP;
@@ -204,10 +205,12 @@ public class ProfileActivity extends AppCompatActivity {
         /**
          * Retrieves user information and updates the views accordingly
          */
-        final UserProfile profile = new UserProfile(getApplicationContext());
-        displayNameEditText.setText(profile.getDisplayName());
-        if (profile.getProfilePicture() != null) {
-            profileImageView.setImageBitmap(profile.getProfilePicture());
+        final UserAccount user = new UserAccount();
+        user.load(context);
+        //final UserAccount user = UserAccount.fromId(UUID.fromString("e06459d4-27f1-49de-b8e8-85ab5b3469ef"));
+        displayNameEditText.setText(user.getDisplayName());
+        if (user.getProfilePicture()!=null) {
+            profileImageView.setImageBitmap(user.getProfilePicture());
         }
 
         /**
@@ -243,22 +246,11 @@ public class ProfileActivity extends AppCompatActivity {
             public void onClick(View view) {
                 saveChangesButton.setEnabled(false);
 
-                SharedPreferences sharedPreferences = context.getSharedPreferences(UserProfile.HABILECT_USER_INFO, Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                profile.setDisplayName(displayNameEditText.getText().toString());
-                editor.putString(UserProfile.HABILECT_USER_DISPLAY_NAME, displayNameEditText.getText().toString());
-                editor.commit();
-
+                user.setDisplayName(displayNameEditText.getText().toString());
                 Bitmap bitmap = ((BitmapDrawable) profileImageView.getDrawable()).getBitmap();
-                ByteArrayOutputStream blob = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, blob);
-                String encodedBitmapString = new String(Base64.encode(blob.toByteArray(), Base64.DEFAULT));
-                profile.setProfilePicture(encodedBitmapString);
-                editor.putString(UserProfile.HABILECT_USER_PICTURE, encodedBitmapString);
-                editor.commit();
-
-                WebService.UpdateUserProfileTask updateUserProfileTask = new WebService.UpdateUserProfileTask();
-                updateUserProfileTask.execute(profile);
+                user.setProfilePicture(bitmap);
+                user.save(context);
+                user.sync(context);
             }
         });
 
@@ -329,9 +321,10 @@ public class ProfileActivity extends AppCompatActivity {
 
     private void setTreeGrowthImageView() {
 
-        final UserProfile profile = new UserProfile(getApplicationContext());
+        final UserAccount user = new UserAccount();
+        user.load(context);
 
-        TreeGrowth profileTreeGrowth = profile.treeGrowth;
+        TreeGrowth profileTreeGrowth = user.getTreeGrowth();
 
         int nutrientLevel = profileTreeGrowth.getNutrientLevel();
 

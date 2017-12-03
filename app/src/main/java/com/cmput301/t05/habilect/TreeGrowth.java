@@ -20,6 +20,10 @@ public class TreeGrowth {
         this.nutrientLevel = nutrientLevel;
     }
 
+    public int getPreviousNutrientLevelTierRankUp() {
+        return previousNutrientLevelTierRankUp;
+    }
+
     public void setPreviousNutrientLevelTierRankUp(int level){
         this.previousNutrientLevelTierRankUp = level;
     }
