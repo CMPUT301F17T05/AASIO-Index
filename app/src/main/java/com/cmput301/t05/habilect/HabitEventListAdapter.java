@@ -28,6 +28,7 @@ public class HabitEventListAdapter extends BaseAdapter implements ListAdapter, F
     private Context context;
     private String habitType;
     private Date date;
+    public String option = "";
 
     HabitEventListAdapter(ArrayList<HabitEvent> eventList, Context context) {
         this.eventList = eventList;
@@ -112,7 +113,7 @@ public class HabitEventListAdapter extends BaseAdapter implements ListAdapter, F
     @Override
     public Filter getFilter() {
         eventList = allEventList;
-        Filter filter = new Filter() {
+        final Filter[] filter = {new Filter() {
 
             @SuppressWarnings("unchecked")
             @Override
@@ -125,11 +126,18 @@ public class HabitEventListAdapter extends BaseAdapter implements ListAdapter, F
             protected FilterResults performFiltering(CharSequence constraint) {
                 FilterResults results = new FilterResults();
                 ArrayList<HabitEvent> filteredEvents = new ArrayList<>();
-
+                String filter = "";
                 constraint = constraint.toString().toLowerCase();
                 for (HabitEvent event : eventList) {
-                    String comment = event.getComment();
-                    if (comment.toLowerCase().contains(constraint.toString()))  {
+                    switch (option) {
+                        case "Comment":
+                            filter = event.getComment();
+                            break;
+                        case "Type":
+                            filter = event.getHabitType();
+
+                    }
+                    if (filter.toLowerCase().contains(constraint.toString())) {
                         filteredEvents.add(event);
                     }
                 }
@@ -139,8 +147,8 @@ public class HabitEventListAdapter extends BaseAdapter implements ListAdapter, F
 
                 return results;
             }
-        };
+        }};
 
-        return filter;
+        return filter[0];
     }
 }

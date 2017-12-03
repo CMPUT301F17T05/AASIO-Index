@@ -43,6 +43,7 @@ public class HabitEventEditListAdapter extends BaseAdapter implements ListAdapte
     private Context mContext;
     private String habitType;
     private Date date;
+    public ImageButton deleteButton;
 
     HabitEventEditListAdapter(ArrayList<HabitEvent> eventList, Context context, Context mContext) {
         this.eventList = eventList;
@@ -84,7 +85,7 @@ public class HabitEventEditListAdapter extends BaseAdapter implements ListAdapte
         TextView habitDate = view.findViewById(R.id.habitEventRowEditDate);
         TextView habitComment = view.findViewById(R.id.habitEventRowEditComment);
         ImageButton editButton = view.findViewById(R.id.habitEventRowEditEditButton);
-        ImageButton deleteButton = view.findViewById(R.id.habitEventRowEditDeleteButton);
+        deleteButton = view.findViewById(R.id.habitEventRowEditDeleteButton);
 
         habitTitle.setText(event.getHabitType());
         habitDate.setText(event.getCompletionDateString());
@@ -199,7 +200,7 @@ public class HabitEventEditListAdapter extends BaseAdapter implements ListAdapte
         Bundle bundle = new Bundle();
         bundle.putString("Title", habitType);
         String dateString = new SimpleDateFormat("yyyy_MM_dd", Locale.ENGLISH).format(date);
-        bundle.putString("Date", dateString);
+        bundle.putString("Date", event.getCompletionDateString());
         bundle.putString("Comment", event.getComment());
         bundle.putString("File Path", habitType.replace(" ", "_") + "_" + dateString);
 
