@@ -142,8 +142,7 @@ public class HabitEventEditListAdapter extends BaseAdapter implements ListAdapte
 
                 int nutrientLevel = Integer.parseInt(preference);
 
-                //test numbers
-                nutrientLevel -= 30;
+                nutrientLevel -= 1;
 
                 if(nutrientLevel < 0){
                     nutrientLevel = 0;

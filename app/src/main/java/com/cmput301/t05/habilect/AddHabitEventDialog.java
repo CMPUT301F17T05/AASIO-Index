@@ -324,8 +324,7 @@ public class AddHabitEventDialog extends DialogFragment {
 
                 int nutrientLevel = Integer.parseInt(preference);
 
-                //test numbers
-                nutrientLevel += 10;
+                nutrientLevel += 1;
 
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 profile.setTreeGrowth(Integer.toString(nutrientLevel));
