@@ -1,3 +1,4 @@
+/*
 package com.cmput301.t05.habilect;
 
 
@@ -43,11 +44,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+*/
 /**
  * @author alexisseniuk
  * 1st MapActivity Map Version
  * Combine into MapsActivity.java when working.
- */
+ *//*
+
 
 public class ViewHabitMapActivity extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -95,6 +98,7 @@ public class ViewHabitMapActivity extends AppCompatActivity implements OnMapRead
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+*/
 /*         A : BUTTON FOR : showing myhabitevents on the map
         final Button myhabiteventsbutton = (Button) findViewById(R.id.myhabiteventsbutton);
         myhabiteventsbutton.setOnClickListener(new View.OnClickListener() {
@@ -137,7 +141,8 @@ public class ViewHabitMapActivity extends AppCompatActivity implements OnMapRead
                 Intent intent = new Intent(currentActivity, FriendActivity.class);
                 startActivity(intent);
             }
-        });*/
+        });*//*
+
 
         if (googleServicesAvailable()) {
             Toast.makeText(this, "GoogleServices Available!", Toast.LENGTH_LONG).show();
@@ -186,6 +191,7 @@ public class ViewHabitMapActivity extends AppCompatActivity implements OnMapRead
         //    }
     }
 
+*/
 /*    private boolean eventNear(HabitEvent e){
         // Adapted from https://stackoverflow.com/questions/3694380/calculating-distance-between-two-points-using-latitude-longitude-what-am-i-doi
         if (mLastLocation == null || !highlight_near){
@@ -206,7 +212,8 @@ public class ViewHabitMapActivity extends AppCompatActivity implements OnMapRead
         } else {
             return false;
         }
-    }*/
+    }*//*
+
 
 
 
@@ -283,6 +290,7 @@ public class ViewHabitMapActivity extends AppCompatActivity implements OnMapRead
 
 }
 
+*/
 
 
 
