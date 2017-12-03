@@ -77,7 +77,7 @@ public class WebService {
             SearchResult result = client.execute(search);
             if (result.isSucceeded()) {
                 List<SearchResult.Hit<UserProfile, Void>> hits = result.getHits(UserProfile.class);
-                List<HabitType> listOfHabitTypes = hits.stream().flatMap(m -> m.source.getPlans().stream()).collect(Collectors.toList());
+                List<HabitType> listOfHabitTypes = hits.stream().flatMap(m -> m.source.getHabitTypesList().stream()).collect(Collectors.toList());
                 Log.i("Success", "Success retrieving habitTypes");
                 return listOfHabitTypes;
             }

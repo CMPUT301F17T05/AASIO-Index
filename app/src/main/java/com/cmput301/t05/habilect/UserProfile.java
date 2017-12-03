@@ -4,12 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.provider.Settings;
-import android.telephony.TelephonyManager;
 import android.util.Base64;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -33,7 +29,7 @@ public class UserProfile {
     String displayName;
     String profilePicture;
     TreeGrowth treeGrowth = new TreeGrowth();
-    List<HabitType> plans = new ArrayList<>();
+    List<HabitType> habitTypesList = new ArrayList<>();
 
     boolean isNewUser = false;
 
@@ -71,20 +67,20 @@ public class UserProfile {
         return identifier;
     }
 
-    public List<HabitType> getPlans() {
-        return plans;
+    public List<HabitType> getHabitTypesList() {
+        return habitTypesList;
     }
 
     public void addPlans(HabitType habitType){
-        this.plans.add(habitType);
+        this.habitTypesList.add(habitType);
     }
 
     public void deletePlans(HabitType habitType){
-        this.plans.remove(habitType);
+        this.habitTypesList.remove(habitType);
     }
 
-    public void setPlans(List<HabitType> plans) {
-        this.plans = plans;
+    public void setHabitTypesList(List<HabitType> habitTypesList) {
+        this.habitTypesList = habitTypesList;
     }
 
     public void setDisplayName(String displayName) {

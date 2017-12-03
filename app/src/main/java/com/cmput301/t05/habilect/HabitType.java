@@ -36,7 +36,7 @@ public class HabitType extends Observable implements Serializable {
      * @param title                 a String with 0 < length <= 20
      * @param reason                a String with 0 < length <= 30
      * @param start_date            a Date specifying when the user started the habit type
-     * @param weekly_plan           the days of the week that the user plans on doing the habit type
+     * @param weekly_plan           the days of the week that the user habitTypesList on doing the habit type
      */
     public HabitType(String title, String reason, Date start_date, boolean[] weekly_plan) {
         this.setTitle(title);
