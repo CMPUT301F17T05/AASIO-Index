@@ -4,7 +4,9 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.SurfaceTexture;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
@@ -32,6 +34,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.io.ByteArrayOutputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author ioltuszy
@@ -42,10 +46,26 @@ public class ProfileActivity extends AppCompatActivity {
 
     Camera camera;
 
-    private int previousNutrientLevel = 0;
-    private final int tier1Threshold = 25;
-    private final int tier2Threshold = 50;
-    private final int tier3Threshold = 0;
+    private Map<Integer, Integer> tierThresholds = new HashMap<Integer, Integer>() {{
+        put(1, 10);
+        put(2, 21);
+        put(3, 33);
+        put(4, 46);
+        put(5, 66);
+        put(6, 87);
+        put(7, 109);
+        put(8, 132);
+        put(9, 162);
+        put(10, 193);
+        put(11, 225);
+        put(12, 258);
+        put(13, 298);
+        put(14, 348);
+        put(15, 408);
+        put(16, 478);
+    }};
+    private int previousNutrientLevelTierRankUp = 0;
+
     /**
      * Sets up the camera to begin updating the texture surface once it is available
      */
@@ -315,43 +335,185 @@ public class ProfileActivity extends AppCompatActivity {
         Log.i("NUTRIENTLEVEL: ", "" + nutrientLevel);
         //tmp drawables until have actual images
         nutrientLevelTextView.setText("Nutrient Level: " + nutrientLevel);
-        if (nutrientLevel < tier1Threshold) {
-            nutrientLevelProgressBar.setMax(tier1Threshold);
+
+        //Base Tier 0
+        if (nutrientLevel < tierThresholds.get(1)) {
+            nutrientLevelProgressBar.setMax(tierThresholds.get(1));
             nutrientLevelProgressBar.setProgress(nutrientLevel);
-            nutrientLevelToNextTierTextView.setText(nutrientLevel + "/" + tier1Threshold);
-            treeGrowthImageView.setImageResource(R.drawable.home);
-        } else if (nutrientLevel >= tier1Threshold && nutrientLevel < tier2Threshold) {
-            //if true, trigger rank up popup
-            if (previousNutrientLevel < tier1Threshold) {
-                previousNutrientLevel = nutrientLevel;
-                buildRankUpDialog(2);
-            }
-            nutrientLevelProgressBar.setMax(tier2Threshold);
-            nutrientLevelProgressBar.setProgress(nutrientLevel);
-            nutrientLevelToNextTierTextView.setText(nutrientLevel + "/" + tier2Threshold);
-            treeGrowthImageView.setImageResource(R.drawable.profile);
-        } else if (nutrientLevel >= tier2Threshold) {
-            if (previousNutrientLevel < tier2Threshold) {
-                previousNutrientLevel = nutrientLevel;
-                buildRankUpDialog(3);
-            }
-            nutrientLevelProgressBar.setMax(tier2Threshold);
-            nutrientLevelProgressBar.setProgress(nutrientLevel);
-            nutrientLevelToNextTierTextView.setText("MAXED");
-            treeGrowthImageView.setImageResource(R.drawable.history);
+            nutrientLevelToNextTierTextView.setText(nutrientLevel + "/" + tierThresholds.get(1));
+            treeGrowthImageView.setImageResource(R.drawable.level_01);
+        } else if (nutrientLevel >= tierThresholds.get(1) && nutrientLevel < tierThresholds.get(2)) {
+            checkAndAdjustTierProperties(nutrientLevel, 1);
+        } else if (nutrientLevel >= tierThresholds.get(2) && nutrientLevel < tierThresholds.get(3)) {
+            checkAndAdjustTierProperties(nutrientLevel, 2);
+        } else if (nutrientLevel >= tierThresholds.get(3) && nutrientLevel < tierThresholds.get(4)) {
+            checkAndAdjustTierProperties(nutrientLevel, 3);
+        } else if (nutrientLevel >= tierThresholds.get(4) && nutrientLevel < tierThresholds.get(5)) {
+            checkAndAdjustTierProperties(nutrientLevel, 4);
+        } else if (nutrientLevel >= tierThresholds.get(5) && nutrientLevel < tierThresholds.get(6)) {
+            checkAndAdjustTierProperties(nutrientLevel, 5);
+        } else if (nutrientLevel >= tierThresholds.get(6) && nutrientLevel < tierThresholds.get(7)) {
+            checkAndAdjustTierProperties(nutrientLevel, 6);
+        } else if (nutrientLevel >= tierThresholds.get(7) && nutrientLevel < tierThresholds.get(8)) {
+            checkAndAdjustTierProperties(nutrientLevel, 7);
+        } else if (nutrientLevel >= tierThresholds.get(8) && nutrientLevel < tierThresholds.get(9)) {
+            checkAndAdjustTierProperties(nutrientLevel, 8);
+        } else if (nutrientLevel >= tierThresholds.get(9) && nutrientLevel < tierThresholds.get(10)) {
+            checkAndAdjustTierProperties(nutrientLevel, 9);
+        } else if (nutrientLevel >= tierThresholds.get(10) && nutrientLevel < tierThresholds.get(11)) {
+            checkAndAdjustTierProperties(nutrientLevel, 10);
+        } else if (nutrientLevel >= tierThresholds.get(11) && nutrientLevel < tierThresholds.get(12)) {
+            checkAndAdjustTierProperties(nutrientLevel, 11);
+        } else if (nutrientLevel >= tierThresholds.get(12) && nutrientLevel < tierThresholds.get(13)) {
+            checkAndAdjustTierProperties(nutrientLevel, 12);
+        } else if (nutrientLevel >= tierThresholds.get(13) && nutrientLevel < tierThresholds.get(14)) {
+            checkAndAdjustTierProperties(nutrientLevel, 13);
+        } else if (nutrientLevel >= tierThresholds.get(14) && nutrientLevel < tierThresholds.get(15)) {
+            checkAndAdjustTierProperties(nutrientLevel, 14);
+        } else if (nutrientLevel >= tierThresholds.get(15) && nutrientLevel < tierThresholds.get(16)) {
+            checkAndAdjustTierProperties(nutrientLevel, 15);
+        } else if (nutrientLevel >= tierThresholds.get(16)) {
+            checkAndAdjustTierProperties(nutrientLevel, 16);
         }
-
-        previousNutrientLevel = nutrientLevel;
-
     }
 
-    private void buildRankUpDialog(int tier){
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+    private void buildRankUpDialog(int tier) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle("Rank Up!");
-        builder.setMessage("Congratulations! Your tree has reached tier " + tier + ".");
+        builder.setMessage("Congratulations! You have reached tier " + tier + ".");
         builder.setNegativeButton("OK", null);
+        if(tier == 4){
+            ImageView completedTreeImage = new ImageView(context);
+            completedTreeImage.setImageResource(R.drawable.green_3);
+//            builder.setIcon(R.mipmap.green_3);
+            builder.setView(completedTreeImage);
+        } else if(tier == 8){
+            ImageView completedTreeImage = new ImageView(context);
+            completedTreeImage.setImageResource(R.drawable.orange_3);
+//            completedTreeImage.setImageResource(R.drawable.orange_3);
+            builder.setView(completedTreeImage);
+        }else if(tier == 12){
+            ImageView completedTreeImage = new ImageView(context);
+            completedTreeImage.setImageResource(R.drawable.purple_3);
+//            completedTreeImage.setImageResource(R.drawable.purple_3);
+            builder.setView(completedTreeImage);
+        }else if(tier == 16){
+            ImageView completedTreeImage = new ImageView(context);
+            completedTreeImage.setImageResource(R.drawable.rainbow_3);
+//            completedTreeImage.setImageResource(R.drawable.rainbow_3);
+            builder.setView(completedTreeImage);
+        }
         AlertDialog dialog = builder.create();
         dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
         dialog.show();
+    }
+
+    private void checkAndAdjustTierProperties(int nutrientLevel, int tier) {
+        Log.i("INFORMATION", "nutlevel: " + nutrientLevel + " tier: " + tier);
+        //if true, trigger rank up popup
+        if (previousNutrientLevelTierRankUp < tierThresholds.get(tier)) {
+            previousNutrientLevelTierRankUp = nutrientLevel;
+            buildRankUpDialog(tier);
+        }
+        if(tier == 16){
+            nutrientLevelProgressBar.setMax(tierThresholds.get(tier));
+            nutrientLevelProgressBar.setProgress(nutrientLevel);
+            nutrientLevelToNextTierTextView.setText("MAXED");
+            treeGrowthImageView.setImageResource(R.drawable.all_trees_completed);
+        }else{
+            nutrientLevelProgressBar.setMax(tierThresholds.get(tier + 1));
+            nutrientLevelProgressBar.setProgress(nutrientLevel);
+            nutrientLevelToNextTierTextView.setText(nutrientLevel + "/" + tierThresholds.get(tier + 1));
+
+            switch(tier){
+                case 1:
+//                    treeGrowthImageView.setImageBitmap(
+//                            decodeSampledBitmapFromResource(getResources(), R.mipmap.green_3, 100, 100));
+                    treeGrowthImageView.setImageResource(R.drawable.level_02);
+                    break;
+                case 2:
+                    treeGrowthImageView.setImageResource(R.drawable.level_03);
+                    break;
+                case 3:
+                    treeGrowthImageView.setImageResource(R.drawable.level_04);
+                    break;
+                case 4:
+                    treeGrowthImageView.setImageResource(R.drawable.level_06);
+                    break;
+                case 5:
+                    treeGrowthImageView.setImageResource(R.drawable.level_07);
+                    break;
+                case 6:
+                    treeGrowthImageView.setImageResource(R.drawable.level_08);
+                    break;
+                case 7:
+                    treeGrowthImageView.setImageResource(R.drawable.level_09);
+                    break;
+                case 8:
+                    treeGrowthImageView.setImageResource(R.drawable.level_11);
+                    break;
+                case 9:
+                    treeGrowthImageView.setImageResource(R.drawable.level_12);
+                    break;
+                case 10:
+                    treeGrowthImageView.setImageResource(R.drawable.level_13);
+                    break;
+                case 11:
+                    treeGrowthImageView.setImageResource(R.drawable.level_14);
+                    break;
+                case 12:
+                    treeGrowthImageView.setImageResource(R.drawable.level_16);
+                    break;
+                case 13:
+                    treeGrowthImageView.setImageResource(R.drawable.level_17);
+                    break;
+                case 14:
+                    treeGrowthImageView.setImageResource(R.drawable.level_18);
+                    break;
+                case 15:
+                    treeGrowthImageView.setImageResource(R.drawable.level_19);
+                    break;
+            }
+        }
+
+    }
+
+    public static Bitmap decodeSampledBitmapFromResource(Resources res, int resId,
+                                                         int reqWidth, int reqHeight) {
+
+        // First decode with inJustDecodeBounds=true to check dimensions
+        final BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeResource(res, resId, options);
+
+        // Calculate inSampleSize
+        options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
+
+        // Decode bitmap with inSampleSize set
+        options.inJustDecodeBounds = false;
+        return BitmapFactory.decodeResource(res, resId, options);
+    }
+
+    public static int calculateInSampleSize(
+            BitmapFactory.Options options, int reqWidth, int reqHeight) {
+        // Raw height and width of image
+        final int height = options.outHeight;
+        final int width = options.outWidth;
+        int inSampleSize = 1;
+
+        if (height > reqHeight || width > reqWidth) {
+
+            final int halfHeight = height / 2;
+            final int halfWidth = width / 2;
+
+            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
+            // height and width larger than the requested height and width.
+            while ((halfHeight / inSampleSize) >= reqHeight
+                    && (halfWidth / inSampleSize) >= reqWidth) {
+                inSampleSize *= 2;
+            }
+        }
+
+        return inSampleSize;
     }
 }
