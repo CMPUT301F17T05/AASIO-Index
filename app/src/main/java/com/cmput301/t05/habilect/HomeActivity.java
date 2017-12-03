@@ -64,20 +64,6 @@ public class HomeActivity extends AppCompatActivity {
         Navigation.setup(findViewById(android.R.id.content));
     }
 
-//    public boolean googleServicesAvailable() {
-//        GoogleApiAvailability api = GoogleApiAvailability.getInstance();
-//        int isAvailable = api.isGooglePlayServicesAvailable(this);
-//        if (isAvailable == ConnectionResult.SUCCESS){
-//            return true;
-//        } else if (api.isUserResolvableError(isAvailable)){
-//            Dialog dialog = api.getErrorDialog(this, isAvailable, 0);
-//            dialog.show();
-//        } else {
-//            Toast.makeText(this, "Cannot connect to play services", Toast.LENGTH_LONG).show();
-//        }
-//        return false;
-//    }
-
     /**
      * Return the current state of the permissions needed.
      */

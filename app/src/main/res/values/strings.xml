@@ -26,5 +26,6 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="add_habit_type">Add Habit Type</string>
     <string name="add_habit_event">Add Habit Event</string>
+    <string name="title_activity_maps">Map</string>
 
 </resources>

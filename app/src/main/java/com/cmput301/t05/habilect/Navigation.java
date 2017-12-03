@@ -63,7 +63,8 @@ public class Navigation {
             @Override
             public void onClick(View view) {
                 ((DrawerLayout)(view.getParent().getParent())).closeDrawer(Gravity.START);
-                Intent intent = new Intent(context.getContext(), ViewHabitMapActivity.class);
+                //Intent intent = new Intent(context.getContext(), ViewHabitMapActivity.class);
+                Intent intent = new Intent(context.getContext(), MapsActivity.class);
                 context.getContext().startActivity(intent);
             }
         });
