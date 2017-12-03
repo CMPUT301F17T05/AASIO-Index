@@ -26,12 +26,14 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.jjoe64.graphview.DefaultLabelFormatter;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.helper.StaticLabelsFormatter;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
 import java.io.File;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -334,11 +336,31 @@ public class HabitTypeActivity extends AppCompatActivity {
             graph.setTitle("Past 4 Weeks of Habit Events");
 
             LineGraphSeries<DataPoint> series = new LineGraphSeries<>(points);
+
             graph.addSeries(series);
 
             StaticLabelsFormatter staticLabelsFormatter = new StaticLabelsFormatter(graph);
+
+            NumberFormat numberFormat = NumberFormat.getInstance();
+            numberFormat.setMaximumFractionDigits(0);
+            staticLabelsFormatter.setDynamicLabelFormatter(new DefaultLabelFormatter(numberFormat, numberFormat));
             staticLabelsFormatter.setHorizontalLabels(new String[] {"4", "3", "2", "1", "current"});
             graph.getGridLabelRenderer().setLabelFormatter(staticLabelsFormatter);
+            graph.getGridLabelRenderer().setNumVerticalLabels(5);
+            graph.getViewport().setYAxisBoundsManual(true);
+            graph.getViewport().setMinY(0);
+            double highestPoint = 0;
+            for (DataPoint dataPoint : points) {
+                if (dataPoint.getY() > highestPoint) {
+                    highestPoint = dataPoint.getY();
+                }
+            };
+            if (highestPoint>25) {
+                graph.getViewport().setMaxY(highestPoint);
+            }
+            else {
+                graph.getViewport().setMaxY(25);
+            }
 
             graph.getGridLabelRenderer().setPadding(100);
 
