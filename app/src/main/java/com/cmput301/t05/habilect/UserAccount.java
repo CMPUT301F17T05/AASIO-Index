@@ -33,6 +33,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -266,21 +268,28 @@ public class UserAccount {
                                 case "followees":
                                     List<UUID> followees = new ArrayList<UUID>();
                                     for (JsonElement element : e.getValue().getAsJsonArray()) {
-                                        followees.add(gson.fromJson(element.getAsJsonObject(), UUID.class));
+                                        followees.add(gson.fromJson(element.getAsString(), UUID.class));
                                     }
                                     user.Followees = followees;
                                     break;
                                 case "followers":
                                     List<UUID> followers = new ArrayList<UUID>();
                                     for (JsonElement element : e.getValue().getAsJsonArray()) {
-                                        followers.add(gson.fromJson(element.getAsJsonObject(), UUID.class));
+                                        followers.add(gson.fromJson(element.getAsString(), UUID.class));
                                     }
                                     user.Followers = followers;
                                     break;
                                 case "habits":
                                     List<HabitType> habits = new ArrayList<HabitType>();
                                     for (JsonElement element : e.getValue().getAsJsonArray()) {
-                                        habits.add(gson.fromJson(element.getAsJsonObject(), HabitType.class));
+                                        JsonElement events = element.getAsJsonObject().get("habitEvents");
+                                        for (JsonElement member : events.getAsJsonArray()) {
+                                            JsonElement date = member.getAsJsonObject().get("completionDate");
+                                            Date parsedDate = new SimpleDateFormat("yyyy-MM-dd'T'hh:MM:ssZ").parse(date.getAsString());
+                                            continue;
+                                        }
+                                        HabitType intermediateHabit = gson.fromJson(element.getAsJsonObject(), HabitType.class);
+                                        habits.add(intermediateHabit);
                                     }
                                     user.Habits = habits;
                                     break;
@@ -299,6 +308,8 @@ public class UserAccount {
                 return null;
             }
         } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
             e.printStackTrace();
         }
         return null;
@@ -329,15 +340,20 @@ public class UserAccount {
     }
 
     public Bitmap getProfilePicture() {
-        byte[] decodedByteArray = Base64.decode(ProfilePicture, Base64.URL_SAFE | Base64.NO_WRAP);
-        return BitmapFactory.decodeByteArray(decodedByteArray, 0, decodedByteArray.length);
+        if (ProfilePicture!=null) {
+            byte[] decodedByteArray = Base64.decode(ProfilePicture, Base64.URL_SAFE | Base64.NO_WRAP);
+            return BitmapFactory.decodeByteArray(decodedByteArray, 0, decodedByteArray.length);
+        }
+        return null;
     }
 
     public List<UserAccount> getFollowees() {
         List<UserAccount> followees = new ArrayList<UserAccount>();
         for (UUID id : Followees) {
             UserAccount followee = UserAccount.fromId(id);
-            followees.add(followee);
+            if (followee!=null) {
+                followees.add(followee);
+            }
         }
         return followees;
     }
@@ -346,9 +362,35 @@ public class UserAccount {
         List<UserAccount> followers = new ArrayList<UserAccount>();
         for (UUID id : Followers) {
             UserAccount follower = UserAccount.fromId(id);
-            followers.add(follower);
+            if (follower!=null){
+                followers.add(follower);
+            }
         }
         return followers;
+    }
+
+    public void addFollowee(UUID id) {
+        if (!Followees.contains(id)) {
+            this.Followees.add(id);
+        }
+    }
+
+    public void addFollower(UUID id) {
+        if (!Followers.contains(id)) {
+            this.Followers.add(id);
+        }
+    }
+
+    public void removeFollowee(UUID id) {
+        if (Followees.contains(id)) {
+            this.Followees.remove(id);
+        }
+    }
+
+    public void removeFollower(UUID id) {
+        if (Followers.contains(id)) {
+            this.Followers.remove(id);
+        }
     }
 
     public void setHabits(List<HabitType> habits) {
