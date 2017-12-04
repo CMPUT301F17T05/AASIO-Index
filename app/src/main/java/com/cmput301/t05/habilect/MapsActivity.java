@@ -1,14 +1,17 @@
 package com.cmput301.t05.habilect;
 
 
+import android.app.Activity;
 import android.content.Context;
 import android.location.Location;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -17,6 +20,8 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -32,11 +37,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private UserAccount userAccount;
     private Context context;
     private GoogleMap mMap;
-    private List<HabitType> allHabitTypes;
+    private List<HabitEvent> originalEventList;
     private List<HabitEvent> allHabitEvents;
     private Button show5kmButton;
     private Button resetButton;
     private Button backButton;
+
+    private FusedLocationProviderClient fusedLocationClient;
+    protected Location lastLocation;
 
     private int ZOOM_LEVEL = 15;
 
@@ -47,9 +55,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         context = this;
         userAccount = new UserAccount().load(context);
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(context);
 
-        allHabitTypes = userAccount.getHabits();
         allHabitEvents = getEventsFromBundle();
+        originalEventList = new ArrayList<>(allHabitEvents);
+
+        if(allHabitEvents.size() < 1) {
+            ZOOM_LEVEL = 1; // if we have nothing to show, display the whole world
+        }
 
         Navigation.setup(findViewById(android.R.id.content));
 
@@ -66,9 +79,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         show5kmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                allHabitTypes = userAccount.getHabits();
-                loadAllUserHabitEvents();
-                ZOOM_LEVEL = 10;
+                mMap.clear();
+                setCurrentLocationMarker();
+                allHabitEvents = filterBy5km(allHabitEvents);
+                ZOOM_LEVEL = 15;
                 setUserMarkers(allHabitEvents);
             }
         });
@@ -76,9 +90,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         resetButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                allHabitEvents.clear();
-                ZOOM_LEVEL = 1;
-                setUserMarkers(allHabitEvents);
+                mMap.clear();
+                setCurrentLocationMarker();
+                ZOOM_LEVEL = 15;
+                setUserMarkers(originalEventList);
             }
         });
 
@@ -88,7 +103,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 finish();
             }
         });
+    }
 
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        getLastLocation();
+        setCurrentLocationMarker();
     }
 
     private List<HabitEvent> getEventsFromBundle() {
@@ -137,71 +159,62 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
             }
         }
-        if(latLng != null) {
+        if(latLng.latitude != 0 && latLng.longitude != 0) {
             goToLocationZoom(latLng.latitude, latLng.longitude);
         }
     }
 
-    private void loadAllUserHabitEvents() {
-        Iterator<HabitType> iterator = allHabitTypes.iterator();
-        allHabitEvents = new ArrayList<>();
+    private void setCurrentLocationMarker() {
+        if(lastLocation != null) {
+            LatLng latLng = new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude());
+            mMap.addMarker(new MarkerOptions()
+                    .position(latLng)
+                    .title("Current location")
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+        }
+    }
+
+    public List<HabitEvent> filterBy5km(List<HabitEvent> eventList) {
+        Iterator<HabitEvent> iterator = eventList.iterator();
+        getLastLocation();
         while(iterator.hasNext()) {
-            HabitType habit = iterator.next();
-            ArrayList<HabitEvent> eventList = habit.getHabitEvents();
-            allHabitEvents.addAll(eventList);
-        }
-    }
-//set markers for user's friend's habits
-/*    public void setFriendMarkers() {
-        //List<FriendHabitEvent> events = habit_type.getHabitEvents();
-
-        //add Friends markers (magenta)
-        for (FriendHabitEvents friende: events){
-            LatLng location = friende.getLocation();
-            if (location != null){
-                mMap.addMarker(new MarkerOptions()
-                    .position(location)
-                    .title(friende.getHabitType())
-                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA)));
+            HabitEvent event = iterator.next();
+            if(eventNear(event)) {
+                continue;
             }
+            iterator.remove();
         }
-    }*/
-
-    //use if using bundles for habitfriend list
-    /**
-     *
-     * @return a String representing the habit event title if there is one
-     */
-/*    private String getUserNameFromBundle() {
-        try {
-            return bundle.getString("User Name");
-        }
-        catch (Exception e) {
-            return "";
-        }
+        return  eventList;
     }
 
-    private Location getLocationFromBundle() {
-        try {
-            return bundle.getParcelable("Location");
-        }
-        catch (Exception e) {
-            return null;
-        }
-    }*/
+    @SuppressWarnings("MissingPermission")
+    private void getLastLocation() {
+        fusedLocationClient.getLastLocation()
+                .addOnCompleteListener((Activity) context, new OnCompleteListener<Location>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Location> task) {
+                        if (task.isSuccessful() && task.getResult() != null) {
+                            lastLocation = task.getResult();
+                            setCurrentLocationMarker();
+                        } else {
+                            lastLocation = null;
+                        }
+                    }
+                });
+    }
 
     //for calulating within 5km distance 
-/*    private boolean eventNear(HabitEvent e){
+    private boolean eventNear(HabitEvent event){
         // Adapted from https://stackoverflow.com/questions/3694380/calculating-distance-between-two-points-using-latitude-longitude-what-am-i-doi
-        if (mLastLocation == null || !highlight_near){
+        if (lastLocation == null || event.getLocation() == null){
             return false;
         }
 
         double earthRadius = 6371000; //meters
-        double dLat = Math.toRadians(e.getLocation().latitude-mLastLocation.getLatitude());
-        double dLng = Math.toRadians(e.getLocation().longitude-mLastLocation.getLongitude());
+        double dLat = Math.toRadians(event.getLocation().getLatitude()-lastLocation.getLatitude());
+        double dLng = Math.toRadians(event.getLocation().getLongitude()-lastLocation.getLongitude());
         double a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-                Math.cos(Math.toRadians(mLastLocation.getLatitude())) * Math.cos(Math.toRadians(e.getLocation().latitude)) *
+                Math.cos(Math.toRadians(lastLocation.getLatitude())) * Math.cos(Math.toRadians(event.getLocation().getLatitude())) *
                         Math.sin(dLng/2) * Math.sin(dLng/2);
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
         float dist = (float) (earthRadius * c);
@@ -211,5 +224,5 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         } else {
             return false;
         }
-    }*/
+    }
 }
