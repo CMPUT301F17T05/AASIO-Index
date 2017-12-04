@@ -17,24 +17,24 @@ class HabitEvent {
     static int MAX_COMMENT_LENGTH = 20;
 
     private String comment;
-    private Bitmap event_picture;
+    private Bitmap eventPicture;
     private Location location;
-    private Date completion_date;
+    private Date completionDate;
     private String habitType;
 
     /**
      * Creates a new habit event
      * @param comment comment that goes with the event. Must be less than 20 characters
-     * @param event_picture bitmap image of the event
+     * @param eventPicture bitmap image of the event
      * @param location Location object of the event
-     * @param completion_date Date object of the event
+     * @param completionDate Date object of the event
      * @param habitType The associated habitType for the event
      */
-    public HabitEvent(String comment, Bitmap event_picture, Location location, Date completion_date, String habitType) {
+    public HabitEvent(String comment, Bitmap eventPicture, Location location, Date completionDate, String habitType) {
         this.setComment(comment);
-        this.setEventPicture(event_picture);
+        this.setEventPicture(eventPicture);
         this.setLocation(location);
-        this.setCompletionDate(completion_date);
+        this.setCompletionDate(completionDate);
         this.setHabitType(habitType);
     }
 
@@ -43,18 +43,18 @@ class HabitEvent {
         return comment;
     }
     public Bitmap getEventPicture() {
-        return event_picture;
+        return eventPicture;
     }
     public Location getLocation() {
         return location;
     }
     public Date getCompletionDate() {
-        return completion_date;
+        return completionDate;
     }
     public String getCompletionDateString() {
         Locale locale = new Locale("English", "Canada");
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEEE',' MMMM d',' yyyy", locale);
-        return simpleDateFormat.format(this.completion_date);
+        return simpleDateFormat.format(this.completionDate);
     }
     public String getHabitType() { return habitType; }
 
@@ -66,17 +66,17 @@ class HabitEvent {
             this.comment = comment;
         }
     }
-    public void setEventPicture(Bitmap event_picture) {
-        if (event_picture != null) {
-            if (event_picture.getByteCount() >= 65536) {
-                event_picture = Bitmap.createScaledBitmap(event_picture, 127, 127, false);
+    public void setEventPicture(Bitmap eventPicture) {
+        if (eventPicture != null) {
+            if (eventPicture.getByteCount() >= 65536) {
+                eventPicture = Bitmap.createScaledBitmap(eventPicture, 127, 127, false);
             }
-            if(event_picture.getByteCount() >= 65536) {
+            if(eventPicture.getByteCount() >= 65536) {
                 throw new IllegalArgumentException();
             }
-            this.event_picture = event_picture;
+            this.eventPicture = eventPicture;
         } else {
-            this.event_picture = null;
+            this.eventPicture = null;
         }
     }
 
@@ -92,7 +92,7 @@ class HabitEvent {
         if (completion_date == null || completion_date.after(Calendar.getInstance().getTime())) {
             throw new IllegalArgumentException();
         } else {
-            this.completion_date = completion_date;
+            this.completionDate = completion_date;
         }
     }
 }

@@ -5,10 +5,10 @@ package com.cmput301.t05.habilect;
  */
 
 public class FeedEvent {
-    UserProfile profile;
+    UserAccount profile;
     HabitEvent event;
 
-    FeedEvent(UserProfile profile, HabitEvent event) {
+    FeedEvent(UserAccount profile, HabitEvent event) {
         this.event = event;
         this.profile = profile;
     }
@@ -17,7 +17,7 @@ public class FeedEvent {
         this.event = event;
     }
 
-    public void setProfile(UserProfile profile) {
+    public void setProfile(UserAccount profile) {
         this.profile = profile;
     }
 
@@ -25,7 +25,7 @@ public class FeedEvent {
         return event;
     }
 
-    public UserProfile getProfile() {
+    public UserAccount getProfile() {
         return profile;
     }
 }

@@ -1,7 +1,5 @@
 package com.cmput301.t05.habilect;
 
-import android.app.Activity;
-import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -25,6 +23,8 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 
 import static com.cmput301.t05.habilect.UserProfile.HABILECT_USER_INFO;
@@ -38,6 +38,9 @@ import static com.cmput301.t05.habilect.UserProfile.HABILECT_USER_INFO;
 // TODO: when editing or deleting does not immediately update the view
 public class HabitEventEditListAdapter extends BaseAdapter implements ListAdapter {
     private ArrayList<HabitEvent> eventList = new ArrayList<>();
+    private UserAccount userAccount;
+    private List<HabitType> habitTypeList;
+    private HabitType relatedHabitType;
     private Context context;
     private HabitEvent event;
     private Context mContext;
@@ -45,10 +48,13 @@ public class HabitEventEditListAdapter extends BaseAdapter implements ListAdapte
     private Date date;
     public ImageButton deleteButton;
 
-    HabitEventEditListAdapter(ArrayList<HabitEvent> eventList, Context context, Context mContext) {
-        this.eventList = eventList;
+    HabitEventEditListAdapter(String habitType, Context context, Context mContext) {
         this.context = context;
         this.mContext = mContext;
+        userAccount = new UserAccount().load(context);
+        habitTypeList = userAccount.getHabits();
+        relatedHabitType = findRelatedHabitType(habitType);
+        this.eventList = relatedHabitType.getHabitEvents();
     }
 
     @Override
@@ -75,6 +81,7 @@ public class HabitEventEditListAdapter extends BaseAdapter implements ListAdapte
         }
         // gets the counter object that we want to display
         event = eventList.get(i);
+        relatedHabitType = findRelatedHabitType(event.getHabitType());
 
         final UserProfile profile = new UserProfile(mContext);
         TreeGrowth profileTreeGrowth = profile.treeGrowth;
@@ -107,12 +114,16 @@ public class HabitEventEditListAdapter extends BaseAdapter implements ListAdapte
                     @Override
                     public void OnAdded() {
                         // TODO: implement OnAdded
+                        //relatedHabitType = findRelatedHabitType(event.getHabitType());
                         HabitEvent newEvent =
                                 editHabitEventFromBundle(editHabitEventDialog.getResultBundle());
-                        // TODO: GSON
-                        GSONController.GSON_CONTROLLER.editHabitEventInFile(newEvent);
-                        eventList.remove(event);
-                        eventList.add(newEvent);
+                        relatedHabitType.removeHabitEvent(event);
+                        relatedHabitType.addHabitEvent(newEvent);
+                        userAccount.save(context);
+                        userAccount.sync(context);
+
+                        //eventList.remove(event);
+                        //eventList.add(newEvent);
                         notifyDataSetChanged();
                     }
 
@@ -133,7 +144,10 @@ public class HabitEventEditListAdapter extends BaseAdapter implements ListAdapte
             @Override
             public void onClick(View view) {
                 //TODO: GSON
-                GSONController.GSON_CONTROLLER.deleteHabitEventInFile(event);
+                //relatedHabitType = findRelatedHabitType(event.getHabitType());
+                relatedHabitType.removeHabitEvent(event);
+                userAccount.save(context);
+                userAccount.sync(context);
 
                 eventList.remove(event);
                 notifyDataSetChanged();
@@ -170,6 +184,17 @@ public class HabitEventEditListAdapter extends BaseAdapter implements ListAdapte
         });
 
         return view;
+    }
+
+    private HabitType findRelatedHabitType(String habitType) {
+        Iterator<HabitType> iterator = habitTypeList.iterator();
+        while(iterator.hasNext()) {
+            HabitType habit = iterator.next();
+            if(habit.getTitle().equals(habitType)) {
+                return habit;
+            }
+        }
+        return null;
     }
 
     /**

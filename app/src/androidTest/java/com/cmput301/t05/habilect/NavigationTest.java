@@ -1,7 +1,5 @@
 package com.cmput301.t05.habilect;
 
-import android.graphics.Point;
-import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.test.ActivityInstrumentationTestCase2;
@@ -48,9 +46,6 @@ public class NavigationTest extends ActivityInstrumentationTestCase2<HomeActivit
         solo.assertCurrentActivity("wrong activity", HomeActivity.class);
         solo.clickOnView(((DrawerLayout) solo.getView(navigationHomeDrawer)).findViewById(R.id.navigateSocial));
         solo.assertCurrentActivity("wrong activity", SocialActivity.class);
-        solo.clickOnView(((Button) solo.getCurrentActivity().findViewById(R.id.viewFriendButton)));
-        solo.assertCurrentActivity("wrong activity", FriendActivity.class);
-        solo.goBack();
         solo.assertCurrentActivity("wrong activity", SocialActivity.class);
         solo.goBack();
         solo.assertCurrentActivity("wrong activity", HomeActivity.class);
@@ -126,9 +121,6 @@ public class NavigationTest extends ActivityInstrumentationTestCase2<HomeActivit
         solo.clickOnView(((DrawerLayout) solo.getView(navigationHomeDrawer)).findViewById(R.id.navigateSocial));
         solo.assertCurrentActivity("wrong activity", SocialActivity.class);
         solo.sleep(1000);
-        solo.clickOnView(((Button) solo.getCurrentActivity().findViewById(R.id.viewFriendButton)));
-        solo.assertCurrentActivity("wrong activity", FriendActivity.class);
-        solo.goBack();
         solo.goBack();
         solo.assertCurrentActivity("wrong activity", HomeActivity.class);
 
