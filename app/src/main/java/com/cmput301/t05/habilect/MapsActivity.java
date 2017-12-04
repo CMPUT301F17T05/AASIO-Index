@@ -2,6 +2,7 @@ package com.cmput301.t05.habilect;
 
 
 import android.app.Dialog;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
@@ -23,6 +24,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -32,17 +35,25 @@ import java.util.List;
  */
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
-
+    private UserAccount userAccount;
+    private Context context;
     private GoogleMap mMap;
     private HabitType habit_type;
     private Bundle bundle;
     private TextView userName;
     private Location location;
+    private List<HabitType> allHabitTypes;
+    private List<HabitEvent> allHabitEvents;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+
+        context = this;
+        userAccount = new UserAccount().load(context);
+        allHabitTypes = userAccount.getHabits();
+        loadAllHabitEvents();
 
 
         setTitle("H a b i l e c t - Map");
@@ -132,21 +143,30 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     //set markers for habit events that have locations
     public void setUsermarkers() {
-        List<HabitEvent> events = habit_type.getHabitEvents();
-
         //add all User events Markers (azure)
-        for (HabitEvent e: events) {
+        for (HabitEvent e: allHabitEvents) {
             //final Lat Lng position = new LatLng(habit_type.getHabitEvents().get)
-            LatLng location = e.getLocation();
+            Location location = e.getLocation();
             //LatLng loc = e.getLocation();
             if (location != null){
+                LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
                 mMap.addMarker(new MarkerOptions()
-                        .positon(location)
+                        .position(latLng)
                         .title(e.getHabitType())
                         .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
             }
 
 
+        }
+    }
+
+    private void loadAllHabitEvents() {
+        Iterator<HabitType> iterator = allHabitTypes.iterator();
+        allHabitEvents = new ArrayList<>();
+        while(iterator.hasNext()) {
+            HabitType habit = iterator.next();
+            ArrayList<HabitEvent> eventList = habit.getHabitEvents();
+            allHabitEvents.addAll(eventList);
         }
     }
 //set markers for user's friend's habits

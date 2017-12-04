@@ -47,7 +47,7 @@ class HabitEvent {
     public Bitmap getEventPicture() {
         return eventPicture;
     }
-    public LatLng getLocation() {
+    public Location getLocation() {
         return location;
     }
     public Date getCompletionDate() {
