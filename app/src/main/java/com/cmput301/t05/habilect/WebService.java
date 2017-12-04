@@ -30,7 +30,7 @@ public class WebService {
      */
     public static void verifySettings() {
         if (client == null) {
-            DroidClientConfig.Builder builder = new DroidClientConfig.Builder("http://50.65.125.148:9269");
+            DroidClientConfig.Builder builder = new DroidClientConfig.Builder("http://cmput301.softwareprocess.es:8080/cmput301f17t05_habilect");
             DroidClientConfig config = builder.build();
 
             JestClientFactory factory = new JestClientFactory();
