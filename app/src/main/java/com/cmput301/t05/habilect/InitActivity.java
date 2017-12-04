@@ -133,14 +133,14 @@ public class InitActivity extends AppCompatActivity {
         UserAccount user = new UserAccount();
         user.load(context);
         if (user.Exists) {
-            //user.removeFollowee(UUID.fromString("a47f3482-c537-4cdd-a6cd-1244a2424151"));
+            /*//user.removeFollowee(UUID.fromString("a47f3482-c537-4cdd-a6cd-1244a2424151"));
             user.addFollowee(UUID.fromString("5c01971c-3cee-45a6-836c-453d17e394ed"));
             UserAccount remote = UserAccount.fromId(UUID.fromString("5c01971c-3cee-45a6-836c-453d17e394ed"));
             //remote.removeFollower(UUID.fromString("e06459d4-27f1-49de-b8e8-85ab5b3469ef"));
             remote.addFollower(UUID.fromString("e06459d4-27f1-49de-b8e8-85ab5b3469ef"));
             //remote.getHabits().get(0).setShared(true);
             //remote.sync(context);
-            user.save(context);
+            user.save(context);*/
             user.sync(context);
 
             Intent intent = new Intent(context, HomeActivity.class);
