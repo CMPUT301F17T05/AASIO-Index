@@ -285,7 +285,8 @@ public class UserAccount {
                                         JsonElement events = element.getAsJsonObject().get("habitEvents");
                                         for (JsonElement member : events.getAsJsonArray()) {
                                             JsonElement date = member.getAsJsonObject().get("completionDate");
-                                            Date parsedDate = new SimpleDateFormat("yyyy-MM-dd'T'hh:MM:ssZ").parse(date.getAsString());
+                                            String stringDate = date.getAsString();
+                                            Date parsedDate = new SimpleDateFormat("yyyy-MM-dd'T'hh:MM:ssZ").parse(stringDate);
                                             continue;
                                         }
                                         HabitType intermediateHabit = gson.fromJson(element.getAsJsonObject(), HabitType.class);
@@ -324,11 +325,13 @@ public class UserAccount {
     }
 
     public void setProfilePicture(Bitmap profilePicture) {
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        profilePicture.compress(Bitmap.CompressFormat.JPEG, 50, byteArrayOutputStream);
-        byte[] byteArray = byteArrayOutputStream.toByteArray();
-        String encodedString = Base64.encodeToString(byteArray, Base64.URL_SAFE | Base64.NO_WRAP);
-        ProfilePicture = encodedString;
+        if (profilePicture!=null) {
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            profilePicture.compress(Bitmap.CompressFormat.JPEG, 50, byteArrayOutputStream);
+            byte[] byteArray = byteArrayOutputStream.toByteArray();
+            String encodedString = Base64.encodeToString(byteArray, Base64.URL_SAFE | Base64.NO_WRAP);
+            ProfilePicture = encodedString;
+        }
     }
 
     public UUID getId() {
