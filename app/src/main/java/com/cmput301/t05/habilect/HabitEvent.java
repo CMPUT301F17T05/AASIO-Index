@@ -3,6 +3,8 @@ package com.cmput301.t05.habilect;
 import android.graphics.Bitmap;
 import android.location.Location;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -45,7 +47,7 @@ class HabitEvent {
     public Bitmap getEventPicture() {
         return eventPicture;
     }
-    public Location getLocation() {
+    public LatLng getLocation() {
         return location;
     }
     public Date getCompletionDate() {

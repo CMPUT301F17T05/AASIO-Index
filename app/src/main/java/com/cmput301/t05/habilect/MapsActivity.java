@@ -2,19 +2,28 @@ package com.cmput301.t05.habilect;
 
 
 import android.app.Dialog;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.location.Location;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.util.List;
 
 /**
  * @author alexisseniuk
@@ -25,11 +34,16 @@ import com.google.android.gms.maps.model.MarkerOptions;
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
+    private HabitType habit_type;
+    private Bundle bundle;
+    private TextView userName;
+    private Location location;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+
 
         setTitle("H a b i l e c t - Map");
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
@@ -37,13 +51,26 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+        //googlesevices good to go
         if (googleServicesAvailable()) {
             Toast.makeText(this, "GoogleMaps Services Available!", Toast.LENGTH_LONG).show();
 
+            //no googleservices
         }else {
             Toast.makeText(this, "No GoogleMap Services Available...", Toast.LENGTH_LONG).show();
 
         }
+
+        //TODO: get friend info and plot from setFriendsMarkers (if working)
+        //get friend info
+/*        bundle = getIntent().getExtras();
+        userName = findViewById(R.id.viewFriendUserName);
+        location = findViewById(R.id.viewFriendLocation);
+
+        userName.setText(getUserNameFromBundle());
+        location.setLocation(Location);*/
+
+
     }
 
     private boolean googleServicesAvailable() {
@@ -74,12 +101,113 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        //Default setting
+
+
+       //edmonton ---  goToLocationZoom(53.534172,-113.488460, 10);
+        LatLng Edmonton = new LatLng(53.534172,-113.488460);
+        mMap.addMarker(new MarkerOptions().position(Edmonton).title("Marker in Edmonton"));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(Edmonton));
+        //Default setting:
         // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        //LatLng sydney = new LatLng(-34, 151);
+        //mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
+
+        //INSERT BUTTON IF WORKS...
+        setUsermarkers();
 
 
     }
+
+    //gotoLocation with a zoomed in focus - focus downtown Edmonton
+    private void goToLocationZoom(double lat, double lng, float zoom) {
+        LatLng ll = new LatLng(lat, lng);
+        CameraUpdate update = CameraUpdateFactory.newLatLngZoom(ll, zoom);
+        mMap.moveCamera(update);
+    }
+
+    private int totalEvents() {
+        List<HabitEvent> events = habit_type.getHabitEvents();
+        return events.size();
+    }
+
+    //set markers for habit events that have locations
+    public void setUsermarkers() {
+        List<HabitEvent> events = habit_type.getHabitEvents();
+
+        //add all User events Markers (azure)
+        for (HabitEvent e: events) {
+            //final Lat Lng position = new LatLng(habit_type.getHabitEvents().get)
+            LatLng location = e.getLocation();
+            //LatLng loc = e.getLocation();
+            if (location != null){
+                mMap.addMarker(new MarkerOptions()
+                        .positon(location)
+                        .title(e.getHabitType())
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+            }
+
+
+        }
+    }
+//set markers for user's friend's habits
+/*    public void setFriendMarkers() {
+        //List<FriendHabitEvent> events = habit_type.getHabitEvents();
+
+        //add Friends markers (magenta)
+        for (FriendHabitEvents friende: events){
+            LatLng location = friende.getLocation();
+            if (location != null){
+                mMap.addMarker(new MarkerOptions()
+                    .position(location)
+                    .title(friende.getHabitType())
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA)));
+            }
+        }
+    }*/
+
+    //use if using bundles for habitfriend list
+    /**
+     *
+     * @return a String representing the habit event title if there is one
+     */
+/*    private String getUserNameFromBundle() {
+        try {
+            return bundle.getString("User Name");
+        }
+        catch (Exception e) {
+            return "";
+        }
+    }
+
+    private Location getLocationFromBundle() {
+        try {
+            return bundle.getParcelable("Location");
+        }
+        catch (Exception e) {
+            return null;
+        }
+    }*/
+
+    //for calulating within 5km distance 
+/*    private boolean eventNear(HabitEvent e){
+        // Adapted from https://stackoverflow.com/questions/3694380/calculating-distance-between-two-points-using-latitude-longitude-what-am-i-doi
+        if (mLastLocation == null || !highlight_near){
+            return false;
+        }
+
+        double earthRadius = 6371000; //meters
+        double dLat = Math.toRadians(e.getLocation().latitude-mLastLocation.getLatitude());
+        double dLng = Math.toRadians(e.getLocation().longitude-mLastLocation.getLongitude());
+        double a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                Math.cos(Math.toRadians(mLastLocation.getLatitude())) * Math.cos(Math.toRadians(e.getLocation().latitude)) *
+                        Math.sin(dLng/2) * Math.sin(dLng/2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        float dist = (float) (earthRadius * c);
+
+        if (dist <= 5000){
+            return true;
+        } else {
+            return false;
+        }
+    }*/
 }
