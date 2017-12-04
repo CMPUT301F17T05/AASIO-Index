@@ -1,27 +1,21 @@
 package com.cmput301.t05.habilect;
 
 
-import android.app.Dialog;
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.location.Location;
-import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
@@ -34,16 +28,17 @@ import java.util.List;
  * Currently something wrong with API key.....
  */
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
+public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
     private UserAccount userAccount;
     private Context context;
     private GoogleMap mMap;
-    private HabitType habit_type;
-    private Bundle bundle;
-    private TextView userName;
-    private Location location;
     private List<HabitType> allHabitTypes;
     private List<HabitEvent> allHabitEvents;
+    private Button show5kmButton;
+    private Button resetButton;
+    private Button backButton;
+
+    private int ZOOM_LEVEL = 15;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,52 +47,57 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         context = this;
         userAccount = new UserAccount().load(context);
+
         allHabitTypes = userAccount.getHabits();
-        loadAllHabitEvents();
+        allHabitEvents = getEventsFromBundle();
 
+        Navigation.setup(findViewById(android.R.id.content));
 
-        setTitle("H a b i l e c t - Map");
+        setTitle("Habilect - Map");
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        //googlesevices good to go
-        if (googleServicesAvailable()) {
-            Toast.makeText(this, "GoogleMaps Services Available!", Toast.LENGTH_LONG).show();
+        show5kmButton = findViewById(R.id.mapActivityShow5kmButton);
+        resetButton = findViewById(R.id.mapActivityResetMapButton);
+        backButton = findViewById(R.id.mapActivityBackButton);
 
-            //no googleservices
-        }else {
-            Toast.makeText(this, "No GoogleMap Services Available...", Toast.LENGTH_LONG).show();
+        show5kmButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                allHabitTypes = userAccount.getHabits();
+                loadAllUserHabitEvents();
+                ZOOM_LEVEL = 10;
+                setUserMarkers(allHabitEvents);
+            }
+        });
 
-        }
+        resetButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                allHabitEvents.clear();
+                ZOOM_LEVEL = 1;
+                setUserMarkers(allHabitEvents);
+            }
+        });
 
-        //TODO: get friend info and plot from setFriendsMarkers (if working)
-        //get friend info
-/*        bundle = getIntent().getExtras();
-        userName = findViewById(R.id.viewFriendUserName);
-        location = findViewById(R.id.viewFriendLocation);
-
-        userName.setText(getUserNameFromBundle());
-        location.setLocation(Location);*/
-
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
 
     }
 
-    private boolean googleServicesAvailable() {
-        GoogleApiAvailability api = GoogleApiAvailability.getInstance();
-        int isAvailable = api.isGooglePlayServicesAvailable(this);
-        if (isAvailable == ConnectionResult.SUCCESS){
-            return true;
-        } else if (api.isUserResolvableError(isAvailable)){
-            Dialog dialog = api.getErrorDialog(this, isAvailable, 0);
-            dialog.show();
-        } else {
-            Toast.makeText(this, "Cannot connect to play services", Toast.LENGTH_LONG).show();
+    private List<HabitEvent> getEventsFromBundle() {
+        try {
+            return (List<HabitEvent>) getIntent().getExtras().getSerializable("Events");
+        } catch (Exception e) {
+            return new ArrayList<>();
         }
-        return false;
     }
-
 
     /**
      * Manipulates the map once available.
@@ -111,57 +111,38 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
-
-
-       //edmonton ---  goToLocationZoom(53.534172,-113.488460, 10);
-        LatLng Edmonton = new LatLng(53.534172,-113.488460);
-        mMap.addMarker(new MarkerOptions().position(Edmonton).title("Marker in Edmonton"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(Edmonton));
-
-        //Default setting:
-        // Add a marker in Sydney and move the camera
-        //LatLng sydney = new LatLng(-34, 151);
-        //mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-
-        //INSERT BUTTON IF WORKS...
-        setUsermarkers();
-
-
+        setUserMarkers(allHabitEvents);
     }
 
     //gotoLocation with a zoomed in focus - focus downtown Edmonton
-    private void goToLocationZoom(double lat, double lng, float zoom) {
-        LatLng ll = new LatLng(lat, lng);
-        CameraUpdate update = CameraUpdateFactory.newLatLngZoom(ll, zoom);
+    private void goToLocationZoom(double lat, double lng) {
+        LatLng latLng = new LatLng(lat, lng);
+        CameraUpdate update = CameraUpdateFactory.newLatLngZoom(latLng, ZOOM_LEVEL);
         mMap.moveCamera(update);
     }
 
-    private int totalEvents() {
-        List<HabitEvent> events = habit_type.getHabitEvents();
-        return events.size();
-    }
-
     //set markers for habit events that have locations
-    public void setUsermarkers() {
+    public void setUserMarkers(List<HabitEvent> eventList) {
         //add all User events Markers (azure)
-        for (HabitEvent e: allHabitEvents) {
+        LatLng latLng = new LatLng(0, 0);
+        for (HabitEvent e: eventList) {
             //final Lat Lng position = new LatLng(habit_type.getHabitEvents().get)
             Location location = e.getLocation();
             //LatLng loc = e.getLocation();
             if (location != null){
-                LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+                latLng = new LatLng(location.getLatitude(), location.getLongitude());
                 mMap.addMarker(new MarkerOptions()
                         .position(latLng)
                         .title(e.getHabitType())
                         .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
             }
-
-
+        }
+        if(latLng != null) {
+            goToLocationZoom(latLng.latitude, latLng.longitude);
         }
     }
 
-    private void loadAllHabitEvents() {
+    private void loadAllUserHabitEvents() {
         Iterator<HabitType> iterator = allHabitTypes.iterator();
         allHabitEvents = new ArrayList<>();
         while(iterator.hasNext()) {
