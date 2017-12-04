@@ -14,8 +14,6 @@ import android.widget.TextView;
 import java.io.File;
 import java.util.ArrayList;
 
-// TODO: maybe load in the information from GSON, get habit event directly
-// TODO: add location and map
 /**
  * This activity launches when a user wishes to see more information about a particular
  * habit event. This activity must be passed information about the event in a bundle. The tags are as follow
@@ -73,6 +71,10 @@ public class ViewHabitEventActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     *
+     * @return a String representing the habit date title if there is one
+     */
     private String getDateFromBundle() {
         try {
             return bundle.getString("Date");
@@ -82,6 +84,10 @@ public class ViewHabitEventActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     *
+     * @return a String representing the habit comment title if there is one
+     */
     private String getCommentFromBundle() {
         try {
             return bundle.getString("Comment");
@@ -91,6 +97,10 @@ public class ViewHabitEventActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     *
+     * @return a String representing the habit event image file path
+     */
     private String getFilePathFromBundle() {
         try {
             return bundle.getString("File Path");

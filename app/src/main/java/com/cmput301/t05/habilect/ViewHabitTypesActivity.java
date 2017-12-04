@@ -15,6 +15,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+/**
+ * This activity shows the user a list of all of their habit types
+ */
 public class ViewHabitTypesActivity extends AppCompatActivity {
 
     private ListView habitTypeList;
@@ -51,50 +54,11 @@ public class ViewHabitTypesActivity extends AppCompatActivity {
         });
     }
 
-    /**
-     * gets all of the user's habit types locally or from elasticsearch (to be implemented) and
-     * puts them in the ListView
-     *
-     * @see HabitType
-     * @see WebService
-     */
-/*    @Override
-    protected void onStart() {
-        super.onStart();
-        WebService webService = new WebService();
-
-        // load from file
-
-        // load from elasticsearch
-        //habit_types = webService.getListOfHabitTypes(user_profile);
-
-        ArrayAdapter<HabitType> adapter = new ArrayAdapter<>(this, R.layout.habit_type_list_item, habit_types);
-        habitTypeList.setAdapter(adapter);
-
-        //Log.d("Debugging", "habit types list:" + habit_types.get(0).toString());
-        adapter.notifyDataSetChanged();
-    }*/
-
     @Override
     protected void onResume() {
         super.onResume();
-
-        //WebService.GetHabitTypesTask getHabitTypesTask = new WebService.GetHabitTypesTask();
-
-
-
-        // load from file
-        //TODO: GSON
         UserAccount localUser = new UserAccount().load(context);
-        /*UserAccount remoteUser = UserAccount.fromId(localUser.getId());
-        if (remoteUser!=null) {
-            habit_types = new ArrayList<>(remoteUser.getHabits());
-        }*/
         habit_types = new ArrayList<>(localUser.getHabits());
-
-        // load from elasticsearch
-        //habit_types = webService.getListOfHabitTypes(user_profile);
-
         HabitTypeListAdapter adapter = new HabitTypeListAdapter(habit_types, this);
         habitTypeList.setAdapter(adapter);
     }

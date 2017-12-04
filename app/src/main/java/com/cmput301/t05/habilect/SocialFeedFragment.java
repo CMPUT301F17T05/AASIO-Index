@@ -17,6 +17,8 @@ import java.util.List;
 import java.util.UUID;
 
 /**
+ * This fragment shows the user their social feed
+ * @author rarog
  * @author ioltuszy
  */
 
@@ -80,6 +82,10 @@ public class SocialFeedFragment extends Fragment {
 
     }
 
+    /**
+     * When the user is currently on this fragment, set the title
+     * @param isVisibleToUser
+     */
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser){
         super.setUserVisibleHint(isVisibleToUser);

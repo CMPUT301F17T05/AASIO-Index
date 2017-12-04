@@ -5,7 +5,8 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
 /**
- * Created by Andrea on 12-11-17.
+ * This shows the splash screen of the app while data is being loaded
+ * @author amwhitta
  */
 
 public class SplashActivity extends AppCompatActivity {

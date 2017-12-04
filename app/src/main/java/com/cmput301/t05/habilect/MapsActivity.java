@@ -118,6 +118,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         LatLng Edmonton = new LatLng(53.534172,-113.488460);
         mMap.addMarker(new MarkerOptions().position(Edmonton).title("Marker in Edmonton"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(Edmonton));
+
         //Default setting:
         // Add a marker in Sydney and move the camera
         //LatLng sydney = new LatLng(-34, 151);

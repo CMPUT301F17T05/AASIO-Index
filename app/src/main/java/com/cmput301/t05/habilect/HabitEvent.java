@@ -11,6 +11,11 @@ import java.util.Date;
 import java.util.Locale;
 
 /**
+ * This class represents a habit event. For each habit type, there can be 1 event per day. This event
+ * describes what happened by a user supplied comment and photo. If the user wishes, they can
+ * enable their location to track it on a map and so that their friends can view their events
+ * as well
+ * @see HabitType
  * @author ioltuszy
  * @author amwhitta
  */
@@ -86,7 +91,6 @@ class HabitEvent {
         this.habitType = habitType;
     }
 
-    //TODO: error handling for setLocation?
     public void setLocation(Location location) {
         this.location = location;
     }

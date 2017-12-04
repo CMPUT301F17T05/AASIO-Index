@@ -15,7 +15,8 @@ import java.util.Locale;
 import java.util.Observable;
 
 /**
- * This is the model for habit types.
+ * This is the model for habit types. A habit type is a class describing a certain habit
+ * that the user wants to regularly do.
  * @author ioltuszy
  * @author amwhitta
  */

@@ -63,7 +63,9 @@ public class HomePrimaryFragment extends Fragment {
         fragmentManager = getActivity().getSupportFragmentManager();
         habitTypeList = rootView.findViewById(R.id.incompleteHabitsListView);
 
-
+        /**
+         * When the user clicks on a displayed habit type, should launch the habit type activity
+         */
         habitTypeList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -73,11 +75,14 @@ public class HomePrimaryFragment extends Fragment {
             }
         });
 
+
+        // gets a list of incomplete habit types for that day, those should be the only ones displayed
         incomplete_habit_types = new ArrayList<>();
         getIncompleteHabitTypes();
         adapter = new HabitTypeListAdapter(incomplete_habit_types, getContext());
         habitTypeList.setAdapter(adapter);
 
+        // opens the add habit event dialog if the user wants to create a new habit type
         final Button addHabitButton = (Button) rootView.findViewById(R.id.addHabitButton);
         addHabitButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -88,23 +93,18 @@ public class HomePrimaryFragment extends Fragment {
                     public void OnAddedOrEdited(String title, String reason, Date start_date, boolean[] weekly_plan) {
                         try {
                             // check to make sure title is unique
-                            //TODO: GSON
                             all_habit_types = userAccount.getHabits();
-
                             for (HabitType h: all_habit_types) {
                                 if (title.equals(h.getTitle())) {
                                     throw new IllegalArgumentException("title");
                                 }
                             }
-                            //WebService.AddHabitTypesTask getHabitTypesTask = new WebService.GetHabitTypesTask();
+                            // creates a new habitType from the users input
                             HabitType habit_type = new HabitType(title, reason, start_date, weekly_plan);
-                            //TODO: GSON
                             all_habit_types.add(habit_type);
                             userAccount.setHabits(all_habit_types);
                             userAccount.save(context);
                             userAccount.sync(context);
-                            //TODO: GSON
-
                             getIncompleteHabitTypes();
                             adapter.notifyDataSetChanged();
 
@@ -115,15 +115,14 @@ public class HomePrimaryFragment extends Fragment {
                     }
                     @Override
                     public void OnDeleted() {
-                        // TODO: implement OnDeleted
+                        // do nothing...
                     }
                 });
                 addHabitDialog.show(fragmentManager, "addHabitDialog");
             }
         });
 
-
-        // TODO: Add habit event from title once information saving is done
+        // opens an add habit event dialog if the user wants to make new events
         final Button addHabitEventButton = rootView.findViewById(R.id.addHabitEvent);
         addHabitEventButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -148,9 +147,10 @@ public class HomePrimaryFragment extends Fragment {
 
                     @Override
                     public void OnCancelled() {
-                        // TODO: implement OnDeleted
                     }
                 });
+                // we should only show the dialog if the user has types to make events for and
+                // has types which still need to be completed today, otherwise show an error message
                 ArrayList<String> titleList = getHabitTitles();
                 if(all_habit_types.size() < 1) {
                     Toast.makeText(getContext(), "You do not have any habits to make events for!", Toast.LENGTH_SHORT).show();
@@ -271,6 +271,11 @@ public class HomePrimaryFragment extends Fragment {
         }
     }
 
+    /**
+     * Checks if the passed habit type has an event already done today
+     * @param habit  the habit type you want to check
+     * @return returns true if there is a habit event done today
+     */
     private boolean checkIfHabitDoneToday(HabitType habit) {
         ArrayList<HabitEvent> eventList = habit.getHabitEvents();
         Locale locale = new Locale("English", "Canada");
@@ -284,6 +289,12 @@ public class HomePrimaryFragment extends Fragment {
         return false;
     }
 
+    /**
+     * From a list of habit types, returns a habit type object from its title
+     * @param habitList the list of habit types you want to search
+     * @param title the title of the habit type you want to find
+     * @return a habit type object
+     */
     private HabitType findHabitType(List<HabitType> habitList, String title) {
         Iterator<HabitType> iterator = habitList.iterator();
         while(iterator.hasNext()) {

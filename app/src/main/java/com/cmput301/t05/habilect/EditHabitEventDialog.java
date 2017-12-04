@@ -366,7 +366,7 @@ public class EditHabitEventDialog extends DialogFragment {
         String date;
 
         // gets location
-        if (checkBox.isChecked() && locationPermission) {
+        if (checkBox.isChecked() && locationPermission && lastLocation != null) {
             latitude = String.valueOf(lastLocation.getLatitude());
             longitude = String.valueOf(lastLocation.getLongitude());
         } else {

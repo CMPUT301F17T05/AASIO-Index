@@ -19,7 +19,11 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 /**
- * Created by Oliver on 03/12/2017.
+ * This adapter allows for the app users friend's profiles to be displayed
+ * in a ListView
+ * @author rarog
+ * @see UserAccount
+ * @see SocialFriendFragment
  */
 
 public class SocialFriendAdapter extends BaseAdapter implements ListAdapter {
@@ -75,6 +79,7 @@ public class SocialFriendAdapter extends BaseAdapter implements ListAdapter {
 
         profileNameTextView.setText(friend.getDisplayName());
 
+        // if a user selects a profile, launch an activity showing their details
         selectButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -100,12 +105,24 @@ public class SocialFriendAdapter extends BaseAdapter implements ListAdapter {
         return bundle;
     }
 
+    /**
+     * The image must be scaled down to fit in a 24dpx24dp box, this function
+     * scales down a given bitmap to that size
+     * @param bitmap the bitmap that needs to be scaled down
+     * @return a bitmap with the size of 24dpx24dp
+     */
     private Bitmap scaleDownBitmap(Bitmap bitmap) {
         int width = (int) dipToPixels(context, (float) 24);
         int height = (int) dipToPixels(context, (float) 24);
         return Bitmap.createScaledBitmap(bitmap, width, height, true);
     }
 
+    /**
+     * Converts dp to pixels. Taken from https://stackoverflow.com/questions/8399184/convert-dip-to-px-in-android
+     * @param context the context of the activity
+     * @param dipValue the dp value you want to convert
+     * @return the converted pixel value
+     */
     private static float dipToPixels(Context context, float dipValue) {
         DisplayMetrics metrics = context.getResources().getDisplayMetrics();
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dipValue, metrics);

@@ -246,7 +246,7 @@ public class AddHabitEventDialog extends DialogFragment {
         Button cancelButton = view.findViewById(R.id.addEventCancelButton);
         createButton = view.findViewById(R.id.addEventCreateButton);
 
-        // makes the location can camera handlers
+        // makes the location and camera handlers
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(context);
         camera = new Camera(cameraTextureView, cameraCaptureSessionCallback, eventImage);
 
@@ -404,7 +404,7 @@ public class AddHabitEventDialog extends DialogFragment {
         String date;
 
         // gets location
-        if (checkBox.isChecked() && locationPermission) {
+        if (checkBox.isChecked() && locationPermission && lastLocation != null) {
             latitude = String.valueOf(lastLocation.getLatitude());
             longitude = String.valueOf(lastLocation.getLongitude());
         } else {
@@ -488,7 +488,6 @@ public class AddHabitEventDialog extends DialogFragment {
     }
 
 
-    // TODO: seems to be a bug where it can't get location unless you open an app like google maps
     @SuppressWarnings("MissingPermission")
     private void getLastLocation() {
         fusedLocationClient.getLastLocation()
@@ -503,8 +502,6 @@ public class AddHabitEventDialog extends DialogFragment {
                     }
                 });
     }
-
-    // TODO: Maybe have all of the permission handling / asking in a separate class
 
     /**
      * @return a boolean representing if we have permission to access user location

@@ -47,11 +47,14 @@ public class HistoryFilterFragment extends Fragment {
         searchView = rootView.findViewById(R.id.historyFilterFragmentSearchView);
         filterSpinner = rootView.findViewById(R.id.historyFilterFragmentSpinner);
 
+        // this array adapter shows the user the options that they can filter by
         ArrayAdapter<CharSequence> filterAdapter = ArrayAdapter.createFromResource(getContext(),
                 R.array.filter_options, R.layout.history_filter_spinner_item);
         filterAdapter.setDropDownViewResource(R.layout.history_filter_spinner_dropdown_item);
         filterSpinner.setAdapter(filterAdapter);
 
+        // loads all of the users habit events from their account and sets an adapter to display in
+        // a list view
         allHabitTypes = userAccount.getHabits();
         allHabitEvents = new ArrayList<>();
         loadAllHabitEvents();
@@ -59,6 +62,8 @@ public class HistoryFilterFragment extends Fragment {
         HabitEventListAdapter eventListAdapter = new HabitEventListAdapter(allHabitEvents, rootView.getContext());
         fragmentHabitTypeOptionsListView.setAdapter(eventListAdapter);
 
+        // when the text in the search with is changed or submitted, the event list array
+        // is filtered by either to event comments or their habit type (base on user selection)
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
@@ -96,6 +101,9 @@ public class HistoryFilterFragment extends Fragment {
         return rootView;
     }
 
+    /**
+     * loads all of the users habit events from file and sets a the global field
+     */
     private void loadAllHabitEvents() {
         Iterator<HabitType> iterator = allHabitTypes.iterator();
         while(iterator.hasNext()) {
