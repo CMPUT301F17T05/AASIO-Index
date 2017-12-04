@@ -84,6 +84,8 @@ public class HomePrimaryFragment extends Fragment {
         // gets a list of incomplete habit types for that day, those should be the only ones displayed
         incomplete_habit_types = new ArrayList<>();
         getIncompleteHabitTypes();
+
+        // checks if there are incomplete habit types for the previous day. Returns the number of incomplete.
         int numberOfIncompletedHabits = getIncompleteHabitTypesFromYesterday();
         if (numberOfIncompletedHabits > 0) {
             SharedPreferences sharedPreferences = context.getSharedPreferences(HABILECT_USER_INFO, Context.MODE_PRIVATE);
@@ -310,11 +312,15 @@ public class HomePrimaryFragment extends Fragment {
         return false;
     }
 
+    /**
+     * From the list of habit types, checks wwhich ones have not been completed in the previous day
+     *
+     * @return A integer of the number of incompleted habit types
+     */
     private int getIncompleteHabitTypesFromYesterday() {
 
         Calendar c = Calendar.getInstance();
         int yesterday = c.get(Calendar.DAY_OF_WEEK) - 1;
-        //Log.d("Debugging", "today in int:" + Integer.toString(today));
         boolean[] plan;
         ArrayList<HabitType> yesterdaysIncompleteHabitTypes = new ArrayList<>();
         for (HabitType h : all_habit_types) {
@@ -343,12 +349,23 @@ public class HomePrimaryFragment extends Fragment {
         return yesterdaysIncompleteHabitTypes.size();
     }
 
+    /**
+     * Formats the date to yesterday
+     *
+     * @return A formatted date
+     */
     private Date yesterdayDate() {
         final Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DATE, -1);
         return cal.getTime();
     }
 
+    /**
+     * Checks if the passed habit type has an event already done yesterday
+     *
+     * @param habit the habit type you want to check
+     * @return returns true if there is a habit event done yesterday
+     */
     private boolean checkIfHabitDoneYesterday(HabitType habit) {
         ArrayList<HabitEvent> eventList = habit.getHabitEvents();
         Locale locale = new Locale("English", "Canada");

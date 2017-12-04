@@ -1,6 +1,8 @@
 package com.cmput301.t05.habilect;
 
 /**
+ * Class that is responsible for tree growth to track nutrient level and also the last rank up tier.
+ *
  * Created by StevenC on 2017-11-23.
  */
 

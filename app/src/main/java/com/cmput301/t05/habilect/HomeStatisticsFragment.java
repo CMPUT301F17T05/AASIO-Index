@@ -23,7 +23,11 @@ import static com.cmput301.t05.habilect.UserProfile.HABILECT_USER_INFO;
 import static com.cmput301.t05.habilect.UserProfile.HABILECT_USER_PREVIOUS_NUTRIENT_LEVEL_TIER_RANK_UP;
 
 /**
- * @author ioltuszy
+ * Shows the current progression of the user's tree as well as total nutrient level and the level needed for the next rank.
+ *
+ *  @author ioltuszy
+ *
+ *  @see TreeGrowth
  */
 
 public class HomeStatisticsFragment extends Fragment {
@@ -82,6 +86,9 @@ public class HomeStatisticsFragment extends Fragment {
         setTreeGrowthImageView();
     }
 
+    /**
+     * Adjusts the tree growth ImageView if necessary
+     */
     private void setTreeGrowthImageView() {
 
         final UserAccount user = new UserAccount();
@@ -136,6 +143,11 @@ public class HomeStatisticsFragment extends Fragment {
         }
     }
 
+    /**
+     * Creates a dialog for when the user reaches the next tier
+     *
+     * @param tier the tier to initiate
+     */
     private void buildRankUpDialog(int tier) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle("Rank Up!");
@@ -168,6 +180,12 @@ public class HomeStatisticsFragment extends Fragment {
         dialog.show();
     }
 
+    /**
+     * Checks the nutrient level and tier to call corresponding helper methods as well as set ImageView.
+     *
+     * @param nutrientLevel the current nutrientLevel of the user
+     * @param tier the tier to be initialized
+     */
     private void checkAndAdjustTierProperties(int nutrientLevel, int tier) {
         Log.i("INFORMATION", "nutlevel: " + nutrientLevel + " tier: " + tier);
 
