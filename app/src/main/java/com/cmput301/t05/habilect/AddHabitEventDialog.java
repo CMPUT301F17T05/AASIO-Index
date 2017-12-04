@@ -231,8 +231,9 @@ public class AddHabitEventDialog extends DialogFragment {
 
         context = getContext();
         mContext = getActivity().getApplicationContext();
-        final UserProfile profile = new UserProfile(mContext);
-        TreeGrowth profileTreeGrowth = profile.treeGrowth;
+        final UserAccount user = new UserAccount();
+        user.load(mContext);
+        TreeGrowth profileTreeGrowth = user.getTreeGrowth();
 
         // creates all of the necessary view controllers
         TextView eventTitle = view.findViewById(R.id.addHabitEventDialogTitle);
@@ -316,17 +317,14 @@ public class AddHabitEventDialog extends DialogFragment {
                 onAddHabitEventListener.OnAdded();
                 dialog.dismiss();
 
-                SharedPreferences sharedPreferences = context.getSharedPreferences(HABILECT_USER_INFO, Context.MODE_PRIVATE);
-                String preference = sharedPreferences.getString(UserProfile.HABILECT_USER_TREE_GROWTH, null);
-
-                int nutrientLevel = Integer.parseInt(preference);
+                int nutrientLevel = user.getTreeGrowth().getNutrientLevel();
 
                 nutrientLevel += 1;
 
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                profile.setTreeGrowth(Integer.toString(nutrientLevel));
-                editor.putString(UserProfile.HABILECT_USER_TREE_GROWTH, Integer.toString(nutrientLevel));
-                editor.commit();
+                user.load(context);
+                user.getTreeGrowth().setNutrientLevel(nutrientLevel);
+                user.save(context);
+                user.sync(context);
                 Log.i("NUTRIENTLEVEL: ", "" + profileTreeGrowth.getNutrientLevel());
 
             }

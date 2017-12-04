@@ -3,6 +3,7 @@ package com.cmput301.t05.habilect;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -33,6 +34,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.io.File;
 import java.util.Date;
 import java.util.UUID;
 import java.util.regex.Pattern;
@@ -131,17 +133,22 @@ public class InitActivity extends AppCompatActivity {
 
         // Create a new user account, with a unique ID
         UserAccount user = new UserAccount();
+        /*ContextWrapper cw = new ContextWrapper(context.getApplicationContext());
+        File directory = cw.getDir("userData", Context.MODE_PRIVATE);
+        File path = new File(directory, "LocalUserAccount.sav");
+        path.delete();*/
         user.load(context);
+        //user.Exists = false;
         if (user.Exists) {
             //user.removeFollowee(UUID.fromString("a47f3482-c537-4cdd-a6cd-1244a2424151"));
             //user.addFollowee(UUID.fromString("5c01971c-3cee-45a6-836c-453d17e394ed"));
-            //UserAccount remote = UserAccount.fromId(UUID.fromString("5c01971c-3cee-45a6-836c-453d17e394ed"));
             //remote.removeFollower(UUID.fromString("e06459d4-27f1-49de-b8e8-85ab5b3469ef"));
             //remote.addFollower(UUID.fromString("e06459d4-27f1-49de-b8e8-85ab5b3469ef"));
             //remote.getHabits().get(0).setShared(true);
             //remote.sync(context);
             //user.save(context);
             user.sync(context);
+            UserAccount remote = UserAccount.fromId(UUID.fromString("4d67c2ad-b5fd-4c6f-adc9-f2278bedbfea"));
 
             Intent intent = new Intent(context, HomeActivity.class);
             startActivity(intent);

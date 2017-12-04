@@ -19,7 +19,7 @@ class HabitEvent {
     static int MAX_COMMENT_LENGTH = 20;
 
     private String comment;
-    private Bitmap eventPicture;
+    private String eventPicture;
     private Location location;
     private Date completionDate;
     private String habitType;
@@ -27,12 +27,12 @@ class HabitEvent {
     /**
      * Creates a new habit event
      * @param comment comment that goes with the event. Must be less than 20 characters
-     * @param eventPicture bitmap image of the event
+     * @param eventPicture Base64 encoded string for the bitmap image of an event
      * @param location Location object of the event
      * @param completionDate Date object of the event
      * @param habitType The associated habitType for the event
      */
-    public HabitEvent(String comment, Bitmap eventPicture, Location location, Date completionDate, String habitType) {
+    public HabitEvent(String comment, String eventPicture, Location location, Date completionDate, String habitType) {
         this.setComment(comment);
         this.setEventPicture(eventPicture);
         this.setLocation(location);
@@ -44,7 +44,7 @@ class HabitEvent {
     public String getComment() {
         return comment;
     }
-    public Bitmap getEventPicture() {
+    public String getEventPicture() {
         return eventPicture;
     }
     public Location getLocation() {
@@ -68,17 +68,9 @@ class HabitEvent {
             this.comment = comment;
         }
     }
-    public void setEventPicture(Bitmap eventPicture) {
+    public void setEventPicture(String eventPicture) {
         if (eventPicture != null) {
-            if (eventPicture.getByteCount() >= 65536) {
-                eventPicture = Bitmap.createScaledBitmap(eventPicture, 127, 127, false);
-            }
-            if(eventPicture.getByteCount() >= 65536) {
-                throw new IllegalArgumentException();
-            }
             this.eventPicture = eventPicture;
-        } else {
-            this.eventPicture = null;
         }
     }
 

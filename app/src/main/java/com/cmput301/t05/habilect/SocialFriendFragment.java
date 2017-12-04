@@ -20,7 +20,7 @@ public class SocialFriendFragment extends Fragment {
     FragmentManager fragmentManager;
     private Context mContext;
     private Context context;
-    private ArrayList<UserProfile> friendList = new ArrayList<>();
+    private ArrayList<UserAccount> friendList = new ArrayList<>();
     ListView friendListView;
     SocialFriendAdapter friendAdapter;
 
@@ -35,7 +35,8 @@ public class SocialFriendFragment extends Fragment {
 
         context = getActivity();
 
-        final UserProfile profile = new UserProfile(mContext);
+        final UserAccount profile = new UserAccount();
+        profile.load(mContext);
 
         friendListView = rootView.findViewById(R.id.socialFriendListView);
 

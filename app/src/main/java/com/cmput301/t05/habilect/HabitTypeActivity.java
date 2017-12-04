@@ -15,6 +15,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -32,6 +33,7 @@ import com.jjoe64.graphview.helper.StaticLabelsFormatter;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
@@ -125,8 +127,9 @@ public class HabitTypeActivity extends AppCompatActivity {
                                     createHabitEventFromBundle(addHabitEventDialog.getResultBundle());
 
                             habit_type.addHabitEvent(event);
-                            userAccount.save(context);
-                            userAccount.sync(context);
+                            userAccount.setHabits(allHabits);
+                            userAccount.save(mContext);
+                            userAccount.sync(mContext);
 
                             //eList.add(event);
                             if(eventListAdapter != null) {
@@ -197,8 +200,9 @@ public class HabitTypeActivity extends AppCompatActivity {
 
                         all_habit_types.remove(habit_type);
                         all_habit_types.add(edited_habit_type);
-                        userAccount.save(context);
-                        userAccount.sync(context);
+                        userAccount.setHabits(all_habit_types);
+                        userAccount.save(mContext);
+                        userAccount.sync(mContext);
 
                         habit_type = new HabitType(edited_habit_type);
 
@@ -225,8 +229,9 @@ public class HabitTypeActivity extends AppCompatActivity {
                 @Override
                 public void OnDeleted() {
                     allHabits.remove(habit_type);
-                    userAccount.save(context);
-                    userAccount.sync(context);
+                    userAccount.setHabits(allHabits);
+                    userAccount.save(mContext);
+                    userAccount.sync(mContext);
                 }
             };
             AlertDialog alertDialog = new AlertDialog.Builder(context).create();
@@ -466,8 +471,11 @@ public class HabitTypeActivity extends AppCompatActivity {
         String filePath = getter.getFileName();
         String directory = getter.getDirectory();
         Bitmap eventImage = getBitmapFromFilePath(directory, filePath);
-
-        return new HabitEvent(comment, eventImage, location, date, title);
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        eventImage.compress(Bitmap.CompressFormat.JPEG, 50, byteArrayOutputStream);
+        byte[] byteArray = byteArrayOutputStream.toByteArray();
+        String encodedString = Base64.encodeToString(byteArray, Base64.URL_SAFE | Base64.NO_WRAP);
+        return new HabitEvent(comment, encodedString, location, date, title);
     }
 
     private Bitmap getBitmapFromFilePath(String directory, String filePath) {

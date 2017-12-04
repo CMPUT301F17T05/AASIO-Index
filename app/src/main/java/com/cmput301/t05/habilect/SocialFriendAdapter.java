@@ -23,14 +23,14 @@ import java.util.ArrayList;
  */
 
 public class SocialFriendAdapter extends BaseAdapter implements ListAdapter {
-    private ArrayList<UserProfile> friendList = new ArrayList<>();
+    private ArrayList<UserAccount> friendList = new ArrayList<>();
     private Context context;
     private Context mContext;
     private ImageView profileImageView;
     private TextView profileNameTextView;
     private Button selectButton;
 
-    SocialFriendAdapter(ArrayList<UserProfile> friendList, Context context, Context mContext) {
+    SocialFriendAdapter(ArrayList<UserAccount> friendList, Context context, Context mContext) {
         this.friendList = friendList;
         this.context = context;
         this.mContext = mContext;
@@ -58,9 +58,10 @@ public class SocialFriendAdapter extends BaseAdapter implements ListAdapter {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             view = inflater.inflate(R.layout.social_friend_row, null);
         }
-        final UserProfile userProfile = new UserProfile(mContext);
+        final UserAccount userAccount = new UserAccount();
+        userAccount.load(mContext);
 
-        UserProfile friend = friendList.get(i);
+        UserAccount friend = friendList.get(i);
 
         profileImageView = view.findViewById(R.id.socialFriendProfileImage);
         profileNameTextView = view.findViewById(R.id.socialFriendUserName);
@@ -93,7 +94,7 @@ public class SocialFriendAdapter extends BaseAdapter implements ListAdapter {
      * @param friend the friend that you want to view
      * @return a bundle that can be sent off to the activity
      */
-    private Bundle sendHabitInfoToView(UserProfile friend) {
+    private Bundle sendHabitInfoToView(UserAccount friend) {
         Bundle bundle = new Bundle();
         bundle.putString("User Name", friend.getDisplayName());
         bundle.putParcelable("Image", friend.getProfilePicture());

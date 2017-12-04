@@ -20,7 +20,7 @@ public class ViewHabitTypesActivity extends AppCompatActivity {
     private ListView habitTypeList;
     private ArrayList<HabitType> habit_types;
     private Context context;
-    private UserProfile user_profile;
+    private UserAccount user_profile;
 
     /**
      * Passes a habit type to the HabitTypeActivity if it is clicked on in the ListView
@@ -35,7 +35,8 @@ public class ViewHabitTypesActivity extends AppCompatActivity {
         setContentView(R.layout.activity_view_habit_types);
 
         context = getApplicationContext();
-        user_profile = new UserProfile(context);
+        user_profile = new UserAccount();
+        user_profile.load(context);
 
         setTitle("Habilect - Habit Types");
         Navigation.setup(findViewById(android.R.id.content));

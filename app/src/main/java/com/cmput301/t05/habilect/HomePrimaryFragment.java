@@ -8,6 +8,7 @@ import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.net.ConnectException;
 import java.text.SimpleDateFormat;
@@ -185,8 +187,11 @@ public class HomePrimaryFragment extends Fragment {
         String filePath = getter.getFileName();
         String directory = getter.getDirectory();
         Bitmap eventImage = getBitmapFromFilePath(directory, filePath);
-
-        return new HabitEvent(comment, eventImage, location, date, title);
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        eventImage.compress(Bitmap.CompressFormat.JPEG, 50, byteArrayOutputStream);
+        byte[] byteArray = byteArrayOutputStream.toByteArray();
+        String encodedString = Base64.encodeToString(byteArray, Base64.URL_SAFE | Base64.NO_WRAP);
+        return new HabitEvent(comment, encodedString, location, date, title);
     }
 
     /**

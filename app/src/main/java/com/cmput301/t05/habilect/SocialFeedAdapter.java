@@ -113,7 +113,7 @@ public class SocialFeedAdapter extends BaseAdapter implements ListAdapter {
         }
         bundle.putString("Date", event.getEvent().getCompletionDateString());
         bundle.putString("Comment", comment);
-        bundle.putParcelable("Image", event.getEvent().getEventPicture());
+        bundle.putString("Image", event.getEvent().getEventPicture());
         return bundle;
     }
 

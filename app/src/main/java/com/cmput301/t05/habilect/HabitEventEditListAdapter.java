@@ -9,6 +9,7 @@ import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +20,7 @@ import android.widget.ImageButton;
 import android.widget.ListAdapter;
 import android.widget.TextView;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -83,8 +85,8 @@ public class HabitEventEditListAdapter extends BaseAdapter implements ListAdapte
         event = eventList.get(i);
         relatedHabitType = findRelatedHabitType(event.getHabitType());
 
-        final UserProfile profile = new UserProfile(mContext);
-        TreeGrowth profileTreeGrowth = profile.treeGrowth;
+        final UserAccount user = new UserAccount();
+        TreeGrowth profileTreeGrowth = user.getTreeGrowth();
 
         Button viewButton = view.findViewById(R.id.habitEventEditRowSelectButton);
 
@@ -119,6 +121,7 @@ public class HabitEventEditListAdapter extends BaseAdapter implements ListAdapte
                                 editHabitEventFromBundle(editHabitEventDialog.getResultBundle());
                         relatedHabitType.removeHabitEvent(event);
                         relatedHabitType.addHabitEvent(newEvent);
+                        userAccount.setHabits(habitTypeList);
                         userAccount.save(context);
                         userAccount.sync(context);
 
@@ -152,10 +155,8 @@ public class HabitEventEditListAdapter extends BaseAdapter implements ListAdapte
                 eventList.remove(event);
                 notifyDataSetChanged();
 
-                SharedPreferences sharedPreferences = context.getSharedPreferences(HABILECT_USER_INFO, Context.MODE_PRIVATE);
-                String preference = sharedPreferences.getString(UserProfile.HABILECT_USER_TREE_GROWTH, null);
 
-                int nutrientLevel = Integer.parseInt(preference);
+                int nutrientLevel = userAccount.getTreeGrowth().getNutrientLevel();
 
                 nutrientLevel -= 1;
 
@@ -163,12 +164,8 @@ public class HabitEventEditListAdapter extends BaseAdapter implements ListAdapte
                     nutrientLevel = 0;
                 }
 
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                profile.setTreeGrowth(Integer.toString(nutrientLevel));
-                editor.putString(UserProfile.HABILECT_USER_TREE_GROWTH, Integer.toString(nutrientLevel));
-                editor.commit();
-
-                Log.i("NUTRIENTLEVEL: ", "" + profileTreeGrowth.getNutrientLevel());
+                userAccount.getTreeGrowth().setNutrientLevel(nutrientLevel);
+                Log.i("NUTRIENTLEVEL: ", "" + userAccount.getTreeGrowth().getNutrientLevel());
             }
         });
 
@@ -249,8 +246,11 @@ public class HabitEventEditListAdapter extends BaseAdapter implements ListAdapte
         String filePath = getter.getFileName();
         String directory = getter.getDirectory();
         Bitmap eventImage = getBitmapFromFilePath(directory, filePath);
-
-        return new HabitEvent(comment, eventImage, location, date, title);
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        eventImage.compress(Bitmap.CompressFormat.JPEG, 50, byteArrayOutputStream);
+        byte[] byteArray = byteArrayOutputStream.toByteArray();
+        String encodedString = Base64.encodeToString(byteArray, Base64.URL_SAFE | Base64.NO_WRAP);
+        return new HabitEvent(comment, encodedString, location, date, title);
     }
 
     /**
