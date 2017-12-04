@@ -62,7 +62,7 @@ public class UserAccount {
 
     public static void verifySettings() {
         if (client == null) {
-            DroidClientConfig.Builder builder = new DroidClientConfig.Builder("http://50.65.125.148:9269/cmput301f17t05_habilect");
+            DroidClientConfig.Builder builder = new DroidClientConfig.Builder("http://cmput301.softwareprocess.es:8080/cmput301f17t05_habilect");
             DroidClientConfig config = builder.build();
 
             JestClientFactory factory = new JestClientFactory();
@@ -288,9 +288,11 @@ public class UserAccount {
                                         List<Date> dates = new ArrayList<Date>();
                                         for (JsonElement member : events.getAsJsonArray()) {
                                             JsonElement date = member.getAsJsonObject().get("completionDate");
-                                            String stringDate = date.getAsString();
-                                            Date parsedDate = new SimpleDateFormat("yyyy-MM-dd", Locale.CANADA).parse(stringDate);
-                                            dates.add(parsedDate);
+                                            if (date!=null) {
+                                                String stringDate = date.getAsString();
+                                                Date parsedDate = new SimpleDateFormat("yyyy-MM-dd", Locale.CANADA).parse(stringDate);
+                                                dates.add(parsedDate);
+                                            }
                                         }
                                         HabitType intermediateHabit = gson.fromJson(element.getAsJsonObject(), HabitType.class);
                                         for (int i = dates.size(); i<dates.size(); i++) {
