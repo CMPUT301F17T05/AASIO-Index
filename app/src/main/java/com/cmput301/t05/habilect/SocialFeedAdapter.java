@@ -60,8 +60,9 @@ public class SocialFeedAdapter extends BaseAdapter implements ListAdapter {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             view = inflater.inflate(R.layout.social_feed_row, null);
         }
-        final UserProfile userProfile = new UserProfile(mContext);
-        TreeGrowth profileTreeGrowth = userProfile.treeGrowth;
+        final UserAccount userAccount = new UserAccount();
+        userAccount.load(mContext);
+        TreeGrowth profileTreeGrowth = userAccount.getTreeGrowth();
 
         FeedEvent feedEvent = feedList.get(i);
 
@@ -71,12 +72,12 @@ public class SocialFeedAdapter extends BaseAdapter implements ListAdapter {
         eventDateTextView = view.findViewById(R.id.socialFeedDateText);
         selectButton = view.findViewById(R.id.socialFeedRowSelectButton);
 
-        profileNameTextView.setText(feedEvent.getProfile().getDisplayName());
+        profileNameTextView.setText(feedEvent.getUser().getDisplayName());
         eventTextView.setText(feedEvent.getEvent().getHabitType());
         eventDateTextView.setText(feedEvent.getEvent().getCompletionDateString());
 
 
-        Bitmap profileImage = feedEvent.getProfile().getProfilePicture();
+        Bitmap profileImage = feedEvent.getUser().getProfilePicture();
         if(profileImage == null) {
             profileImage = BitmapFactory.decodeResource(context.getResources(),
                     R.mipmap.no_profile_image);
@@ -104,7 +105,7 @@ public class SocialFeedAdapter extends BaseAdapter implements ListAdapter {
      */
     private Bundle sendHabitInfoToView(FeedEvent event) {
         Bundle bundle = new Bundle();
-        bundle.putString("User Name", event.getProfile().getDisplayName());
+        bundle.putString("User Name", event.getUser().getDisplayName());
         bundle.putString("Habit Type", event.getEvent().getHabitType());
         String comment = event.getEvent().getComment();
         if(comment.equals("")) {

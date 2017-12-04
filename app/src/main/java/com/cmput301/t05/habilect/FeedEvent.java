@@ -5,27 +5,27 @@ package com.cmput301.t05.habilect;
  */
 
 public class FeedEvent {
-    UserProfile profile;
+    UserAccount user;
     HabitEvent event;
 
-    FeedEvent(UserProfile profile, HabitEvent event) {
+    FeedEvent(UserAccount user, HabitEvent event) {
         this.event = event;
-        this.profile = profile;
+        this.user = user;
     }
 
     public void setEvent(HabitEvent event) {
         this.event = event;
     }
 
-    public void setProfile(UserProfile profile) {
-        this.profile = profile;
+    public void setUser(UserAccount user) {
+        this.user = user;
     }
 
     public HabitEvent getEvent() {
         return event;
     }
 
-    public UserProfile getProfile() {
-        return profile;
+    public UserAccount getUser() {
+        return user;
     }
 }

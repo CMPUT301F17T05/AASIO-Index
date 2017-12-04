@@ -13,6 +13,8 @@ import android.widget.ListView;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * @author ioltuszy
@@ -38,16 +40,39 @@ public class SocialFeedFragment extends Fragment {
 
         getActivity().setTitle("Social Feed");
 
-        final UserProfile profile = new UserProfile(mContext);
+        final UserAccount user = new UserAccount();
+        user.load(mContext);
 
         feedListView = rootView.findViewById(R.id.socialActivityFeedListView);
 
-
         feedEventList = new ArrayList<>();
-        HabitEvent event = new HabitEvent("", null, null, new Date(), "Dummy event");
-        FeedEvent feedEvent = new FeedEvent(profile, event);
-        feedEventList.add(feedEvent);
-
+        List<UserAccount> followees = user.getFollowees();
+        for (UserAccount followee : followees) {
+            if (followee!=null) {
+                List<UserAccount> followers = followee.getFollowers();
+                List<UUID> followerIds = new ArrayList<UUID>();
+                for (UserAccount follower : followers) {
+                    if (follower!=null) {
+                        followerIds.add(follower.getId());
+                    }
+                }
+                if (followerIds.contains(user.getId())) {
+                    List<HabitType> habits = followee.getHabits();
+                    for (HabitType habit : habits) {
+                        if (habit.getShared()) {
+                            List<HabitEvent> events = habit.getHabitEvents();
+                            for (HabitEvent event : events) {
+                                if (event.getCompletionDate()!=null & event.getHabitType()!=null) {
+                                    HabitEvent feedHabitEvent = new HabitEvent(event.getComment(), event.getEventPicture(), event.getLocation(), event.getCompletionDate(), event.getHabitType());
+                                    FeedEvent feedEvent = new FeedEvent(followee, feedHabitEvent);
+                                    feedEventList.add(feedEvent);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
         SocialFeedAdapter feedAdapter = new SocialFeedAdapter(feedEventList, context, mContext);
         feedListView.setAdapter(feedAdapter);
 
