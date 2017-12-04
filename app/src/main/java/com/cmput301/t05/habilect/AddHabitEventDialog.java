@@ -194,8 +194,7 @@ public class AddHabitEventDialog extends DialogFragment {
      */
     private TextWatcher commentTextWatcher = new TextWatcher() {
         @Override
-        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-        }
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
 
         @Override
         public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -203,9 +202,7 @@ public class AddHabitEventDialog extends DialogFragment {
         }
 
         @Override
-        public void afterTextChanged(Editable editable) {
-
-        }
+        public void afterTextChanged(Editable editable) {}
     };
 
     /**

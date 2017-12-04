@@ -9,7 +9,6 @@ public class FeedEvent {
     HabitEvent event;
 
     FeedEvent(UserAccount user, HabitEvent event) {
-        this.event = event;
         this.user = user;
     }
 

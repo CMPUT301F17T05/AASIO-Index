@@ -1,5 +1,6 @@
 package com.cmput301.t05.habilect;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -12,6 +13,8 @@ import android.widget.SearchView;
 import android.widget.Spinner;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * @author ioltuszy
@@ -21,7 +24,10 @@ import java.util.ArrayList;
  */
 
 public class HistoryFilterFragment extends Fragment {
+    private UserAccount userAccount;
+    private Context context;
     FragmentManager fragmentManager;
+    List<HabitType> allHabitTypes;
     ArrayList<HabitEvent> allHabitEvents;
     SearchView searchView;
     Spinner filterSpinner;
@@ -34,6 +40,9 @@ public class HistoryFilterFragment extends Fragment {
 
         fragmentManager = getActivity().getSupportFragmentManager();
 
+        context = getContext();
+        userAccount = new UserAccount().load(context);
+
         ListView fragmentHabitTypeOptionsListView = rootView.findViewById(R.id.historyFilterFragmentListView);
         searchView = rootView.findViewById(R.id.historyFilterFragmentSearchView);
         filterSpinner = rootView.findViewById(R.id.historyFilterFragmentSpinner);
@@ -43,7 +52,9 @@ public class HistoryFilterFragment extends Fragment {
         filterAdapter.setDropDownViewResource(R.layout.history_filter_spinner_dropdown_item);
         filterSpinner.setAdapter(filterAdapter);
 
-        allHabitEvents = GSONController.GSON_CONTROLLER.loadHabitEventFromFile();
+        allHabitTypes = userAccount.getHabits();
+        allHabitEvents = new ArrayList<>();
+        loadAllHabitEvents();
 
         HabitEventListAdapter eventListAdapter = new HabitEventListAdapter(allHabitEvents, rootView.getContext());
         fragmentHabitTypeOptionsListView.setAdapter(eventListAdapter);
@@ -83,5 +94,14 @@ public class HistoryFilterFragment extends Fragment {
         });
 
         return rootView;
+    }
+
+    private void loadAllHabitEvents() {
+        Iterator<HabitType> iterator = allHabitTypes.iterator();
+        while(iterator.hasNext()) {
+            HabitType habit = iterator.next();
+            ArrayList<HabitEvent> eventList = habit.getHabitEvents();
+            allHabitEvents.addAll(eventList);
+        }
     }
 }

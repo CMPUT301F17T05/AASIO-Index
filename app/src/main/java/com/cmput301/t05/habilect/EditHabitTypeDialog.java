@@ -18,6 +18,8 @@ import android.widget.EditText;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * @author ioltuszy
@@ -25,7 +27,7 @@ import java.util.Date;
  */
 
 public class EditHabitTypeDialog extends DialogFragment {
-
+    private UserAccount userAccount;
     private HabitTypeListener habitTypeListener;        // the controller for adding or editing
     private HabitType habit_type;
     private EditText habitTitleText;
@@ -66,6 +68,9 @@ public class EditHabitTypeDialog extends DialogFragment {
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.dialog_addhabit, null);
         dialog.setContentView(view);
+
+        userAccount = new UserAccount().load(this.getContext());
+
 
         setHabitType();
         weekly_plan = habit_type.getWeeklyPlan();
@@ -147,15 +152,21 @@ public class EditHabitTypeDialog extends DialogFragment {
     }
 
     private void setHabitType() {
-        try {
-            String title = getArguments().getString("Habit Title");
-            // TODO: GSON
-            habit_type = GSONController.GSON_CONTROLLER.findHabitType(title);
-        }
-        catch (Exception e) {
-            habit_type = null;
-        }
+        String title = getArguments().getString("Habit Title");
+        habit_type = findHabitType(userAccount.getHabits(), title);
     }
+
+    private HabitType findHabitType(List<HabitType> habitList, String title) {
+        Iterator<HabitType> iterator = habitList.iterator();
+        while(iterator.hasNext()) {
+            HabitType habit = iterator.next();
+            if(habit.getTitle().equals(title)) {
+                return habit;
+            }
+        }
+        return null;
+    }
+
 
     /**
      * The method called by the OnClickListener of each CheckBox. Changes the boolean value of

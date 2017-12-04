@@ -37,6 +37,8 @@ import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 
 public class HabitTypeActivity extends AppCompatActivity {
@@ -60,8 +62,10 @@ public class HabitTypeActivity extends AppCompatActivity {
     private static HabitEventEditListAdapter eventListAdapter;
     FragmentManager fragmentManager;
     private static ArrayList<HabitEvent> eList;
+    private List<HabitType> allHabits;
     private static Context context;
     private static Context mContext;
+    private UserAccount userAccount;
     /**
      * sets up the activity and grabs the habit type that was passed in through a different
      * activity
@@ -88,16 +92,18 @@ public class HabitTypeActivity extends AppCompatActivity {
         mViewPager = findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
+        userAccount = new UserAccount().load(context);
+        allHabits = userAccount.getHabits();
+
         TabLayout tabLayout = findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
         String habit_type_title = getIntent().getStringExtra("ClickedHabitType");
         setTitle("Habilect - " + habit_type_title);
-        habit_type = GSONController.GSON_CONTROLLER.findHabitType(habit_type_title);
+        setHabitType();
 
-        eList = GSONController.GSON_CONTROLLER.loadHabitEventFromFile();
-        eList = filterEventList(habit_type, eList);
-        eventListAdapter = new HabitEventEditListAdapter(eList, this, mContext);
+        eList = habit_type.getHabitEvents();
+        eventListAdapter = new HabitEventEditListAdapter(habit_type_title, this, mContext);
 
         if(checkIfHabitDoneToday()) {
             addEventButton.setImageResource(R.mipmap.add_button_greyed_out);
@@ -119,12 +125,10 @@ public class HabitTypeActivity extends AppCompatActivity {
                                     createHabitEventFromBundle(addHabitEventDialog.getResultBundle());
 
                             habit_type.addHabitEvent(event);
+                            userAccount.save(context);
+                            userAccount.sync(context);
 
-                            GSONController.GSON_CONTROLLER.editHabitTypeInFile(habit_type, habit_type.getTitle());
-                            boolean saveSuccess = GSONController.GSON_CONTROLLER.saveHabitEventInFile(event);
-                            if(saveSuccess) {
-                                eList.add(event);
-                            }
+                            //eList.add(event);
                             if(eventListAdapter != null) {
                                 eventListAdapter.notifyDataSetChanged();
                             }
@@ -154,23 +158,6 @@ public class HabitTypeActivity extends AppCompatActivity {
 	Navigation.setup(findViewById(android.R.id.content));
     }
 
-    /**
-     * Filters the event list such that only the events with the matching habit type remain
-     * @param habitType the habit type you want to filer by
-     * @param eventList the event list you want to filer
-     * @return returns a filter event list
-     */
-    private  ArrayList<HabitEvent> filterEventList(HabitType habitType, ArrayList<HabitEvent> eventList) {
-        ArrayList<HabitEvent> newList = new ArrayList<>();
-        for (HabitEvent event : eventList) {
-            if(event.getHabitType().equals(habitType.getTitle())) {
-                newList.add(event);
-            }
-        }
-        return newList;
-    }
-
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -193,7 +180,7 @@ public class HabitTypeActivity extends AppCompatActivity {
                 @Override
                 public void OnAddedOrEdited(String title, String reason, Date start_date, boolean[] weekly_plan) {
                     try {
-                        ArrayList<HabitType> all_habit_types = GSONController.GSON_CONTROLLER.loadHabitTypeFromFile();
+                        List<HabitType> all_habit_types = userAccount.getHabits();
                         for (HabitType h: all_habit_types) {
                             if (title.equals(h.getTitle())) {
                                 throw new IllegalArgumentException("title");
@@ -206,7 +193,13 @@ public class HabitTypeActivity extends AppCompatActivity {
                         edited_habit_type.setStartDate(start_date);
                         edited_habit_type.setWeeklyPlan(weekly_plan);
 
-                        GSONController.GSON_CONTROLLER.editHabitTypeInFile(edited_habit_type, habit_type.getTitle());
+                        edited_habit_type.editHabitEvents(title);
+
+                        all_habit_types.remove(habit_type);
+                        all_habit_types.add(edited_habit_type);
+                        userAccount.save(context);
+                        userAccount.sync(context);
+
                         habit_type = new HabitType(edited_habit_type);
 
                     } catch (IllegalArgumentException e) {
@@ -231,7 +224,9 @@ public class HabitTypeActivity extends AppCompatActivity {
 
                 @Override
                 public void OnDeleted() {
-                    GSONController.GSON_CONTROLLER.deleteHabitTypeInFile(habit_type);
+                    allHabits.remove(habit_type);
+                    userAccount.save(context);
+                    userAccount.sync(context);
                 }
             };
             AlertDialog alertDialog = new AlertDialog.Builder(context).create();
@@ -394,37 +389,11 @@ public class HabitTypeActivity extends AppCompatActivity {
 
             ListView eventList = rootView.findViewById(R.id.fragmentHabitTypeEventsListView);
 
-            eList = GSONController.GSON_CONTROLLER.loadHabitEventFromFile();
-            eList = filterEventList(habit_type, eList);
-
-            eventListAdapter = new HabitEventEditListAdapter(eList, getActivity(), mContext);
+            eList = habit_type.getHabitEvents();
+            eventListAdapter = new HabitEventEditListAdapter(habit_type.getTitle(), getActivity(), mContext);
             eventList.setAdapter(eventListAdapter);
 
             return rootView;
-        }
-
-
-        /**
-         * Filters the event list such that only the events with the matching habit type remain
-         * @param habitType the habit type you want to filer by
-         * @param eventList the event list you want to filer
-         * @return returns a filter event list
-         */
-        private  ArrayList<HabitEvent> filterEventList(HabitType habitType, ArrayList<HabitEvent> eventList) {
-            ArrayList<HabitEvent> newList = new ArrayList<>();
-            for (HabitEvent event : eventList) {
-                if(event.getHabitType().equals(habitType.getTitle())) {
-                    newList.add(event);
-                }
-            }
-            return newList;
-        }
-
-
-        @Override
-        public void onStart() {
-            super.onStart();
-            eList = GSONController.GSON_CONTROLLER.loadHabitEventFromFile();
         }
     }
 
@@ -519,4 +488,21 @@ public class HabitTypeActivity extends AppCompatActivity {
         }
         return false;
     }
+
+    private void setHabitType() {
+        String title = getIntent().getStringExtra("ClickedHabitType");
+        habit_type = findHabitType(allHabits, title);
+    }
+
+    private HabitType findHabitType(List<HabitType> habitList, String title) {
+        Iterator<HabitType> iterator = habitList.iterator();
+        while(iterator.hasNext()) {
+            HabitType habit = iterator.next();
+            if(habit.getTitle().equals(title)) {
+                return habit;
+            }
+        }
+        return null;
+    }
+
 }

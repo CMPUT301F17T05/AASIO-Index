@@ -1,5 +1,6 @@
 package com.cmput301.t05.habilect;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -17,10 +18,13 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import java.io.File;
+import java.net.ConnectException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -38,10 +42,10 @@ import java.util.Locale;
  */
 public class HomePrimaryFragment extends Fragment {
     FragmentManager fragmentManager;
-
+    private Context context;
     private ListView habitTypeList;
-    private UserProfile user_profile;
-    private static ArrayList<HabitType> all_habit_types;
+    private UserAccount userAccount;
+    private static List<HabitType> all_habit_types;
     private static ArrayList<HabitType> incomplete_habit_types;
     HabitTypeListAdapter adapter;
 
@@ -51,9 +55,13 @@ public class HomePrimaryFragment extends Fragment {
         View rootView = inflater.inflate(
                 R.layout.fragment_home_primary, container, false);
 
+        context = this.getContext();
+
+        userAccount = new UserAccount().load(context);
+        all_habit_types = userAccount.getHabits();
+
         fragmentManager = getActivity().getSupportFragmentManager();
         habitTypeList = rootView.findViewById(R.id.incompleteHabitsListView);
-        user_profile = new UserProfile(getActivity().getApplicationContext());
 
 
         habitTypeList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -65,16 +73,10 @@ public class HomePrimaryFragment extends Fragment {
             }
         });
 
-        //TODO: GSON
-        all_habit_types = GSONController.GSON_CONTROLLER.loadHabitTypeFromFile();
         incomplete_habit_types = new ArrayList<>();
         getIncompleteHabitTypes();
         adapter = new HabitTypeListAdapter(incomplete_habit_types, getContext());
         habitTypeList.setAdapter(adapter);
-
-        //habit_types = GSONController.GSON_CONTROLLER.loadHabitTypeFromFile();
-        //adapter = new ArrayAdapter<>(getActivity(), R.layout.habit_type_list_item, habit_types);
-        //habitTypeList.setAdapter(adapter);
 
         final Button addHabitButton = (Button) rootView.findViewById(R.id.addHabitButton);
         addHabitButton.setOnClickListener(new View.OnClickListener() {
@@ -87,7 +89,7 @@ public class HomePrimaryFragment extends Fragment {
                         try {
                             // check to make sure title is unique
                             //TODO: GSON
-                            all_habit_types = GSONController.GSON_CONTROLLER.loadHabitTypeFromFile();
+                            all_habit_types = userAccount.getHabits();
 
                             for (HabitType h: all_habit_types) {
                                 if (title.equals(h.getTitle())) {
@@ -96,19 +98,13 @@ public class HomePrimaryFragment extends Fragment {
                             }
                             //WebService.AddHabitTypesTask getHabitTypesTask = new WebService.GetHabitTypesTask();
                             HabitType habit_type = new HabitType(title, reason, start_date, weekly_plan);
-                            /*try {
-                                habit_types = getHabitTypesTask.execute(user_profile).get();
-                            } catch (InterruptedException e) {
-                                // load from file
-                                habit_types = GSONController.GSON_CONTROLLER.loadHabitTypeFromFile();
-                            } catch (ExecutionException e) {
-                                // load from file
-                                habit_types = GSONController.GSON_CONTROLLER.loadHabitTypeFromFile();
-                            }*/
                             //TODO: GSON
-                            GSONController.GSON_CONTROLLER.saveHabitTypeInFile(habit_type);
+                            all_habit_types.add(habit_type);
+                            userAccount.setHabits(all_habit_types);
+                            userAccount.save(context);
+                            userAccount.sync(context);
                             //TODO: GSON
-                            all_habit_types = GSONController.GSON_CONTROLLER.loadHabitTypeFromFile();
+
                             getIncompleteHabitTypes();
                             adapter.notifyDataSetChanged();
 
@@ -139,13 +135,13 @@ public class HomePrimaryFragment extends Fragment {
                         // TODO: implement OnAdded
                         HabitEvent event =
                                 createHabitEventFromBundle(addHabitEventDialog.getResultBundle());
-                        //TODO: GSON
-                        HabitType habit_type = GSONController.GSON_CONTROLLER.findHabitType(event.getHabitType());
+
+                        HabitType habit_type = findHabitType(all_habit_types, event.getHabitType());
                         habit_type.addHabitEvent(event);
-                        //TODO: GSON
-                        GSONController.GSON_CONTROLLER.editHabitTypeInFile(habit_type, habit_type.getTitle());
-                        //TODO: GSON
-                        GSONController.GSON_CONTROLLER.saveHabitEventInFile(event);
+                        userAccount.setHabits(all_habit_types);
+                        userAccount.save(context);
+                        userAccount.sync(context);
+
                         getIncompleteHabitTypes();
                         adapter.notifyDataSetChanged();
                     }
@@ -286,5 +282,16 @@ public class HomePrimaryFragment extends Fragment {
             }
         }
         return false;
+    }
+
+    private HabitType findHabitType(List<HabitType> habitList, String title) {
+        Iterator<HabitType> iterator = habitList.iterator();
+        while(iterator.hasNext()) {
+            HabitType habit = iterator.next();
+            if(habit.getTitle().equals(title)) {
+                return habit;
+            }
+        }
+        return null;
     }
 }

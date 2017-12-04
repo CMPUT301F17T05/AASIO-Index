@@ -64,7 +64,6 @@ public class ViewHabitTypesActivity extends AppCompatActivity {
         WebService webService = new WebService();
 
         // load from file
-        habit_types = GSONController.GSON_CONTROLLER.loadHabitTypeFromFile();
 
         // load from elasticsearch
         //habit_types = webService.getListOfHabitTypes(user_profile);
@@ -82,15 +81,6 @@ public class ViewHabitTypesActivity extends AppCompatActivity {
 
         //WebService.GetHabitTypesTask getHabitTypesTask = new WebService.GetHabitTypesTask();
 
-/*        try {
-            habit_types = getHabitTypesTask.execute(user_profile).get();
-        } catch (InterruptedException e) {
-            // load from file
-            habit_types = GSONController.GSON_CONTROLLER.loadHabitTypeFromFile();
-        } catch (ExecutionException e) {
-            // load from file
-            habit_types = GSONController.GSON_CONTROLLER.loadHabitTypeFromFile();
-        }*/
 
 
         // load from file

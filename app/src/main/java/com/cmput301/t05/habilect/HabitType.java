@@ -9,6 +9,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Observable;
@@ -201,6 +202,14 @@ public class HabitType extends Observable implements Serializable {
      */
     public void removeHabitEvent(HabitEvent habitEvent){
         this.habitEvents.remove(habitEvent);
+    }
+
+    public void editHabitEvents(String newTitle) {
+        Iterator<HabitEvent> eventIterator = habitEvents.iterator();
+        while(eventIterator.hasNext()) {
+            HabitEvent event = eventIterator.next();
+            event.setHabitType(newTitle);
+        }
     }
 
     /**
