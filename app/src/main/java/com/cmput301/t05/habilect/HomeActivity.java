@@ -19,6 +19,8 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 
 /**
+ * The main activity of the app, displays the users habit types that still need to be done
+ * options to add types and events and shows their progress tree
  * @author ioltuszy
  */
 
@@ -63,6 +65,7 @@ public class HomeActivity extends AppCompatActivity {
 
     /**
      * Return the current state of the permissions needed.
+     * @return returns true if we have access to the users location
      */
     private boolean checkLocationPermissions() {
         int permissionState = ActivityCompat.checkSelfPermission(this,
@@ -70,12 +73,19 @@ public class HomeActivity extends AppCompatActivity {
         return permissionState == PackageManager.PERMISSION_GRANTED;
     }
 
+    /**
+     * Return the current state of the permissions needed.
+     * @return returns true if we have access to the users camera
+     */
     private boolean checkCameraPermissions() {
         int permissionState = ActivityCompat.checkSelfPermission(this,
                 Manifest.permission.CAMERA);
         return permissionState == PackageManager.PERMISSION_GRANTED;
     }
 
+    /**
+     * Depending on which permissions may be need, ask the user to enable them
+     */
     private void startPermissionRequest() {
         if(cameraPermission && !locationPermission) {
             ActivityCompat.requestPermissions(this,
@@ -94,7 +104,6 @@ public class HomeActivity extends AppCompatActivity {
         }
     }
 
-    // TODO: if permission is denied, inform user parts of app wont work
     /**
      * Callback received when a permissions request has been completed.
      */
@@ -109,8 +118,6 @@ public class HomeActivity extends AppCompatActivity {
                 Log.i(TAG, "User interaction was cancelled.");
             } else if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 // Permission granted.
-            } else {
-                //TODO: might want to inform user when they deny permission why we need it
             }
         }
     }

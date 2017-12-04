@@ -26,6 +26,7 @@ import java.util.Locale;
 import java.util.concurrent.Executor;
 
 /**
+ * This handles the location of the user if you need to retrieve it
  * Created by Oliver on 10/11/2017.
  */
 

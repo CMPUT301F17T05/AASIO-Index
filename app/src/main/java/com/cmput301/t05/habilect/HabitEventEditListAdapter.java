@@ -37,8 +37,9 @@ import static com.cmput301.t05.habilect.UserProfile.HABILECT_USER_INFO;
  *
  * @author rarog
  */
-// TODO: when editing or deleting does not immediately update the view
+// TODO: get rid of the user profile and replace with user account
 public class HabitEventEditListAdapter extends BaseAdapter implements ListAdapter {
+    // all of the views in the event that we need to populate
     private ArrayList<HabitEvent> eventList = new ArrayList<>();
     private UserAccount userAccount;
     private List<HabitType> habitTypeList;
@@ -88,6 +89,7 @@ public class HabitEventEditListAdapter extends BaseAdapter implements ListAdapte
         final UserAccount user = new UserAccount();
         TreeGrowth profileTreeGrowth = user.getTreeGrowth();
 
+
         Button viewButton = view.findViewById(R.id.habitEventEditRowSelectButton);
 
         TextView habitTitle = view.findViewById(R.id.habitEventRowEditTitle);
@@ -108,6 +110,7 @@ public class HabitEventEditListAdapter extends BaseAdapter implements ListAdapte
         habitType = habitTitle.getText().toString();
         date = event.getCompletionDate();
 
+        // when the user wishes to edit, it opens a dialog so that they can edit their event
         editButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -115,18 +118,16 @@ public class HabitEventEditListAdapter extends BaseAdapter implements ListAdapte
                 editHabitEventDialog.setOnEditHabitEventListener(new OnEditHabitEventListener() {
                     @Override
                     public void OnAdded() {
-                        // TODO: implement OnAdded
-                        //relatedHabitType = findRelatedHabitType(event.getHabitType());
+                        // when user hits create button, make event from it
                         HabitEvent newEvent =
                                 editHabitEventFromBundle(editHabitEventDialog.getResultBundle());
+
+                        // removes the old event from the habit type list and adds in the new one
                         relatedHabitType.removeHabitEvent(event);
                         relatedHabitType.addHabitEvent(newEvent);
                         userAccount.setHabits(habitTypeList);
                         userAccount.save(context);
                         userAccount.sync(context);
-
-                        //eventList.remove(event);
-                        //eventList.add(newEvent);
                         notifyDataSetChanged();
                     }
 
@@ -135,6 +136,7 @@ public class HabitEventEditListAdapter extends BaseAdapter implements ListAdapte
                         // do nothing...
                     }
                 });
+                // puts the current event information into a bundle and open the edit dialog
                 FragmentActivity activity = (FragmentActivity) context;
                 FragmentManager fragmentManager = activity.getSupportFragmentManager();
                 Bundle bundle = sendHabitInfoToDialog();
@@ -143,11 +145,11 @@ public class HabitEventEditListAdapter extends BaseAdapter implements ListAdapte
             }
         });
 
+        // when the user wishes to delete, it removes the event from their account
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO: GSON
-                //relatedHabitType = findRelatedHabitType(event.getHabitType());
+                // removes the event from file and elastisearch
                 relatedHabitType.removeHabitEvent(event);
                 userAccount.save(context);
                 userAccount.sync(context);
@@ -169,6 +171,7 @@ public class HabitEventEditListAdapter extends BaseAdapter implements ListAdapte
             }
         });
 
+        // if the user wants to see the event details, this will open the ViewEventActivity
         viewButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -183,6 +186,11 @@ public class HabitEventEditListAdapter extends BaseAdapter implements ListAdapte
         return view;
     }
 
+    /**
+     * Finds the habit type object from a list given it title
+     * @param habitType the title of the habit type you want to find
+     * @return The habit type that you wanted
+     */
     private HabitType findRelatedHabitType(String habitType) {
         Iterator<HabitType> iterator = habitTypeList.iterator();
         while(iterator.hasNext()) {

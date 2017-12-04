@@ -43,6 +43,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
+/**
+ * This activity displays the information, statistics and habit events for a specific habit type
+ * @author amwhitta
+ * @author rarog
+ */
 public class HabitTypeActivity extends AppCompatActivity {
 
     /**
@@ -94,6 +99,7 @@ public class HabitTypeActivity extends AppCompatActivity {
         mViewPager = findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
+        // loads in the user account and gets their habits
         userAccount = new UserAccount().load(context);
         allHabits = userAccount.getHabits();
 
@@ -104,9 +110,12 @@ public class HabitTypeActivity extends AppCompatActivity {
         setTitle("Habilect - " + habit_type_title);
         setHabitType();
 
+        // from the selected habit, get all associated events and set the adapter to display them
         eList = habit_type.getHabitEvents();
         eventListAdapter = new HabitEventEditListAdapter(habit_type_title, this, mContext);
 
+        // this checks if the user has done an event for the habit today, if they have,
+        // then they cannot do another and the fab is disabled
         if(checkIfHabitDoneToday()) {
             addEventButton.setImageResource(R.mipmap.add_button_greyed_out);
             addEventButton.setOnClickListener(new View.OnClickListener() {
@@ -178,6 +187,7 @@ public class HabitTypeActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.action_edit) {
+            // if user wants to edit their habit type, open the relevant dialog
             final EditHabitTypeDialog editHabitTypeDialog = new EditHabitTypeDialog();
             editHabitTypeDialog.setHabitTypeListener(new HabitTypeListener() {
                 @Override
@@ -221,6 +231,7 @@ public class HabitTypeActivity extends AppCompatActivity {
             editHabitTypeDialog.show(fragmentManager, "editHabitTypeDialog");
         }
         if (id == R.id.action_delete) {
+            // if the user wants to delete the habit type, give a confirmation, then delete
             HabitTypeListener habitTypeListener = new HabitTypeListener() {
                 @Override
                 public void OnAddedOrEdited(String title, String reason, Date start_date, boolean[] weekly_plan) {
@@ -332,6 +343,8 @@ public class HabitTypeActivity extends AppCompatActivity {
         public void onResume() {
             super.onResume();
 
+            // this calculates the statistics for the last 4 weeks of the habit type
+            // and displays in a graph
             StatisticsCalculator calculator = new StatisticsCalculator(habit_type);
             DataPoint[] points = calculator.pastFourWeeks();
 
@@ -451,6 +464,10 @@ public class HabitTypeActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Makes a bundle with the information to send habit information to a dialog
+     * @return A bundle containing the title and habit type of a habit type object
+     */
     private Bundle sendHabitInfoToDialog() {
         Bundle bundle = new Bundle();
         ArrayList<String> list = new ArrayList<>();
@@ -461,6 +478,12 @@ public class HabitTypeActivity extends AppCompatActivity {
         return bundle;
     }
 
+    /**
+     * When the edit habit dialog closes, this method pulls the information from the
+     * returning bundle and creates a habit event out of it
+     * @param bundle the bundle containing the habit event information
+     * @return The newly created habit event
+     */
     private HabitEvent createHabitEventFromBundle(Bundle bundle) {
         AddHabitEventDialogInformationGetter getter =
                 new AddHabitEventDialogInformationGetter(bundle);
@@ -478,12 +501,22 @@ public class HabitTypeActivity extends AppCompatActivity {
         return new HabitEvent(comment, encodedString, location, date, title);
     }
 
+    /**
+     * Given a supplied filePath and directory, retrieves the stored bitmap
+     * @param directory the directory where the bitmap is saved
+     * @param filePath the file name of the image
+     * @return a bitmap of the retrieved image
+     */
     private Bitmap getBitmapFromFilePath(String directory, String filePath) {
         File image = new File(directory, filePath);
         BitmapFactory.Options bmOptions = new BitmapFactory.Options();
         return BitmapFactory.decodeFile(image.getAbsolutePath(),bmOptions);
     }
 
+    /**
+     * Checks if this particular habit type has been completed today
+     * @return returns true if the habit has been done today, false otherwise
+     */
     private boolean checkIfHabitDoneToday() {
         ArrayList<HabitEvent> eventList = habit_type.getHabitEvents();
         Locale locale = new Locale("English", "Canada");
@@ -497,11 +530,21 @@ public class HabitTypeActivity extends AppCompatActivity {
         return false;
     }
 
+    /**
+     * sets the global habitType field with the object pulled from file pertaining to
+     * the selected habit type title
+     */
     private void setHabitType() {
         String title = getIntent().getStringExtra("ClickedHabitType");
         habit_type = findHabitType(allHabits, title);
     }
 
+    /**
+     * From a list of habit types, finds the habit type object from its title
+     * @param habitList a list containing habit types
+     * @param title the title of the habit type you want to find
+     * @return the habit type object from the list that matches
+     */
     private HabitType findHabitType(List<HabitType> habitList, String title) {
         Iterator<HabitType> iterator = habitList.iterator();
         while(iterator.hasNext()) {

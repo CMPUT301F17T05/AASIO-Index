@@ -15,14 +15,13 @@ import java.util.ArrayList;
 import java.util.Date;
 
 /**
- * Created by rarog on 11/23/17.
+ * This list adapter allows habit types to be displayed in a list view
+ * @author rarog
  */
 
 public class HabitTypeListAdapter extends BaseAdapter implements ListAdapter {
     private ArrayList<HabitType> typeList = new ArrayList<>();
     private Context context;
-    private String habitType;
-    private Date date;
 
     HabitTypeListAdapter(ArrayList<HabitType> typeList, Context context) {
         this.typeList = typeList;

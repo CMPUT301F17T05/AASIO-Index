@@ -43,6 +43,7 @@ import static com.cmput301.t05.habilect.UserProfile.HABILECT_USER_INFO;
 import static com.cmput301.t05.habilect.UserProfile.HABILECT_USER_PREVIOUS_NUTRIENT_LEVEL_TIER_RANK_UP;
 
 /**
+ * This activity display the app users profile and their progress tree
  * @author ioltuszy
  */
 

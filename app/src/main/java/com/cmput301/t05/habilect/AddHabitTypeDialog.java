@@ -27,6 +27,8 @@ import java.util.Date;
 
 public class AddHabitTypeDialog extends DialogFragment {
     private HabitTypeListener habitTypeListener;        // the controller for adding or editing
+
+    // views that we need to get info from
     private EditText habitTitleText;
     private EditText habitReasonText;
     private DatePicker habitStartDate;

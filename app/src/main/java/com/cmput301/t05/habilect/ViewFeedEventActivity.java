@@ -9,7 +9,12 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-
+/**
+ * This activity shows the details of a particular feed event
+ * @see FeedEvent
+ * @see SocialFeedFragment
+ * @author rarog
+ */
 public class ViewFeedEventActivity extends AppCompatActivity {
     private TextView userNameTextView;
     private TextView habitTypeTextView;
@@ -18,7 +23,6 @@ public class ViewFeedEventActivity extends AppCompatActivity {
     private ImageView eventImageView;
     private Button backButton;
     private Bundle bundle;
-
 
 
     @Override
@@ -81,6 +85,10 @@ public class ViewFeedEventActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     *
+     * @return a bitmap image of the event
+     */
     private Bitmap getImageFromBundle() {
         try {
             return bundle.getParcelable("Image");
@@ -92,6 +100,10 @@ public class ViewFeedEventActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     *
+     * @return a String representing the habit event comment if there is one
+     */
     private String getCommentFromBundle() {
         try {
             return bundle.getString("Comment");
@@ -101,6 +113,10 @@ public class ViewFeedEventActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     *
+     * @return a String representing the habit event date if there is one
+     */
     private String getDateFromBundle() {
         try {
             return bundle.getString("Date");

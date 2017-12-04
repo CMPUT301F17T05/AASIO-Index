@@ -77,6 +77,7 @@ public class HabitEventListAdapter extends BaseAdapter implements ListAdapter, F
             habitComment.setText(comment);
         }
 
+        // if the user wants to see the event details, this will open the ViewEventActivity
         viewButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -110,6 +111,11 @@ public class HabitEventListAdapter extends BaseAdapter implements ListAdapter, F
         return bundle;
     }
 
+    /**
+     * This allows you to search of the habit event array list to filter by a keyword. It also
+     * allows you to filter by habit event comments of habit types by setting the 'option' field
+     * @return A filter object used internally to search over an ArrayList
+     */
     @Override
     public Filter getFilter() {
         eventList = allEventList;

@@ -13,7 +13,8 @@ import java.util.ArrayList;
 import java.util.Date;
 
 /**
- * Created by Oliver on 03/12/2017.
+ * This fragment show the user a list of their friends and allows them to find new friends
+ * @author rarog
  */
 
 public class SocialFriendFragment extends Fragment {
@@ -49,6 +50,10 @@ public class SocialFriendFragment extends Fragment {
 
     }
 
+    /**
+     * When the user is currently on this fragment, set the title
+     * @param isVisibleToUser
+     */
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser){
         super.setUserVisibleHint(isVisibleToUser);

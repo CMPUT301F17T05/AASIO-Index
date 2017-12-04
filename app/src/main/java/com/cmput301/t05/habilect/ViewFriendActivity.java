@@ -9,6 +9,12 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+/**
+ * This activity allows the user to see details about one of their friends
+ * @see SocialFriendFragment
+ * @see UserAccount
+ * @author rarog
+ */
 public class ViewFriendActivity extends AppCompatActivity {
     private Bundle bundle;
     private TextView userName;
@@ -56,6 +62,10 @@ public class ViewFriendActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     *
+     * @return a bitmap image of the event
+     */
     private Bitmap getImageFromBundle() {
         try {
             return bundle.getParcelable("Image");

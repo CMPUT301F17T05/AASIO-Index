@@ -29,6 +29,8 @@ import java.util.List;
 public class EditHabitTypeDialog extends DialogFragment {
     private UserAccount userAccount;
     private HabitTypeListener habitTypeListener;        // the controller for adding or editing
+
+    // views we need to populate and get information from
     private HabitType habit_type;
     private EditText habitTitleText;
     private EditText habitReasonText;
@@ -151,11 +153,20 @@ public class EditHabitTypeDialog extends DialogFragment {
         return dialog;
     }
 
+    /**
+     * Sets the global habit type for the dialog
+     */
     private void setHabitType() {
         String title = getArguments().getString("Habit Title");
         habit_type = findHabitType(userAccount.getHabits(), title);
     }
 
+    /**
+     * Finds the habit type object from a list given its title
+     * @param habitList the list of habits you want to search over
+     * @param title the title of the habit type
+     * @return
+     */
     private HabitType findHabitType(List<HabitType> habitList, String title) {
         Iterator<HabitType> iterator = habitList.iterator();
         while(iterator.hasNext()) {
