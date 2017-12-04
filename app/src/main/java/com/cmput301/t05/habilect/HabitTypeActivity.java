@@ -83,7 +83,7 @@ public class HabitTypeActivity extends AppCompatActivity {
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
-
+        ImageButton addEventButton = findViewById(R.id.habitTypeAddEventButton);
         // Set up the ViewPager with the sections adapter.
         mViewPager = findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
@@ -99,7 +99,6 @@ public class HabitTypeActivity extends AppCompatActivity {
         eList = filterEventList(habit_type, eList);
         eventListAdapter = new HabitEventEditListAdapter(eList, this, mContext);
 
-        ImageButton addEventButton = findViewById(R.id.habitTypeAddEventButton);
         if(checkIfHabitDoneToday()) {
             addEventButton.setImageResource(R.mipmap.add_button_greyed_out);
             addEventButton.setOnClickListener(new View.OnClickListener() {
@@ -129,6 +128,13 @@ public class HabitTypeActivity extends AppCompatActivity {
                             if(eventListAdapter != null) {
                                 eventListAdapter.notifyDataSetChanged();
                             }
+                            addEventButton.setImageResource(R.mipmap.add_button_greyed_out);
+                            addEventButton.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    Toast.makeText(context, "You've already completed this habit today!", Toast.LENGTH_SHORT).show();
+                                }
+                            });
 
                         }
 

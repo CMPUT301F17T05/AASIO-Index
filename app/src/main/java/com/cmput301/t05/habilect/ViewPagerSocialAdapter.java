@@ -5,20 +5,21 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 /**
- * @author ioltuszy
+ * Created by Oliver on 03/12/2017.
  */
 
-public class ViewPagerHistoryAdapter extends FragmentPagerAdapter {
-    static final int NUM_PAGES = 1;
+public class ViewPagerSocialAdapter extends FragmentPagerAdapter {
+    static final int NUM_PAGES = 2;
 
-    public ViewPagerHistoryAdapter(FragmentManager fragmentManager) {
-        super(fragmentManager);
+    public ViewPagerSocialAdapter(FragmentManager fm) {
+        super(fm);
     }
 
     @Override
     public Fragment getItem(int position) {
         switch (position) {
-            case 0: return new HistoryFilterFragment();
+            case 0: return new SocialFeedFragment();
+            case 1: return new SocialFriendFragment();
         }
         return null;
     }
@@ -28,4 +29,3 @@ public class ViewPagerHistoryAdapter extends FragmentPagerAdapter {
         return NUM_PAGES;
     }
 }
-

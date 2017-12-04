@@ -1,15 +1,15 @@
 package com.cmput301.t05.habilect;
 
-import android.app.ActionBar;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.SearchView;
+import android.widget.Spinner;
 
 import java.util.ArrayList;
 
@@ -24,6 +24,7 @@ public class HistoryFilterFragment extends Fragment {
     FragmentManager fragmentManager;
     ArrayList<HabitEvent> allHabitEvents;
     SearchView searchView;
+    Spinner filterSpinner;
 
     @Override
     public View onCreateView(LayoutInflater inflater,
@@ -35,6 +36,12 @@ public class HistoryFilterFragment extends Fragment {
 
         ListView fragmentHabitTypeOptionsListView = rootView.findViewById(R.id.historyFilterFragmentListView);
         searchView = rootView.findViewById(R.id.historyFilterFragmentSearchView);
+        filterSpinner = rootView.findViewById(R.id.historyFilterFragmentSpinner);
+
+        ArrayAdapter<CharSequence> filterAdapter = ArrayAdapter.createFromResource(getContext(),
+                R.array.filter_options, R.layout.history_filter_spinner_item);
+        filterAdapter.setDropDownViewResource(R.layout.history_filter_spinner_dropdown_item);
+        filterSpinner.setAdapter(filterAdapter);
 
         allHabitEvents = GSONController.GSON_CONTROLLER.loadHabitEventFromFile();
 
@@ -44,13 +51,33 @@ public class HistoryFilterFragment extends Fragment {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
-                eventListAdapter.getFilter().filter(s);
+                String spinnerOption = (String) filterSpinner.getSelectedItem();
+                switch (spinnerOption) {
+                    case "Habit Comment":
+                        eventListAdapter.option = "Comment";
+                        eventListAdapter.getFilter().filter(s);
+                        break;
+                    case "Habit Type":
+                        eventListAdapter.option = "Type";
+                        eventListAdapter.getFilter().filter(s);
+                        break;
+                }
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String s) {
-                eventListAdapter.getFilter().filter(s);
+                String spinnerOption = (String) filterSpinner.getSelectedItem();
+                switch (spinnerOption) {
+                    case "Habit Comment":
+                        eventListAdapter.option = "Comment";
+                        eventListAdapter.getFilter().filter(s);
+                        break;
+                    case "Habit Type":
+                        eventListAdapter.option = "Type";
+                        eventListAdapter.getFilter().filter(s);
+                        break;
+                }
                 return false;
             }
         });

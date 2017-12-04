@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.cmput301.t05.habilect.ViewFriendActivity">
+
+    <TextView
+        android:id="@+id/viewFriendUserName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:textColor="@color/black"
+        android:textSize="@dimen/font_size_large"
+        android:textStyle="bold"
+        android:text="gwioergjeop"/>
+
+    <ImageView
+        android:id="@+id/viewFriendProfileImage"
+        android:layout_width="match_parent"
+        android:layout_height="212dp"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/viewFriendUserName"
+        android:layout_marginTop="16dp"
+        android:background="@null"
+        app:srcCompat="@mipmap/add_image" />
+
+    <Button
+        android:id="@+id/viewFriendBackButton"
+        style="@style/Widget.AppCompat.Button.Borderless.Colored"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="16dp"
+        android:background="@android:color/transparent"
+        android:text="Back" />
+
+
+</RelativeLayout>

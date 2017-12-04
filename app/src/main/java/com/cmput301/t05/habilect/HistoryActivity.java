@@ -18,7 +18,7 @@ public class HistoryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history);
 
-        setTitle("H a b i l e c t - History");
+        setTitle("Habilect - History");
 
         Navigation.setup(findViewById(android.R.id.content));
 
