@@ -1,9 +1,11 @@
 package com.cmput301.t05.habilect;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Base64;
 
 import com.google.android.gms.maps.model.LatLng;
 
@@ -90,6 +92,13 @@ class HabitEvent implements Parcelable {
     }
     public String getHabitType() { return habitType; }
     public String getUserId() { return userId; }
+    public Bitmap getEventBitmap() {
+        if (eventPicture!=null) {
+            byte[] decodedByteArray = Base64.decode(eventPicture, Base64.URL_SAFE | Base64.NO_WRAP);
+            return BitmapFactory.decodeByteArray(decodedByteArray, 0, decodedByteArray.length);
+        }
+        return null;
+    }
 
     // Setters
     public void setComment(String comment) {
@@ -133,5 +142,6 @@ class HabitEvent implements Parcelable {
         parcel.writeString(eventPicture);
         parcel.writeParcelable(location, i);
         parcel.writeString(habitType);
+        parcel.writeString(userId);
     }
 }

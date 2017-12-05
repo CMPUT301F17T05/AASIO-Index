@@ -179,7 +179,6 @@ public class HabitEventEditListAdapter extends BaseAdapter implements ListAdapte
                 Intent intent = new Intent(view.getContext(), ViewHabitEventActivity.class);
                 intent.putExtras(bundle);
                 view.getContext().startActivity(intent);
-
             }
         });
 
@@ -216,7 +215,7 @@ public class HabitEventEditListAdapter extends BaseAdapter implements ListAdapte
         String dateString = new SimpleDateFormat("yyyy_MM_dd", Locale.ENGLISH).format(date);
         bundle.putString("Date", dateString);
         bundle.putSerializable("Habit Type", list);
-
+        bundle.putString("Image", event.getEventPicture());
         return bundle;
     }
 
@@ -232,7 +231,7 @@ public class HabitEventEditListAdapter extends BaseAdapter implements ListAdapte
         String dateString = new SimpleDateFormat("yyyy_MM_dd", Locale.ENGLISH).format(date);
         bundle.putString("Date", event.getCompletionDateString());
         bundle.putString("Comment", event.getComment());
-        bundle.putString("File Path", habitType.replace(" ", "_") + "_" + dateString);
+        bundle.putString("Image", event.getEventPicture());
 
         return bundle;
     }
@@ -251,9 +250,9 @@ public class HabitEventEditListAdapter extends BaseAdapter implements ListAdapte
         String comment = getter.getComment();
         Location location = getter.getLocation();
         Date date = getter.getDate();
-        String filePath = getter.getFileName();
-        String directory = getter.getDirectory();
-        Bitmap eventImage = getBitmapFromFilePath(directory, filePath);
+        String imageString = getter.getImage();
+        byte[] decodedByteArray = Base64.decode(imageString, Base64.URL_SAFE | Base64.NO_WRAP);
+        Bitmap eventImage = BitmapFactory.decodeByteArray(decodedByteArray, 0, decodedByteArray.length);
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         eventImage.compress(Bitmap.CompressFormat.JPEG, 50, byteArrayOutputStream);
         byte[] byteArray = byteArrayOutputStream.toByteArray();
@@ -261,17 +260,4 @@ public class HabitEventEditListAdapter extends BaseAdapter implements ListAdapte
         return new HabitEvent(comment, encodedString, location, date, title, userAccount.getId().toString());
     }
 
-    /**
-     * Gets a bitmap from a file name and directory path
-     *
-     * @param directory the directory with the image file
-     * @param filePath  the image file name
-     * @return a bitmap of the decoded file
-     */
-    private Bitmap getBitmapFromFilePath(String directory, String filePath) {
-        File image = new File(directory, filePath);
-        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-        Bitmap bitmap = BitmapFactory.decodeFile(image.getAbsolutePath(), bmOptions);
-        return bitmap;
-    }
 }

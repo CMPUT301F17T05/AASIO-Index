@@ -3,6 +3,7 @@ package com.cmput301.t05.habilect;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -19,13 +20,17 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
+import java.util.UUID;
 
 /**
  * @author alexisseniuk
@@ -136,6 +141,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         setUserMarkers(allHabitEvents);
     }
 
+    private HabitEvent findHabitEvent(String title) {
+        for(HabitEvent event : allHabitEvents) {
+            if(event.getHabitType().equals(title)) {
+                return event;
+            }
+        }
+        return null;
+    }
+
     //gotoLocation with a zoomed in focus - focus downtown Edmonton
     private void goToLocationZoom(double lat, double lng) {
         LatLng latLng = new LatLng(lat, lng);
@@ -153,9 +167,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             //LatLng loc = e.getLocation();
             if (location != null){
                 latLng = new LatLng(location.getLatitude(), location.getLongitude());
+                UserAccount userAccount = UserAccount.fromId(UUID.fromString(e.getUserId()));
+                String userName = userAccount.getDisplayName();
                 mMap.addMarker(new MarkerOptions()
                         .position(latLng)
-                        .title(e.getHabitType())
+                        .title(e.getHabitType() + " - " + userName)
                         .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
             }
         }
@@ -167,6 +183,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private void setCurrentLocationMarker() {
         if(lastLocation != null) {
             LatLng latLng = new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude());
+
             mMap.addMarker(new MarkerOptions()
                     .position(latLng)
                     .title("Current location")
@@ -224,5 +241,22 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         } else {
             return false;
         }
+    }
+
+    /**
+     * Using the events information, makes a bundle so the view event activity can be properly filled
+     *
+     * @param event the habit event that you want to view
+     * @return a bundle that can be sent off to the activity
+     */
+    private Bundle sendHabitInfoToView(HabitEvent event) {
+        Bundle bundle = new Bundle();
+        bundle.putString("Title", event.getHabitType());
+        String dateString = new SimpleDateFormat("yyyy_MM_dd", Locale.ENGLISH).format(event.getCompletionDate());
+        bundle.putString("Date", event.getCompletionDateString());
+        bundle.putString("Comment", event.getComment());
+        bundle.putString("File Path", event.getHabitType().replace(" ", "_") + "_" + dateString);
+
+        return bundle;
     }
 }

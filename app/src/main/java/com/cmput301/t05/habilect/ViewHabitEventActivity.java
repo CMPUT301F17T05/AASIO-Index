@@ -47,8 +47,6 @@ public class ViewHabitEventActivity extends AppCompatActivity {
 
         String fileName = getFilePathFromBundle();
         ContextWrapper cw = new ContextWrapper(this.getApplicationContext());
-        //File directory = cw.getDir("eventImages", Context.MODE_PRIVATE);
-        //File myPath = new File(directory, fileName);
         image.setImageBitmap(getEventImageFromBundle());
 
         backButton.setOnClickListener(new View.OnClickListener() {

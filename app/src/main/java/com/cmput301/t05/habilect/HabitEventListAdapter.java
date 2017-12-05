@@ -107,7 +107,7 @@ public class HabitEventListAdapter extends BaseAdapter implements ListAdapter, F
         }
         bundle.putString("Date", event.getCompletionDateString());
         bundle.putString("Comment", comment);
-        bundle.putString("File Path", event.getHabitType().replace(" ", "_") + "_" + dateString);
+        bundle.putString("Image", event.getEventPicture());
 
         return bundle;
     }

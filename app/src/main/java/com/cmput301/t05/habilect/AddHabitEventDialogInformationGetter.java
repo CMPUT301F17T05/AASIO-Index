@@ -71,21 +71,8 @@ public class AddHabitEventDialogInformationGetter {
         return null;
     }
 
-    /**
-     *
-     * @return the file name from the bundle
-     */
-    public String getFileName() {
-        String fileName = bundle.getString("fileName");
-        return fileName == null ? "" : fileName ;
-    }
-
-    /**
-     *
-     * @return the directory from the bundle
-     */
-    public String getDirectory() {
-        String directory = bundle.getString("directory");
-        return directory == null ? "" : directory ;
+    public String getImage() {
+        String image = bundle.getString("Image");
+        return image == null ? "" : image ;
     }
 }
