@@ -76,6 +76,7 @@ import static com.cmput301.t05.habilect.UserProfile.HABILECT_USER_INFO;
  */
 
 public class AddHabitEventDialog extends DialogFragment {
+    private UserAccount userAccount;
     private OnAddHabitEventListener onAddHabitEventListener;
     private Bundle resultBundle;
 
@@ -233,9 +234,8 @@ public class AddHabitEventDialog extends DialogFragment {
 
         context = getContext();
         mContext = getActivity().getApplicationContext();
-        final UserAccount user = new UserAccount();
-        user.load(mContext);
-        TreeGrowth profileTreeGrowth = user.getTreeGrowth();
+
+        userAccount = new UserAccount().load(this.getContext());
 
         // creates all of the necessary view controllers
         TextView eventTitle = view.findViewById(R.id.addHabitEventDialogTitle);
@@ -319,15 +319,15 @@ public class AddHabitEventDialog extends DialogFragment {
                 onAddHabitEventListener.OnAdded();
                 dialog.dismiss();
 
-                int nutrientLevel = user.getTreeGrowth().getNutrientLevel();
+                TreeGrowth userTreeGrowth = userAccount.getTreeGrowth();
+                int nutrientLevel = userAccount.getTreeGrowth().getNutrientLevel();
 
                 nutrientLevel += 1;
+                userTreeGrowth.setNutrientLevel(nutrientLevel);
+                userAccount.save(context);
+                userAccount.sync(context);
 
-                user.load(context);
-                user.getTreeGrowth().setNutrientLevel(nutrientLevel);
-                user.save(context);
-                user.sync(context);
-                Log.i("NUTRIENTLEVEL: ", "" + profileTreeGrowth.getNutrientLevel());
+                Log.i("NUTRIENTLEVEL: ", "" + userAccount.getTreeGrowth().getNutrientLevel());
 
             }
         });

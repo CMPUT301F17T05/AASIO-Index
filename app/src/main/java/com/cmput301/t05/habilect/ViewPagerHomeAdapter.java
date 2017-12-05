@@ -21,6 +21,7 @@ public class ViewPagerHomeAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0: return new HomePrimaryFragment();
+
             case 1: return new HomeStatisticsFragment();
         }
         return null;

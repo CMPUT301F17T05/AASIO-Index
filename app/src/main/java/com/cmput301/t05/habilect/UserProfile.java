@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.UUID;
 
 /**
+ * Class that tracks everything that has to do with the user profile.
+ *
  * @author ioltuszy
  * @author amwhitta
  */
@@ -101,6 +103,14 @@ public class UserProfile {
         this.treeGrowth.setPreviousNutrientLevelTierRankUp(Integer.parseInt(level));
     }
 
+    /**
+     * Checks locally if there are values set for the specified preferenceKey.
+     *
+     * @param context the current application context
+     * @param preferenceKey the key to search for locally
+     *
+     * @return the value if found or a default value
+     */
     static String Lookup(Context context, String preferenceKey) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(HABILECT_USER_INFO, Context.MODE_PRIVATE);
         String preference = sharedPreferences.getString(preferenceKey, null);
