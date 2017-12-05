@@ -184,27 +184,14 @@ public class HomePrimaryFragment extends Fragment {
         String comment = getter.getComment();
         Location location = getter.getLocation();
         Date date = getter.getDate();
-        String filePath = getter.getFileName();
-        String directory = getter.getDirectory();
-        Bitmap eventImage = getBitmapFromFilePath(directory, filePath);
+        String eventImage = getter.getImage();
+        byte[] decodedByteArray = Base64.decode(eventImage, Base64.URL_SAFE | Base64.NO_WRAP);
+        Bitmap image = BitmapFactory.decodeByteArray(decodedByteArray, 0, decodedByteArray.length);
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        eventImage.compress(Bitmap.CompressFormat.JPEG, 50, byteArrayOutputStream);
+        image.compress(Bitmap.CompressFormat.JPEG, 50, byteArrayOutputStream);
         byte[] byteArray = byteArrayOutputStream.toByteArray();
         String encodedString = Base64.encodeToString(byteArray, Base64.URL_SAFE | Base64.NO_WRAP);
         return new HabitEvent(comment, encodedString, location, date, title, userAccount.getId().toString());
-    }
-
-    /**
-     * Gets a bitmap from a file name and directory path
-     * @param directory the directory with the image file
-     * @param filePath the image file name
-     * @return a bitmap of the decoded file
-     */
-    private Bitmap getBitmapFromFilePath(String directory, String filePath) {
-        File image = new File(directory, filePath);
-        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-        Bitmap bitmap = BitmapFactory.decodeFile(image.getAbsolutePath(),bmOptions);
-        return bitmap;
     }
 
     /**

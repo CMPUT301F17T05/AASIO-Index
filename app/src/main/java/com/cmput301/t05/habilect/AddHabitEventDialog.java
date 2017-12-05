@@ -24,6 +24,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.TextureView;
@@ -45,6 +46,7 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -419,15 +421,13 @@ public class AddHabitEventDialog extends DialogFragment {
         } else {
             habitType = "";
         }
-        // makes the file name, in form habitTitle_yyyy_mm_dd
-        String fileName = habitType.replace(" ", "_") + "_" + date;
-
-        // saves the image in file, save the directory and file name
-        String directory = saveImageInFile(fileName);
-        bundle.putString("fileName", fileName);
-        bundle.putString("directory", directory);
-
+        eventBitmap = ((BitmapDrawable) eventImage.getDrawable()).getBitmap();
         // put all information in bundle
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        eventBitmap.compress(Bitmap.CompressFormat.JPEG, 50, byteArrayOutputStream);
+        byte[] byteArray = byteArrayOutputStream.toByteArray();
+        String encodedString = Base64.encodeToString(byteArray, Base64.URL_SAFE | Base64.NO_WRAP);
+        bundle.putString("Image", encodedString);
         bundle.putString("comment", comment);
         bundle.putString("date", date);
         bundle.putString("latitude", latitude);
@@ -435,29 +435,6 @@ public class AddHabitEventDialog extends DialogFragment {
         bundle.putString("habitType", habitType);
 
         return bundle;
-    }
-
-    // https://stackoverflow.com/questions/17674634/saving-and-reading-bitmaps-images-from-internal-memory-in-android
-    private String saveImageInFile(String fileName) {
-        eventBitmap = ((BitmapDrawable) eventImage.getDrawable()).getBitmap();
-        ContextWrapper cw = new ContextWrapper(context.getApplicationContext());
-        File directory = cw.getDir("eventImages", Context.MODE_PRIVATE);
-        File myPath = new File(directory, fileName);
-
-        FileOutputStream fos = null;
-        try {
-            fos = new FileOutputStream(myPath);
-            eventBitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                fos.close();
-            } catch (IOException e) {
-                e.printStackTrace();// TODO: Don't want to crash, just don't have image
-            }
-        }
-        return directory.toString();
     }
 
     /**

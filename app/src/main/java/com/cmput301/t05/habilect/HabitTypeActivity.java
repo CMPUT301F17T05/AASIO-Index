@@ -491,27 +491,16 @@ public class HabitTypeActivity extends AppCompatActivity {
         String comment = getter.getComment();
         Location location = getter.getLocation();
         Date date = getter.getDate();
-        String filePath = getter.getFileName();
-        String directory = getter.getDirectory();
-        Bitmap eventImage = getBitmapFromFilePath(directory, filePath);
+        String eventImage = getter.getImage();
+        byte[] decodedByteArray = Base64.decode(eventImage, Base64.URL_SAFE | Base64.NO_WRAP);
+        Bitmap image = BitmapFactory.decodeByteArray(decodedByteArray, 0, decodedByteArray.length);
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        eventImage.compress(Bitmap.CompressFormat.JPEG, 50, byteArrayOutputStream);
+        image.compress(Bitmap.CompressFormat.JPEG, 50, byteArrayOutputStream);
         byte[] byteArray = byteArrayOutputStream.toByteArray();
         String encodedString = Base64.encodeToString(byteArray, Base64.URL_SAFE | Base64.NO_WRAP);
         return new HabitEvent(comment, encodedString, location, date, title, userAccount.getId().toString());
     }
 
-    /**
-     * Given a supplied filePath and directory, retrieves the stored bitmap
-     * @param directory the directory where the bitmap is saved
-     * @param filePath the file name of the image
-     * @return a bitmap of the retrieved image
-     */
-    private Bitmap getBitmapFromFilePath(String directory, String filePath) {
-        File image = new File(directory, filePath);
-        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-        return BitmapFactory.decodeFile(image.getAbsolutePath(),bmOptions);
-    }
 
     /**
      * Checks if this particular habit type has been completed today
