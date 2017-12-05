@@ -29,6 +29,7 @@
             android:layout_marginRight="232dp"
             android:background="@android:color/transparent"
             android:text="Show Only 5km"
+            android:textColor="@color/colorPrimary"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintRight_toRightOf="parent" />
 
@@ -40,6 +41,7 @@
             android:layout_marginRight="124dp"
             android:background="@android:color/transparent"
             android:text="Reset Map"
+            android:textColor="@color/colorPrimary"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintRight_toRightOf="parent" />
 
@@ -51,6 +53,7 @@
             android:layout_marginBottom="16dp"
             android:layout_marginRight="16dp"
             android:text="Back"
+            android:textColor="@color/colorPrimary"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintRight_toRightOf="parent" />
 
