@@ -17,6 +17,7 @@ public class ViewHabitDialog extends DialogFragment {
     FragmentManager fragmentManager;
 
     private OnViewHabitListener onViewHabitListener;
+
     public void setOnViewHabitListener(OnViewHabitListener onViewHabitListener) {
         this.onViewHabitListener = onViewHabitListener;
     }
@@ -65,37 +66,37 @@ public class ViewHabitDialog extends DialogFragment {
             }
         });
 
-        ((Button)dialog.findViewById(R.id.delete_button))
-            .setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    onViewHabitListener.OnDeleted();
-                    dialog.dismiss();
-                }
-            });
-        ((Button)dialog.findViewById(R.id.save_button))
-            .setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    onViewHabitListener.OnSaved();
-                    dialog.dismiss();
-                }
-            });
-        ((Button)dialog.findViewById(R.id.follow_button))
-            .setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    onViewHabitListener.OnFollowed();
-                    dialog.dismiss();
-                }
-            });
-        ((Button)dialog.findViewById(R.id.cancel_button)).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    onViewHabitListener.OnCancelled();
-                    dialog.dismiss();
-                }
-            });
+        ((Button) dialog.findViewById(R.id.delete_button))
+                .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        onViewHabitListener.OnDeleted();
+                        dialog.dismiss();
+                    }
+                });
+        ((Button) dialog.findViewById(R.id.save_button))
+                .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        onViewHabitListener.OnSaved();
+                        dialog.dismiss();
+                    }
+                });
+        ((Button) dialog.findViewById(R.id.follow_button))
+                .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        onViewHabitListener.OnFollowed();
+                        dialog.dismiss();
+                    }
+                });
+        ((Button) dialog.findViewById(R.id.cancel_button)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onViewHabitListener.OnCancelled();
+                dialog.dismiss();
+            }
+        });
 
         return dialog;
     }

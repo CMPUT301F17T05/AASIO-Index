@@ -48,7 +48,7 @@ public class ManageRequestsDialog extends DialogFragment {
         userAccount.load(context);
 
         List<UUID> pendingRequest = userAccount.getPendingRequests();
-        if(pendingRequest == null) {
+        if (pendingRequest == null) {
             Toast.makeText(context, "No pending reuqest!", Toast.LENGTH_SHORT);
         } else {
             ManageRequestAdapter adapter = new ManageRequestAdapter(dialog, pendingRequest, context);

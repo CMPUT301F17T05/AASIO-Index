@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:paddingBottom="24dp">
 
     <EditText
@@ -22,9 +22,9 @@
         android:id="@+id/enterHabitTypeReason"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginRight="24dp"
         android:layout_alignStart="@+id/enterHabitTypeTitle"
         android:layout_below="@+id/enterHabitTypeTitle"
+        android:layout_marginRight="24dp"
         android:ems="10"
         android:hint="@string/add_habit_reason_hint"
         android:inputType="textPersonName" />

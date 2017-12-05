@@ -18,8 +18,10 @@ public class ViewPagerFriendAdapter extends FragmentPagerAdapter {
     @Override
     public Fragment getItem(int position) {
         switch (position) {
-            case 0: return new FriendHabitEventsFragment();
-            case 1: return new FriendMapFragment();
+            case 0:
+                return new FriendHabitEventsFragment();
+            case 1:
+                return new FriendMapFragment();
         }
         return null;
     }

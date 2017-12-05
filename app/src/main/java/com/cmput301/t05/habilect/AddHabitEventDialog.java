@@ -69,34 +69,25 @@ import java.util.Locale;
  */
 
 public class AddHabitEventDialog extends DialogFragment {
-    private UserAccount userAccount;
-    private OnAddHabitEventListener onAddHabitEventListener;
-    private Bundle resultBundle;
-
-    // layout views
-    private TextureView cameraTextureView;
-    private ImageButton eventImage;
-    private Bitmap eventBitmap;
+    private static final String TAG = "Add event dialog";
+    private static Context mContext;
+    protected Location lastLocation;
     Context context;
     TextView commentText;
     TextView commentWarning;
     Button createButton;
     Spinner spinner;
     CheckBox checkBox;
-
-    private static final String TAG = "Add event dialog";
-    private static Context mContext;
-
-    private boolean cameraPermission;
-    private boolean locationPermission;
-
     Camera camera;
     boolean addEventImageViewDebounce = false;
-
-    // location controller
-    private FusedLocationProviderClient fusedLocationClient;
-    protected Location lastLocation;
-
+    private UserAccount userAccount;
+    private OnAddHabitEventListener onAddHabitEventListener;
+    private Bundle resultBundle;
+    // layout views
+    private TextureView cameraTextureView;
+    private ImageButton eventImage;
+    private Bitmap eventBitmap;
+    private boolean cameraPermission;
     //region camera controller
     TextureView.SurfaceTextureListener cameraPreviewSurfaceTextureListener = new TextureView.SurfaceTextureListener() {
         @Override
@@ -122,7 +113,6 @@ public class AddHabitEventDialog extends DialogFragment {
 
         }
     };
-
     CameraCaptureSession.CaptureCallback cameraCaptureSessionCallback = new CameraCaptureSession.CaptureCallback() {
         @Override
         public void onCaptureCompleted(CameraCaptureSession session, @NonNull CaptureRequest request, TotalCaptureResult result) {
@@ -155,6 +145,28 @@ public class AddHabitEventDialog extends DialogFragment {
 
         }
     }; //endregion
+    private boolean locationPermission;
+    // location controller
+    private FusedLocationProviderClient fusedLocationClient;
+    /**
+     * This TextWatcher implementation calls method to check required fields whenever a
+     * required field has its text edited, used to disable create button until all required
+     * fields are filled
+     */
+    private TextWatcher commentTextWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        }
+
+        @Override
+        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            checkCommentLength();
+        }
+
+        @Override
+        public void afterTextChanged(Editable editable) {
+        }
+    };
 
     /**
      * @param onAddHabitEventListener A HabitEvent Listener which is used to detect when the
@@ -163,6 +175,11 @@ public class AddHabitEventDialog extends DialogFragment {
     public void setOnAddHabitEventListener(OnAddHabitEventListener onAddHabitEventListener) {
         this.onAddHabitEventListener = onAddHabitEventListener;
     }
+
+    /* idea to disable button until required editText fields filled
+    taken from
+    https://stackoverflow.com/questions/20682865/disable-button-when-edit-text-fields-empty
+    */
 
     @Override
     public void onStart() {
@@ -178,28 +195,6 @@ public class AddHabitEventDialog extends DialogFragment {
             getLastLocation();
         }
     }
-
-    /* idea to disable button until required editText fields filled
-    taken from
-    https://stackoverflow.com/questions/20682865/disable-button-when-edit-text-fields-empty
-    */
-    /**
-     * This TextWatcher implementation calls method to check required fields whenever a
-     * required field has its text edited, used to disable create button until all required
-     * fields are filled
-     */
-    private TextWatcher commentTextWatcher = new TextWatcher() {
-        @Override
-        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-
-        @Override
-        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            checkCommentLength();
-        }
-
-        @Override
-        public void afterTextChanged(Editable editable) {}
-    };
 
     /**
      * Checks if the inputted comment confers to the correct size for HabitEvent
@@ -288,7 +283,7 @@ public class AddHabitEventDialog extends DialogFragment {
         // gets the passed information from calling activity
         String title = getTitleFromBundle();
         ArrayList<String> habits = getHabitTypesFromBundle();
-        if(habits.size() <= 1) {
+        if (habits.size() <= 1) {
             spinner.setFocusable(false);
             spinner.setVisibility(View.INVISIBLE);
             spinner.setClickable(false);

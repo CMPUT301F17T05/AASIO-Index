@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:background="@color/white"
     android:layout_width="240dp"
     android:layout_height="match_parent"
+    android:layout_gravity="start"
+    android:background="@color/white"
     android:choiceMode="singleChoice"
     android:divider="@drawable/divider"
     android:dividerHeight="1dp"
-    android:layout_gravity="start"
     android:orientation="vertical"
     android:showDividers="middle|end">
 
@@ -59,7 +59,7 @@
         android:paddingEnd="32dp"
         android:paddingStart="16dp"
         android:text="S o c i a l"
-        android:textColor="@color/colorPrimary"/>
+        android:textColor="@color/colorPrimary" />
 
     <Button
         android:id="@+id/navigateProfile"
@@ -72,7 +72,7 @@
         android:paddingEnd="32dp"
         android:paddingStart="16dp"
         android:text="P r o f i l e"
-        android:textColor="@color/colorPrimary"/>
+        android:textColor="@color/colorPrimary" />
 
     <Button
         android:id="@+id/navigateHistory"
@@ -85,7 +85,7 @@
         android:paddingEnd="32dp"
         android:paddingStart="16dp"
         android:text="H i s t o r y"
-        android:theme="@style/AppTheme"
-        android:textColor="@color/colorPrimary"/>
+        android:textColor="@color/colorPrimary"
+        android:theme="@style/AppTheme" />
 
-    </LinearLayout>
+</LinearLayout>

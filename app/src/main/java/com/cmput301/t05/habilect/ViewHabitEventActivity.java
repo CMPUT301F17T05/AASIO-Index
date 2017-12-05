@@ -14,11 +14,12 @@ import android.widget.TextView;
 /**
  * This activity launches when a user wishes to see more information about a particular
  * habit event. This activity must be passed information about the event in a bundle. The tags are as follow
- *
+ * <p>
  * Title - the habit type title of the event
  * Date - the date of completion of the event
  * Comment - the user inputted comment to the event
  * File Path - the location where the event image is stored
+ *
  * @author rarog
  */
 public class ViewHabitEventActivity extends AppCompatActivity {
@@ -29,7 +30,7 @@ public class ViewHabitEventActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_habit_event);
 
-        bundle =  getIntent().getExtras();
+        bundle = getIntent().getExtras();
 
         TextView title = findViewById(R.id.viewHabitEventTitle);
         ImageView image = findViewById(R.id.viewHabitEventImageView);
@@ -54,71 +55,61 @@ public class ViewHabitEventActivity extends AppCompatActivity {
     }
 
     /**
-     *
      * @return a String representing the habit event title if there is one
      */
     private String getTitleFromBundle() {
         try {
             return bundle.getString("Title");
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return "";
         }
     }
 
     /**
-     *
      * @return a String representing the habit date title if there is one
      */
     private String getDateFromBundle() {
         try {
             return bundle.getString("Date");
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return "";
         }
     }
 
     /**
-     *
      * @return a String representing the habit comment title if there is one
      */
     private String getCommentFromBundle() {
         try {
             return bundle.getString("Comment");
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return "";
         }
     }
 
     /**
-     *
      * @return a Bitmap representing the habit event image
      */
     private Bitmap getEventImageFromBundle() {
         try {
             String encodedImage = bundle.getString("Image");
-            if (encodedImage!=null) {
+            if (encodedImage != null) {
                 byte[] decodedByteArray = Base64.decode(encodedImage, Base64.URL_SAFE | Base64.NO_WRAP);
                 return BitmapFactory.decodeByteArray(decodedByteArray, 0, decodedByteArray.length);
             }
             return null;
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return null;
         }
     }
 
     /**
-     *
      * @return a String representing the habit event image file path
      */
     private String getFilePathFromBundle() {
         try {
             return bundle.getString("File Path");
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return "";
         }
     }

@@ -12,6 +12,7 @@ import java.util.ArrayList;
 
 /**
  * This list adapter allows habit types to be displayed in a list view
+ *
  * @author rarog
  */
 

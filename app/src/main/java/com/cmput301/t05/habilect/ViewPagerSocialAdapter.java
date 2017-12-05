@@ -18,9 +18,12 @@ public class ViewPagerSocialAdapter extends FragmentPagerAdapter {
     @Override
     public Fragment getItem(int position) {
         switch (position) {
-            case 0: return new SocialFeedFragment();
-            case 1: return new SocialFollowingFragment();
-            case 2: return new SocialFollowerFragment();
+            case 0:
+                return new SocialFeedFragment();
+            case 1:
+                return new SocialFollowingFragment();
+            case 2:
+                return new SocialFollowerFragment();
         }
         return null;
     }

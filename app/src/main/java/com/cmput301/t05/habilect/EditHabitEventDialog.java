@@ -55,50 +55,28 @@ import java.util.Date;
  * the relevant HabitEvent information to the dialog in a bundle. That is the comment, date,
  * location, latitude, longitude, habitType and file name of the image. When the user presses
  * create the following tags are passed back to the calling Activity, they are all Strings.
- *
+ * <p>
  * comment - the comment the user left with the event. Always less than 20 characters
  * date -  the date the event was created in form yyyy_mm_dd
  * latitude - String of the latitude of the user location, if enable otherwise null
  * longitude - String of the longitude of the user location, if enable otherwise null
  * filePath - the name of the file where the image bitmap is stored
  * habitType - the associated HabitType title of the event
+ *
  * @author rarog
  */
 // TODO: need to pass the date to this dialog, and not make a new date when finished editing
 public class EditHabitEventDialog extends DialogFragment {
-    private OnEditHabitEventListener onEditHabitEventListener;
-    private Bundle resultBundle;
-
-    private String dateString;
-    private Date eventDate;
-
-    // layout views
-    private TextureView cameraTextureView;
-    private ImageButton eventImage;
-    private Bitmap eventBitmap;
+    private static final String TAG = "Edit event dialog";
+    protected Location lastLocation;
     Context context;
     EditText commentText;
     TextView commentWarning;
     Button createButton;
     Spinner spinner;
     CheckBox checkBox;
-
-    private static final String TAG = "Edit event dialog";
-
-    private boolean cameraPermission;
-    private boolean locationPermission;
-
     Camera camera;
     boolean editEventImageViewDebounce = false;
-
-    // location controller
-    private FusedLocationProviderClient fusedLocationClient;
-    protected Location lastLocation;
-
-    public void setOnEditHabitEventListener(OnEditHabitEventListener onEditHabitEventListener) {
-        this.onEditHabitEventListener = onEditHabitEventListener;
-    }
-
     //region camera controller
     TextureView.SurfaceTextureListener cameraPreviewSurfaceTextureListener = new TextureView.SurfaceTextureListener() {
         @Override
@@ -122,7 +100,12 @@ public class EditHabitEventDialog extends DialogFragment {
 
         }
     };
-
+    private OnEditHabitEventListener onEditHabitEventListener;
+    private Bundle resultBundle;
+    private String dateString;
+    private Date eventDate;
+    // layout views
+    private TextureView cameraTextureView;
     CameraCaptureSession.CaptureCallback cameraCaptureSessionCallback = new CameraCaptureSession.CaptureCallback() {
         @Override
         public void onCaptureCompleted(CameraCaptureSession session, @NonNull CaptureRequest request, TotalCaptureResult result) {
@@ -136,12 +119,10 @@ public class EditHabitEventDialog extends DialogFragment {
                         Handler responseHandler = new Handler(Looper.getMainLooper()) {
                             @Override
                             public void handleMessage(Message params) {
-                                if (params.obj==null)
-                                {
+                                if (params.obj == null) {
                                     editEventImageViewDebounce = false;
-                                }
-                                else {
-                                    cameraTextureView.setAlpha(1f-0.8f*MathUtility.EasingOut(System.currentTimeMillis() - ((long[])params.obj)[0], ((long[])params.obj)[1], 3));
+                                } else {
+                                    cameraTextureView.setAlpha(1f - 0.8f * MathUtility.EasingOut(System.currentTimeMillis() - ((long[]) params.obj)[0], ((long[]) params.obj)[1], 3));
                                 }
                             }
                         };
@@ -149,32 +130,18 @@ public class EditHabitEventDialog extends DialogFragment {
                     }
             }
         }
+
         @Override
         public void onCaptureFailed(CameraCaptureSession session, @NonNull CaptureRequest request, CaptureFailure failure) {
 
         }
     }; //endregion
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        Dialog dialog = getDialog();
-        dialog.getWindow().setLayout(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-        );
-
-        cameraPermission = checkCameraPermissions();
-        locationPermission = checkLocationPermissions();
-        if(locationPermission) {
-            getLastLocation();
-        }
-    }
-
-    /* idea to disable button until required editText fields filled
-    taken from
-    https://stackoverflow.com/questions/20682865/disable-button-when-edit-text-fields-empty
-    */
+    private ImageButton eventImage;
+    private Bitmap eventBitmap;
+    private boolean cameraPermission;
+    private boolean locationPermission;
+    // location controller
+    private FusedLocationProviderClient fusedLocationClient;
     /**
      * This TextWatcher implementation calls method to check required fields whenever a
      * required field has its text edited, used to disable create button until all required
@@ -182,7 +149,8 @@ public class EditHabitEventDialog extends DialogFragment {
      */
     private TextWatcher commentTextWatcher = new TextWatcher() {
         @Override
-        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        }
 
         @Override
         public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -195,17 +163,41 @@ public class EditHabitEventDialog extends DialogFragment {
         }
     };
 
+    public void setOnEditHabitEventListener(OnEditHabitEventListener onEditHabitEventListener) {
+        this.onEditHabitEventListener = onEditHabitEventListener;
+    }
+
+    /* idea to disable button until required editText fields filled
+    taken from
+    https://stackoverflow.com/questions/20682865/disable-button-when-edit-text-fields-empty
+    */
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Dialog dialog = getDialog();
+        dialog.getWindow().setLayout(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+        );
+
+        cameraPermission = checkCameraPermissions();
+        locationPermission = checkLocationPermissions();
+        if (locationPermission) {
+            getLastLocation();
+        }
+    }
+
     /**
      * Checks if the inputted comment confers to the correct size for HabitEvent
      */
     private void checkCommentLength() {
         String commentField = commentText.getText().toString();
-        if(commentField.length() <= HabitEvent.MAX_COMMENT_LENGTH) {
+        if (commentField.length() <= HabitEvent.MAX_COMMENT_LENGTH) {
             createButton.setEnabled(true);
             commentWarning.setVisibility(View.INVISIBLE);
 
-        }
-        else {
+        } else {
             createButton.setEnabled(false);
             commentWarning.setVisibility(View.VISIBLE);
         }
@@ -326,14 +318,13 @@ public class EditHabitEventDialog extends DialogFragment {
 
     @Override
     public void onPause() {
-        if(cameraPermission) {
+        if (cameraPermission) {
             camera.close();
         }
         super.onPause();
     }
 
     /**
-     *
      * @return returns a bundle with all of the information that the user specified
      * in creating the event
      */
@@ -342,12 +333,11 @@ public class EditHabitEventDialog extends DialogFragment {
     }
 
     /**
-     *
      * @return Creates a resultBundle, which holds all of the information the user inputted
      * in creating the event
      */
     private Bundle createHabitEventBundle() {
-        Bundle bundle= new Bundle();
+        Bundle bundle = new Bundle();
         String latitude;
         String longitude;
         String habitType;
@@ -367,7 +357,7 @@ public class EditHabitEventDialog extends DialogFragment {
         date = dateString;
 
         // gets the selected title
-        if(spinner.getSelectedItem() != null) {
+        if (spinner.getSelectedItem() != null) {
             habitType = spinner.getSelectedItem().toString();
         } else {
             habitType = "";
@@ -389,32 +379,28 @@ public class EditHabitEventDialog extends DialogFragment {
     }
 
     /**
-     *
      * @return a String representing the habit event title if there is one
      */
     private String getTitleFromBundle() {
         try {
             return getArguments().getString("Title");
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return "";
         }
     }
 
     /**
-     *
      * @return a String representing the comment if there is one
      */
     private String getCommentFromBundle() {
         try {
             return getArguments().getString("Comment");
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return "";
         }
     }
+
     /**
-     *
      * @return an ArrayList with all of the passed habit types. If calling from main activity,
      * will be list of all of the users created habit types
      */
@@ -428,20 +414,17 @@ public class EditHabitEventDialog extends DialogFragment {
     }
 
     /**
-     *
      * @return a String representing the date if there is one
      */
     private String getDateFromBundle() {
         try {
             return getArguments().getString("Date");
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return "";
         }
     }
 
     /**
-     *
      * @return a Bitmap representing the event image if there is one
      */
     private Bitmap getEventBitmapFromBundle() {
@@ -450,8 +433,7 @@ public class EditHabitEventDialog extends DialogFragment {
             byte[] decodedByteArray = Base64.decode(imageString, Base64.URL_SAFE | Base64.NO_WRAP);
             Bitmap image = BitmapFactory.decodeByteArray(decodedByteArray, 0, decodedByteArray.length);
             return image;
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return null;
         }
     }
@@ -475,7 +457,6 @@ public class EditHabitEventDialog extends DialogFragment {
     }
 
     /**
-     *
      * @return a boolean representing if we have permission to access user location
      */
     private boolean checkLocationPermissions() {
@@ -485,7 +466,6 @@ public class EditHabitEventDialog extends DialogFragment {
     }
 
     /**
-     *
      * @return a boolean representing if we have permission to access the camera
      */
     private boolean checkCameraPermissions() {

@@ -28,15 +28,15 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
-import java.util.UUID;
 
 /**
  * @author alexisseniuk
- * MapsActivity for Visual Representation of Habits
- * Currently something wrong with API key.....
+ *         MapsActivity for Visual Representation of Habits
+ *         Currently something wrong with API key.....
  */
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
+    protected Location lastLocation;
     private UserAccount userAccount;
     private Context context;
     private GoogleMap mMap;
@@ -45,10 +45,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Button show5kmButton;
     private Button resetButton;
     private Button backButton;
-
     private FusedLocationProviderClient fusedLocationClient;
-    protected Location lastLocation;
-
     private int ZOOM_LEVEL = 15;
 
     @Override
@@ -63,7 +60,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         allHabitEvents = getEventsFromBundle();
         originalEventList = new ArrayList<>(allHabitEvents);
 
-        if(allHabitEvents.size() < 1) {
+        if (allHabitEvents.size() < 1) {
             ZOOM_LEVEL = 1; // if we have nothing to show, display the whole world
         }
 
@@ -140,8 +137,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     private HabitEvent findHabitEvent(String title) {
-        for(HabitEvent event : allHabitEvents) {
-            if(event.getHabitType().equals(title)) {
+        for (HabitEvent event : allHabitEvents) {
+            if (event.getHabitType().equals(title)) {
                 return event;
             }
         }
@@ -159,11 +156,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void setUserMarkers(List<HabitEvent> eventList) {
         //add all User events Markers (azure)
         LatLng latLng = new LatLng(0, 0);
-        for (HabitEvent e: eventList) {
+        for (HabitEvent e : eventList) {
             //final Lat Lng position = new LatLng(habit_type.getHabitEvents().get)
             Location location = e.getLocation();
             //LatLng loc = e.getLocation();
-            if (location != null){
+            if (location != null) {
                 latLng = new LatLng(location.getLatitude(), location.getLongitude());
                 mMap.addMarker(new MarkerOptions()
                         .position(latLng)
@@ -171,13 +168,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
             }
         }
-        if(latLng.latitude != 0 && latLng.longitude != 0) {
+        if (latLng.latitude != 0 && latLng.longitude != 0) {
             goToLocationZoom(latLng.latitude, latLng.longitude);
         }
     }
 
     private void setCurrentLocationMarker() {
-        if(lastLocation != null) {
+        if (lastLocation != null) {
             LatLng latLng = new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude());
 
             mMap.addMarker(new MarkerOptions()
@@ -189,20 +186,21 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     /**
      * From a list of events, allows user to filter by showing event only 5km away or less
+     *
      * @param eventList the list of events you want to filer
      * @return returns the filtered list
      */
     private List<HabitEvent> filterBy5km(List<HabitEvent> eventList) {
         Iterator<HabitEvent> iterator = eventList.iterator();
         getLastLocation();
-        while(iterator.hasNext()) {
+        while (iterator.hasNext()) {
             HabitEvent event = iterator.next();
-            if(eventNear(event)) {
+            if (eventNear(event)) {
                 continue;
             }
             iterator.remove();
         }
-        return  eventList;
+        return eventList;
     }
 
     @SuppressWarnings("MissingPermission")
@@ -223,25 +221,26 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     /**
      * Calculates if a given event is 5km or less from your current location
+     *
      * @param event the event you want to check
      * @return boolean representing if it is nearby
      */
-    private boolean eventNear(HabitEvent event){
+    private boolean eventNear(HabitEvent event) {
         // Adapted from https://stackoverflow.com/questions/3694380/calculating-distance-between-two-points-using-latitude-longitude-what-am-i-doi
-        if (lastLocation == null || event.getLocation() == null){
+        if (lastLocation == null || event.getLocation() == null) {
             return false;
         }
 
         double earthRadius = 6371000; //meters
-        double dLat = Math.toRadians(event.getLocation().getLatitude()-lastLocation.getLatitude());
-        double dLng = Math.toRadians(event.getLocation().getLongitude()-lastLocation.getLongitude());
-        double a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+        double dLat = Math.toRadians(event.getLocation().getLatitude() - lastLocation.getLatitude());
+        double dLng = Math.toRadians(event.getLocation().getLongitude() - lastLocation.getLongitude());
+        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
                 Math.cos(Math.toRadians(lastLocation.getLatitude())) * Math.cos(Math.toRadians(event.getLocation().getLatitude())) *
-                        Math.sin(dLng/2) * Math.sin(dLng/2);
-        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+                        Math.sin(dLng / 2) * Math.sin(dLng / 2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         float dist = (float) (earthRadius * c);
 
-        if (dist <= 5000){
+        if (dist <= 5000) {
             return true;
         } else {
             return false;

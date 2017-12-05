@@ -143,6 +143,7 @@ public class HabitEventTest extends ActivityInstrumentationTestCase2 {
             Log.e("ERROR", "Completion date cannot be null");
         }
     }
+
     /*
     read image files that are in the src/androidTest/assets directory
      */
@@ -158,6 +159,7 @@ public class HabitEventTest extends ActivityInstrumentationTestCase2 {
             return null;
         }
     }
+
     /*
     generate a valid test location (the University of Alberta)
      */
@@ -168,11 +170,11 @@ public class HabitEventTest extends ActivityInstrumentationTestCase2 {
         return uniLocation;
     }
 
-    public String bitMapToString(Bitmap bitmap){
-        ByteArrayOutputStream baos=new  ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG,100, baos);
-        byte [] b=baos.toByteArray();
-        String temp= Base64.encodeToString(b, Base64.DEFAULT);
+    public String bitMapToString(Bitmap bitmap) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+        byte[] b = baos.toByteArray();
+        String temp = Base64.encodeToString(b, Base64.DEFAULT);
         return temp;
     }
 }

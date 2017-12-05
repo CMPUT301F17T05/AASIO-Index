@@ -22,19 +22,19 @@ import java.util.List;
 /**
  * @author ioltuszy
  * @author rarog
- * The filter fragment displays all of the stored habit events and allows the user to filter
- * by various parameters
+ *         The filter fragment displays all of the stored habit events and allows the user to filter
+ *         by various parameters
  */
 
 public class HistoryFilterFragment extends Fragment {
-    private UserAccount userAccount;
-    private Context context;
     FragmentManager fragmentManager;
     List<HabitType> allHabitTypes;
     ArrayList<HabitEvent> allHabitEvents;
     SearchView searchView;
     Spinner filterSpinner;
     ImageButton mapButton;
+    private UserAccount userAccount;
+    private Context context;
 
     @Override
     public View onCreateView(LayoutInflater inflater,
@@ -125,7 +125,7 @@ public class HistoryFilterFragment extends Fragment {
      */
     private void loadAllHabitEvents() {
         Iterator<HabitType> iterator = allHabitTypes.iterator();
-        while(iterator.hasNext()) {
+        while (iterator.hasNext()) {
             HabitType habit = iterator.next();
             ArrayList<HabitEvent> eventList = habit.getHabitEvents();
             allHabitEvents.addAll(eventList);

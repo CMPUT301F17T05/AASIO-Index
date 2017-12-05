@@ -18,7 +18,8 @@ public class ViewPagerHistoryAdapter extends FragmentPagerAdapter {
     @Override
     public Fragment getItem(int position) {
         switch (position) {
-            case 0: return new HistoryFilterFragment();
+            case 0:
+                return new HistoryFilterFragment();
         }
         return null;
     }

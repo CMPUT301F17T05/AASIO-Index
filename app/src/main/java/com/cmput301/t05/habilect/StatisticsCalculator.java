@@ -10,9 +10,8 @@ import java.util.List;
 
 /**
  * @author amwhitta
- *
- * Calculates different statistics for Habit Types based on their Habit Events
- *
+ *         <p>
+ *         Calculates different statistics for Habit Types based on their Habit Events
  */
 
 public class StatisticsCalculator {
@@ -28,8 +27,8 @@ public class StatisticsCalculator {
      * since the start date to determine how many times the user could have created a
      * habit event if they were following their plan perfectly
      *
-     * @return      an int specifying the number of total opportunities
-     *              to create a habit event
+     * @return an int specifying the number of total opportunities
+     * to create a habit event
      */
     private int totalEventOpportunities() {
         int count = 0;
@@ -39,25 +38,39 @@ public class StatisticsCalculator {
         while (start.before(today)) {
             switch (start.get(Calendar.DAY_OF_WEEK)) {
                 case Calendar.MONDAY:
-                    if (habit_type.getWeeklyPlan()[0]) { ++count; }
+                    if (habit_type.getWeeklyPlan()[0]) {
+                        ++count;
+                    }
                     break;
                 case Calendar.TUESDAY:
-                    if (habit_type.getWeeklyPlan()[1]) { ++count; }
+                    if (habit_type.getWeeklyPlan()[1]) {
+                        ++count;
+                    }
                     break;
                 case Calendar.WEDNESDAY:
-                    if (habit_type.getWeeklyPlan()[2]) { ++count; }
+                    if (habit_type.getWeeklyPlan()[2]) {
+                        ++count;
+                    }
                     break;
                 case Calendar.THURSDAY:
-                    if (habit_type.getWeeklyPlan()[3]) { ++count; }
+                    if (habit_type.getWeeklyPlan()[3]) {
+                        ++count;
+                    }
                     break;
                 case Calendar.FRIDAY:
-                    if (habit_type.getWeeklyPlan()[4]) { ++count; }
+                    if (habit_type.getWeeklyPlan()[4]) {
+                        ++count;
+                    }
                     break;
                 case Calendar.SATURDAY:
-                    if (habit_type.getWeeklyPlan()[5]) { ++count; }
+                    if (habit_type.getWeeklyPlan()[5]) {
+                        ++count;
+                    }
                     break;
                 case Calendar.SUNDAY:
-                    if (habit_type.getWeeklyPlan()[6]) { ++count; }
+                    if (habit_type.getWeeklyPlan()[6]) {
+                        ++count;
+                    }
                     break;
             }
             start.add(Calendar.DATE, 1);
@@ -101,7 +114,7 @@ public class StatisticsCalculator {
             Log.d("Debugging", start + " - " + end);
 
             // add up the habit events that were completed in that week
-            for (HabitEvent e: events) {
+            for (HabitEvent e : events) {
                 Date completion_date = e.getCompletionDate();
                 Log.d("Debugging", "completion: " + completion_date.toString());
                 if (completion_date.after(start) && completion_date.before(end)) {

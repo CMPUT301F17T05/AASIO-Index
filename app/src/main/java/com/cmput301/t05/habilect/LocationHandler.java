@@ -22,10 +22,9 @@ public class LocationHandler implements ActivityCompat.OnRequestPermissionsResul
     private static final int REQUEST_FINE_LOCATION = 1;
     private static final String TAG = "Location Handler";
     private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 34;
-
-    private FusedLocationProviderClient mFusedLocationClient;
     Location location;
     Context context;
+    private FusedLocationProviderClient mFusedLocationClient;
 
     LocationHandler(Context context) {
         this.context = context;

@@ -44,7 +44,7 @@
         android:layout_alignStart="@+id/viewFeedEventCommentText"
         android:layout_below="@+id/viewFeedEventCommentText"
         android:layout_marginTop="14dp"
-        android:text="Completion Date"/>
+        android:text="Completion Date" />
 
     <TextView
         android:id="@+id/viewFeedEventComment"

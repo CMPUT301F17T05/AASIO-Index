@@ -43,11 +43,22 @@ import java.util.Locale;
 
 /**
  * This activity displays the information, statistics and habit events for a specific habit type
+ *
  * @author amwhitta
  * @author rarog
  */
 public class HabitTypeActivity extends AppCompatActivity {
 
+    static TextView habitTitle;
+    static TextView habitReason;
+    static TextView habitStartDate;
+    static TextView habitWeeklyPlan;
+    private static HabitType habit_type;      // The habit type that has been clicked on for viewing
+    private static HabitEventEditListAdapter eventListAdapter;
+    private static ArrayList<HabitEvent> eList;
+    private static Context context;
+    private static Context mContext;
+    FragmentManager fragmentManager;
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
      * fragments for each of the sections. We use a
@@ -57,29 +68,18 @@ public class HabitTypeActivity extends AppCompatActivity {
      * {@link android.support.v4.app.FragmentStatePagerAdapter}.
      */
     private SectionsPagerAdapter mSectionsPagerAdapter;
-
     /**
      * The {@link ViewPager} that will host the section contents.
      */
     private ViewPager mViewPager;
-
-    private static HabitType habit_type;      // The habit type that has been clicked on for viewing
-    private static HabitEventEditListAdapter eventListAdapter;
-    FragmentManager fragmentManager;
-    private static ArrayList<HabitEvent> eList;
     private List<HabitType> allHabits;
-    private static Context context;
-    private static Context mContext;
     private UserAccount userAccount;
-    static TextView habitTitle;
-    static TextView habitReason;
-    static TextView habitStartDate;
-    static TextView habitWeeklyPlan;
 
     /**
      * sets up the activity and grabs the habit type that was passed in through a different
      * activity
-     * @param savedInstanceState        non-persistent, dynamic data saved in the state of the app
+     *
+     * @param savedInstanceState non-persistent, dynamic data saved in the state of the app
      * @see ViewHabitTypesActivity
      */
     @Override
@@ -119,7 +119,7 @@ public class HabitTypeActivity extends AppCompatActivity {
 
         // this checks if the user has done an event for the habit today, if they have,
         // then they cannot do another and the fab is disabled
-        if(checkIfHabitDoneToday()) {
+        if (checkIfHabitDoneToday()) {
             addEventButton.setImageResource(R.mipmap.add_button_greyed_out);
             addEventButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -144,7 +144,7 @@ public class HabitTypeActivity extends AppCompatActivity {
                             userAccount.sync(mContext);
 
                             //eList.add(event);
-                            if(eventListAdapter != null) {
+                            if (eventListAdapter != null) {
                                 eventListAdapter.notifyDataSetChanged();
                             }
                             addEventButton.setImageResource(R.mipmap.add_button_greyed_out);
@@ -170,7 +170,7 @@ public class HabitTypeActivity extends AppCompatActivity {
             });
         }
 
-	Navigation.setup(findViewById(android.R.id.content));
+        Navigation.setup(findViewById(android.R.id.content));
     }
 
     @Override
@@ -197,15 +197,19 @@ public class HabitTypeActivity extends AppCompatActivity {
                 public void OnAddedOrEdited(String title, String reason, Date start_date, boolean[] weekly_plan) {
                     try {
                         List<HabitType> all_habit_types = userAccount.getHabits();
-                        for (HabitType h: all_habit_types) {
+                        for (HabitType h : all_habit_types) {
                             if (title.equals(h.getTitle())) {
                                 throw new IllegalArgumentException("title");
                             }
                         }
                         HabitType edited_habit_type = new HabitType(habit_type);
 
-                        if (title.length() > 0) { edited_habit_type.setTitle(title); }
-                        if (reason.length() > 0) { edited_habit_type.setReason(reason); }
+                        if (title.length() > 0) {
+                            edited_habit_type.setTitle(title);
+                        }
+                        if (reason.length() > 0) {
+                            edited_habit_type.setReason(reason);
+                        }
                         edited_habit_type.setStartDate(start_date);
                         edited_habit_type.setWeeklyPlan(weekly_plan);
 
@@ -227,6 +231,7 @@ public class HabitTypeActivity extends AppCompatActivity {
                         throw e;
                     }
                 }
+
                 @Override
                 public void OnDeleted() {
                     // N/A
@@ -278,6 +283,97 @@ public class HabitTypeActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Makes a bundle with the information to send habit information to a dialog
+     *
+     * @return A bundle containing the title and habit type of a habit type object
+     */
+    private Bundle sendHabitInfoToDialog() {
+        Bundle bundle = new Bundle();
+        ArrayList<String> list = new ArrayList<>();
+        list.add(habit_type.getTitle());
+        bundle.putString("Title", habit_type.getTitle());
+        bundle.putSerializable("Habit Type", list);
+
+        return bundle;
+    }
+
+    /**
+     * When the edit habit dialog closes, this method pulls the information from the
+     * returning bundle and creates a habit event out of it
+     *
+     * @param bundle the bundle containing the habit event information
+     * @return The newly created habit event
+     */
+    private HabitEvent createHabitEventFromBundle(Bundle bundle) {
+        AddHabitEventDialogInformationGetter getter =
+                new AddHabitEventDialogInformationGetter(bundle);
+        String title = getter.getTitle();
+        String comment = getter.getComment();
+        Location location = getter.getLocation();
+        Date date = getter.getDate();
+        String eventImage = getter.getImage();
+        byte[] decodedByteArray = Base64.decode(eventImage, Base64.URL_SAFE | Base64.NO_WRAP);
+        Bitmap image = BitmapFactory.decodeByteArray(decodedByteArray, 0, decodedByteArray.length);
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        image.compress(Bitmap.CompressFormat.JPEG, 50, byteArrayOutputStream);
+        byte[] byteArray = byteArrayOutputStream.toByteArray();
+        String encodedString = Base64.encodeToString(byteArray, Base64.URL_SAFE | Base64.NO_WRAP);
+        return new HabitEvent(comment, encodedString, location, date, title, userAccount.getId().toString());
+    }
+
+    /**
+     * Checks if this particular habit type has been completed today
+     *
+     * @return returns true if the habit has been done today, false otherwise
+     */
+    private boolean checkIfHabitDoneToday() {
+        ArrayList<HabitEvent> eventList = habit_type.getHabitEvents();
+        Locale locale = new Locale("English", "Canada");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEEE',' MMMM d',' yyyy", locale);
+        String currentDate = simpleDateFormat.format(new Date());
+        Calendar calendar = Calendar.getInstance();
+        int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
+        if (dayOfWeek == 1) {
+            dayOfWeek = 8;
+        }
+        if (!habit_type.getWeeklyPlan()[dayOfWeek - 2]) {
+            return true;
+        }
+        for (HabitEvent event : eventList) {
+            if (currentDate.equals(event.getCompletionDateString())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * sets the global habitType field with the object pulled from file pertaining to
+     * the selected habit type title
+     */
+    private void setHabitType() {
+        String title = getIntent().getStringExtra("ClickedHabitType");
+        habit_type = findHabitType(allHabits, title);
+    }
+
+    /**
+     * From a list of habit types, finds the habit type object from its title
+     *
+     * @param habitList a list containing habit types
+     * @param title     the title of the habit type you want to find
+     * @return the habit type object from the list that matches
+     */
+    private HabitType findHabitType(List<HabitType> habitList, String title) {
+        Iterator<HabitType> iterator = habitList.iterator();
+        while (iterator.hasNext()) {
+            HabitType habit = iterator.next();
+            if (habit.getTitle().equals(title)) {
+                return habit;
+            }
+        }
+        return null;
+    }
 
     /**
      * The fragment that displays all of the details of the habit type (excluding stats).
@@ -365,7 +461,7 @@ public class HabitTypeActivity extends AppCompatActivity {
             NumberFormat numberFormat = NumberFormat.getInstance();
             numberFormat.setMaximumFractionDigits(0);
             staticLabelsFormatter.setDynamicLabelFormatter(new DefaultLabelFormatter(numberFormat, numberFormat));
-            staticLabelsFormatter.setHorizontalLabels(new String[] {"4", "3", "2", "1", "current"});
+            staticLabelsFormatter.setHorizontalLabels(new String[]{"4", "3", "2", "1", "current"});
             graph.getGridLabelRenderer().setLabelFormatter(staticLabelsFormatter);
             graph.getGridLabelRenderer().setNumVerticalLabels(5);
             graph.getViewport().setYAxisBoundsManual(true);
@@ -375,10 +471,11 @@ public class HabitTypeActivity extends AppCompatActivity {
                 if (dataPoint.getY() > highestPoint) {
                     highestPoint = dataPoint.getY();
                 }
-            };
+            }
+            ;
             int possible_day_count = 0;
             for (boolean day : habit_type.getWeeklyPlan()) {
-                possible_day_count = possible_day_count+1;
+                possible_day_count = possible_day_count + 1;
             }
             graph.getViewport().setMaxY(possible_day_count);
 
@@ -431,14 +528,11 @@ public class HabitTypeActivity extends AppCompatActivity {
         public Fragment getItem(int position) {
             if (position == 0) {
                 return new HabitDetailsFragment();
-            }
-            else if (position == 1) {
+            } else if (position == 1) {
                 return new HabitStatsFragment();
-            }
-            else if (position == 2) {
+            } else if (position == 2) {
                 return new HabitTypeEventsFragment();
-            }
-            else {
+            } else {
                 return null;
             }
         }
@@ -463,95 +557,6 @@ public class HabitTypeActivity extends AppCompatActivity {
             }
             return null;
         }
-    }
-
-    /**
-     * Makes a bundle with the information to send habit information to a dialog
-     * @return A bundle containing the title and habit type of a habit type object
-     */
-    private Bundle sendHabitInfoToDialog() {
-        Bundle bundle = new Bundle();
-        ArrayList<String> list = new ArrayList<>();
-        list.add(habit_type.getTitle());
-        bundle.putString("Title", habit_type.getTitle());
-        bundle.putSerializable("Habit Type", list);
-
-        return bundle;
-    }
-
-    /**
-     * When the edit habit dialog closes, this method pulls the information from the
-     * returning bundle and creates a habit event out of it
-     * @param bundle the bundle containing the habit event information
-     * @return The newly created habit event
-     */
-    private HabitEvent createHabitEventFromBundle(Bundle bundle) {
-        AddHabitEventDialogInformationGetter getter =
-                new AddHabitEventDialogInformationGetter(bundle);
-        String title = getter.getTitle();
-        String comment = getter.getComment();
-        Location location = getter.getLocation();
-        Date date = getter.getDate();
-        String eventImage = getter.getImage();
-        byte[] decodedByteArray = Base64.decode(eventImage, Base64.URL_SAFE | Base64.NO_WRAP);
-        Bitmap image = BitmapFactory.decodeByteArray(decodedByteArray, 0, decodedByteArray.length);
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        image.compress(Bitmap.CompressFormat.JPEG, 50, byteArrayOutputStream);
-        byte[] byteArray = byteArrayOutputStream.toByteArray();
-        String encodedString = Base64.encodeToString(byteArray, Base64.URL_SAFE | Base64.NO_WRAP);
-        return new HabitEvent(comment, encodedString, location, date, title, userAccount.getId().toString());
-    }
-
-
-    /**
-     * Checks if this particular habit type has been completed today
-     * @return returns true if the habit has been done today, false otherwise
-     */
-    private boolean checkIfHabitDoneToday() {
-        ArrayList<HabitEvent> eventList = habit_type.getHabitEvents();
-        Locale locale = new Locale("English", "Canada");
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEEE',' MMMM d',' yyyy", locale);
-        String currentDate = simpleDateFormat.format(new Date());
-        Calendar calendar = Calendar.getInstance();
-        int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
-        if(dayOfWeek == 1) {
-            dayOfWeek = 8;
-        }
-        if(!habit_type.getWeeklyPlan()[dayOfWeek-2]) {
-            return true;
-        }
-        for(HabitEvent event : eventList) {
-            if(currentDate.equals(event.getCompletionDateString())) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * sets the global habitType field with the object pulled from file pertaining to
-     * the selected habit type title
-     */
-    private void setHabitType() {
-        String title = getIntent().getStringExtra("ClickedHabitType");
-        habit_type = findHabitType(allHabits, title);
-    }
-
-    /**
-     * From a list of habit types, finds the habit type object from its title
-     * @param habitList a list containing habit types
-     * @param title the title of the habit type you want to find
-     * @return the habit type object from the list that matches
-     */
-    private HabitType findHabitType(List<HabitType> habitList, String title) {
-        Iterator<HabitType> iterator = habitList.iterator();
-        while(iterator.hasNext()) {
-            HabitType habit = iterator.next();
-            if(habit.getTitle().equals(title)) {
-                return habit;
-            }
-        }
-        return null;
     }
 
 }

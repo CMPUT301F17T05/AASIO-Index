@@ -28,6 +28,7 @@ import android.widget.TextView;
 
 /**
  * This activity display the app users profile and their progress tree
+ *
  * @author ioltuszy
  */
 
@@ -167,7 +168,7 @@ public class ProfileActivity extends AppCompatActivity {
         user.load(context);
         //final UserAccount user = UserAccount.fromId(UUID.fromString("e06459d4-27f1-49de-b8e8-85ab5b3469ef"));
         displayNameEditText.setText(user.getDisplayName());
-        if (user.getProfilePicture()!=null) {
+        if (user.getProfilePicture() != null) {
             profileImageView.setImageBitmap(user.getProfilePicture());
         }
 

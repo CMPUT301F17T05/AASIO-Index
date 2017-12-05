@@ -46,6 +46,21 @@ import io.searchbox.core.Update;
  */
 public class UserAccount {
     private static JestDroidClient client;
+    public Boolean Exists = false;
+    private UUID Id;
+    private String DisplayName;
+    private String ProfilePicture;
+    private List<UUID> Followees;
+    private List<UUID> Followers;
+    private List<UUID> pendingRequests;
+
+    private List<HabitType> Habits;
+
+    private TreeGrowth treeGrowth;
+
+    UserAccount() {
+        verifySettings();
+    }
 
     /**
      * Initialize and setup objects if needed
@@ -61,92 +76,216 @@ public class UserAccount {
         }
     }
 
-    private UUID Id;
-    private String DisplayName;
-    private String ProfilePicture;
-    private List<UUID> Followees;
-    private List<UUID> Followers;
-    private  List<UUID> pendingRequests;
+    public static List<UserAccount> findSimilarDisplayNames(String displayName) {
+        SearchResult result = null;
+        List<UserAccount> userAccountListResult = new ArrayList<UserAccount>();
+        try {
+            result = new findSimilarDisplayNamesTask().execute(displayName).get();
+            if (result != null) {
+                JsonObject json = result.getJsonObject();
+                JsonObject hits = json.getAsJsonObject("hits");
+                JsonArray hitArray = hits.getAsJsonArray("hits");
+                for (Object hit : hitArray) {
+                    if (hit instanceof JsonObject) {
+                        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ").create();
+                        JsonObject object = (JsonObject) hit;
+                        JsonObject source = object.getAsJsonObject("_source");
+                        UserAccount user = new UserAccount();
+                        user.Followees = new ArrayList<UUID>();
+                        user.Followers = new ArrayList<UUID>();
+                        user.Habits = new ArrayList<HabitType>();
+                        user.treeGrowth = new TreeGrowth();
+                        for (Map.Entry<String, JsonElement> e : source.entrySet()) {
+                            switch (e.getKey()) {
+                                case "id":
+                                    user.Id = UUID.fromString(e.getValue().getAsString());
+                                    break;
+                                case "display_name":
+                                    user.DisplayName = e.getValue().getAsString();
+                                    break;
+                                case "profile_picture":
+                                    user.ProfilePicture = e.getValue().getAsString();
+                                    break;
+                                case "followees":
+                                    List<UUID> followees = new ArrayList<UUID>();
+                                    for (JsonElement element : e.getValue().getAsJsonArray()) {
+                                        followees.add(gson.fromJson(element.getAsString(), UUID.class));
+                                    }
+                                    user.Followees = followees;
+                                    break;
+                                case "followers":
+                                    List<UUID> followers = new ArrayList<UUID>();
+                                    for (JsonElement element : e.getValue().getAsJsonArray()) {
+                                        followers.add(gson.fromJson(element.getAsString(), UUID.class));
+                                    }
+                                    user.Followers = followers;
+                                    break;
+                                case "pending_requests":
+                                    List<UUID> pendingRequests = new ArrayList<UUID>();
+                                    for (JsonElement element : e.getValue().getAsJsonArray()) {
+                                        pendingRequests.add(gson.fromJson(element.getAsString(), UUID.class));
+                                    }
+                                    user.pendingRequests = pendingRequests;
+                                    break;
+                                case "habits":
+                                    List<HabitType> habits = new ArrayList<HabitType>();
+                                    for (JsonElement element : e.getValue().getAsJsonArray()) {
+                                        JsonElement events = element.getAsJsonObject().get("habitEvents");
+                                        List<Date> dates = new ArrayList<Date>();
+                                        List<Location> locations = new ArrayList<Location>();
+                                        for (JsonElement member : events.getAsJsonArray()) {
+                                            JsonElement date = member.getAsJsonObject().get("completionDate");
+                                            if (date != null) {
+                                                String stringDate = date.getAsString();
+                                                Date parsedDate = null;
+                                                try {
+                                                    parsedDate = new SimpleDateFormat("yyyy-MM-dd", Locale.CANADA).parse(stringDate);
+                                                } catch (ParseException e1) {
+                                                    e1.printStackTrace();
+                                                }
+                                                dates.add(parsedDate);
+                                            }
+                                            JsonElement location = member.getAsJsonObject().get("location");
+                                            if (location != null) {
+                                                float latitude = Float.parseFloat(location.getAsJsonObject().get("mLatitude").getAsString());
+                                                float longitude = Float.parseFloat(location.getAsJsonObject().get("mLongitude").getAsString());
+                                                Location loc = new Location("");
+                                                loc.setLatitude(latitude);
+                                                loc.setLongitude(longitude);
+                                                locations.add(loc);
+                                            }
 
-    private List<HabitType> Habits;
-
-    private TreeGrowth treeGrowth;
-
-    public Boolean Exists = false;
-
-    UserAccount() {
-        verifySettings();
+                                        }
+                                        HabitType intermediateHabit = gson.fromJson(element.getAsJsonObject(), HabitType.class);
+                                        for (int i = dates.size(); i < dates.size(); i++) {
+                                            intermediateHabit.getHabitEvents().get(i).setCompletionDate(dates.get(i));
+                                            intermediateHabit.getHabitEvents().get(i).setLocation(locations.get(i));
+                                        }
+                                        habits.add(intermediateHabit);
+                                    }
+                                    user.Habits = habits;
+                                    break;
+                                case "nutrientLevel":
+                                    user.treeGrowth.setNutrientLevel(e.getValue().getAsInt());
+                                    break;
+                                case "previousNutrientLevelTierRankUp":
+                                    user.treeGrowth.setPreviousNutrientLevelTierRankUp(e.getValue().getAsInt());
+                                    break;
+                            }
+                        }
+                        user.Exists = true;
+                        userAccountListResult.add(user);
+                    }
+                }
+                return userAccountListResult;
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     /**
-     * Syncs all property data with Elastic Search
+     * Gets and assigns the property values
      */
-    public static class syncTask extends AsyncTask<UserAccount, Void, Void> {
-        @Override
-        protected Void doInBackground(UserAccount... userAccounts) {
-            Map<String, Object> source = new LinkedHashMap<String,Object>();
+    public static UserAccount fromId(UUID id) {
+        SearchResult result = null;
+        try {
+            result = new fromIdTask().execute(id).get();
+            if (result != null) {
+                JsonObject json = result.getJsonObject();
+                JsonObject hits = json.getAsJsonObject("hits");
+                JsonArray hitArray = hits.getAsJsonArray("hits");
+                for (Object hit : hitArray) {
+                    if (hit instanceof JsonObject) {
+                        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ").create();
+                        JsonObject object = (JsonObject) hit;
+                        JsonObject source = object.getAsJsonObject("_source");
+                        UserAccount user = new UserAccount();
+                        user.Followees = new ArrayList<UUID>();
+                        user.Followers = new ArrayList<UUID>();
+                        user.Habits = new ArrayList<HabitType>();
+                        user.treeGrowth = new TreeGrowth();
+                        for (Map.Entry<String, JsonElement> e : source.entrySet()) {
+                            switch (e.getKey()) {
+                                case "id":
+                                    user.Id = UUID.fromString(e.getValue().getAsString());
+                                    break;
+                                case "display_name":
+                                    user.DisplayName = e.getValue().getAsString();
+                                    break;
+                                case "profile_picture":
+                                    user.ProfilePicture = e.getValue().getAsString();
+                                    break;
+                                case "followees":
+                                    List<UUID> followees = new ArrayList<UUID>();
+                                    for (JsonElement element : e.getValue().getAsJsonArray()) {
+                                        followees.add(gson.fromJson(element.getAsString(), UUID.class));
+                                    }
+                                    user.Followees = followees;
+                                    break;
+                                case "followers":
+                                    List<UUID> followers = new ArrayList<UUID>();
+                                    for (JsonElement element : e.getValue().getAsJsonArray()) {
+                                        followers.add(gson.fromJson(element.getAsString(), UUID.class));
+                                    }
+                                    user.Followers = followers;
+                                    break;
+                                case "habits":
+                                    List<HabitType> habits = new ArrayList<HabitType>();
+                                    for (JsonElement element : e.getValue().getAsJsonArray()) {
+                                        JsonElement events = element.getAsJsonObject().get("habitEvents");
+                                        List<Date> dates = new ArrayList<Date>();
+                                        List<Location> locations = new ArrayList<Location>();
+                                        for (JsonElement member : events.getAsJsonArray()) {
+                                            JsonElement date = member.getAsJsonObject().get("completionDate");
+                                            if (date != null) {
+                                                String stringDate = date.getAsString();
+                                                Date parsedDate = new SimpleDateFormat("yyyy-MM-dd", Locale.CANADA).parse(stringDate);
+                                                dates.add(parsedDate);
+                                            }
+                                            JsonElement location = member.getAsJsonObject().get("location");
+                                            if (location != null) {
+                                                float latitude = Float.parseFloat(location.getAsJsonObject().get("mLatitude").getAsString());
+                                                float longitude = Float.parseFloat(location.getAsJsonObject().get("mLongitude").getAsString());
+                                                Location loc = new Location("");
+                                                loc.setLatitude(latitude);
+                                                loc.setLongitude(longitude);
+                                                locations.add(loc);
+                                            }
 
-            source.put("id", userAccounts[0].Id.toString());
-
-            if (userAccounts[0].DisplayName!=null) {
-                source.put("display_name", userAccounts[0].DisplayName.toString());
-            }
-            else {
-                source.put("display_name", "");
-            }
-
-            if (userAccounts[0].ProfilePicture!=null) {
-                source.put("profile_picture", userAccounts[0].ProfilePicture);
-            }
-            else {
-                source.put("profile_picture", null);
-            }
-
-            List<String> followees = new ArrayList<>();
-            if (userAccounts[0].Followees!=null) {
-                for (UUID followeeId : userAccounts[0].Followees) {
-                    followees.add(followeeId.toString());
-
+                                        }
+                                        HabitType intermediateHabit = gson.fromJson(element.getAsJsonObject(), HabitType.class);
+                                        for (int i = dates.size(); i < dates.size(); i++) {
+                                            intermediateHabit.getHabitEvents().get(i).setCompletionDate(dates.get(i));
+                                            intermediateHabit.getHabitEvents().get(i).setLocation(locations.get(i));
+                                        }
+                                        habits.add(intermediateHabit);
+                                    }
+                                    user.Habits = habits;
+                                    break;
+                                case "nutrientLevel":
+                                    user.treeGrowth.setNutrientLevel(e.getValue().getAsInt());
+                                    break;
+                                case "previousNutrientLevelTierRankUp":
+                                    user.treeGrowth.setPreviousNutrientLevelTierRankUp(e.getValue().getAsInt());
+                                    break;
+                            }
+                        }
+                        user.Exists = true;
+                        return user;
+                    }
                 }
+                return null;
             }
-
-            source.put("followees", followees);
-            List<String> followers = new ArrayList<>();
-            if (userAccounts[0].Followers!=null) {
-                for (UUID followerId : userAccounts[0].Followers) {
-                    followers.add(followerId.toString());
-
-                }
-            }
-            source.put("followers", followers);
-
-            List<HabitType> habits = new ArrayList<>();
-            if (userAccounts[0].Habits!=null) {
-                for (HabitType habitId : userAccounts[0].Habits) {
-                    habits.add(habitId);
-                }
-            }
-            source.put("habits", habits);
-
-            if (userAccounts[0].treeGrowth!=null) {
-                source.put("nutrientLevel",userAccounts[0].treeGrowth.getNutrientLevel());
-                source.put("previousNutrientLevelTierRankUp",userAccounts[0].treeGrowth.getPreviousNutrientLevelTierRankUp());
-            }
-            else {
-                source.put("nutrientLevel",0);
-                source.put("previousNutrientLevelTierRankUp",0);
-            }
-
-            try {
-                DocumentResult result =  client.execute(new Update.Builder(source).index("user").id(userAccounts[0].Id.toString()).build());
-                if (!result.isSucceeded()) {
-                    result =  client.execute(new Index.Builder(source).index("user").id(userAccounts[0].Id.toString()).build());
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return null;
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
+        return null;
     }
 
     /**
@@ -216,138 +355,6 @@ public class UserAccount {
         return this;
     }
 
-    public static List<UserAccount> findSimilarDisplayNames(String displayName) {
-        SearchResult result = null;
-        List<UserAccount> userAccountListResult = new ArrayList<UserAccount>();
-        try {
-            result = new findSimilarDisplayNamesTask().execute(displayName).get();
-            if (result!=null) {
-                JsonObject json = result.getJsonObject();
-                JsonObject hits = json.getAsJsonObject("hits");
-                JsonArray hitArray = hits.getAsJsonArray("hits");
-                for (Object hit : hitArray) {
-                    if (hit instanceof JsonObject) {
-                        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ").create();
-                        JsonObject object = (JsonObject) hit;
-                        JsonObject source = object.getAsJsonObject("_source");
-                        UserAccount user = new UserAccount();
-                        user.Followees = new ArrayList<UUID>();
-                        user.Followers = new ArrayList<UUID>();
-                        user.Habits = new ArrayList<HabitType>();
-                        user.treeGrowth = new TreeGrowth();
-                        for (Map.Entry<String, JsonElement> e : source.entrySet()) {
-                            switch (e.getKey()) {
-                                case "id":
-                                    user.Id = UUID.fromString(e.getValue().getAsString());
-                                    break;
-                                case "display_name":
-                                    user.DisplayName = e.getValue().getAsString();
-                                    break;
-                                case "profile_picture":
-                                    user.ProfilePicture = e.getValue().getAsString();
-                                    break;
-                                case "followees":
-                                    List<UUID> followees = new ArrayList<UUID>();
-                                    for (JsonElement element : e.getValue().getAsJsonArray()) {
-                                        followees.add(gson.fromJson(element.getAsString(), UUID.class));
-                                    }
-                                    user.Followees = followees;
-                                    break;
-                                case "followers":
-                                    List<UUID> followers = new ArrayList<UUID>();
-                                    for (JsonElement element : e.getValue().getAsJsonArray()) {
-                                        followers.add(gson.fromJson(element.getAsString(), UUID.class));
-                                    }
-                                    user.Followers = followers;
-                                    break;
-                                case "pending_requests":
-                                    List<UUID> pendingRequests = new ArrayList<UUID>();
-                                    for (JsonElement element : e.getValue().getAsJsonArray()) {
-                                        pendingRequests.add(gson.fromJson(element.getAsString(), UUID.class));
-                                    }
-                                    user.pendingRequests = pendingRequests;
-                                    break;
-                                case "habits":
-                                    List<HabitType> habits = new ArrayList<HabitType>();
-                                    for (JsonElement element : e.getValue().getAsJsonArray()) {
-                                        JsonElement events = element.getAsJsonObject().get("habitEvents");
-                                        List<Date> dates = new ArrayList<Date>();
-                                        List<Location> locations = new ArrayList<Location>();
-                                        for (JsonElement member : events.getAsJsonArray()) {
-                                            JsonElement date = member.getAsJsonObject().get("completionDate");
-                                            if (date!=null) {
-                                                String stringDate = date.getAsString();
-                                                Date parsedDate = null;
-                                                try {
-                                                    parsedDate = new SimpleDateFormat("yyyy-MM-dd", Locale.CANADA).parse(stringDate);
-                                                } catch (ParseException e1) {
-                                                    e1.printStackTrace();
-                                                }
-                                                dates.add(parsedDate);
-                                            }
-                                            JsonElement location = member.getAsJsonObject().get("location");
-                                            if (location!=null) {
-                                                float latitude = Float.parseFloat(location.getAsJsonObject().get("mLatitude").getAsString());
-                                                float longitude = Float.parseFloat(location.getAsJsonObject().get("mLongitude").getAsString());
-                                                Location loc = new Location("");
-                                                loc.setLatitude(latitude);
-                                                loc.setLongitude(longitude);
-                                                locations.add(loc);
-                                            }
-
-                                        }
-                                        HabitType intermediateHabit = gson.fromJson(element.getAsJsonObject(), HabitType.class);
-                                        for (int i = dates.size(); i<dates.size(); i++) {
-                                            intermediateHabit.getHabitEvents().get(i).setCompletionDate(dates.get(i));
-                                            intermediateHabit.getHabitEvents().get(i).setLocation(locations.get(i));
-                                        }
-                                        habits.add(intermediateHabit);
-                                    }
-                                    user.Habits = habits;
-                                    break;
-                                case "nutrientLevel":
-                                    user.treeGrowth.setNutrientLevel(e.getValue().getAsInt());
-                                    break;
-                                case "previousNutrientLevelTierRankUp":
-                                    user.treeGrowth.setPreviousNutrientLevelTierRankUp(e.getValue().getAsInt());
-                                    break;
-                            }
-                        }
-                        user.Exists = true;
-                        userAccountListResult.add(user);
-                    }
-                }
-                return userAccountListResult;
-            }
-        }
-        catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    private static class findSimilarDisplayNamesTask extends AsyncTask<String, Void, SearchResult> {
-        @Override
-        protected SearchResult doInBackground(String... displayNames) {
-            String source = "{\n" + " \"query\": { \"match\": {\"display_name\":\".*" + displayNames[0].toString() + ".*\"} }\n" + "}";
-
-            Search search = new Search.Builder(source)
-                    .addIndex("user")
-                    .build();
-            try {
-                SearchResult result = client.execute(search);
-                if (result.isSucceeded()) {
-                    return result;
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-    }
-
     /**
      * Execute sync task
      */
@@ -357,127 +364,10 @@ public class UserAccount {
     }
 
     /**
-     * Search task from user id
+     * @return the user id
      */
-    private static class fromIdTask extends AsyncTask<UUID, Void, SearchResult> {
-        @Override
-        protected SearchResult doInBackground(UUID... uuids) {
-            String source = "{\n" + " \"query\": { \"match\": {\"id\":\"" + uuids[0].toString() + "\"} }\n" + "}";
-
-            Search search = new Search.Builder(source)
-                    .addIndex("user")
-                    .build();
-            try {
-                SearchResult result = client.execute(search);
-                if (result.isSucceeded()) {
-                    return result;
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-    }
-
-    /**
-     * Gets and assigns the property values
-     */
-    public static UserAccount fromId(UUID id) {
-        SearchResult result = null;
-        try {
-            result = new fromIdTask().execute(id).get();
-            if (result!=null) {
-                JsonObject json = result.getJsonObject();
-                JsonObject hits = json.getAsJsonObject("hits");
-                JsonArray hitArray = hits.getAsJsonArray("hits");
-                for (Object hit : hitArray) {
-                    if (hit instanceof JsonObject) {
-                        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ").create();
-                        JsonObject object = (JsonObject) hit;
-                        JsonObject source = object.getAsJsonObject("_source");
-                        UserAccount user = new UserAccount();
-                        user.Followees = new ArrayList<UUID>();
-                        user.Followers = new ArrayList<UUID>();
-                        user.Habits = new ArrayList<HabitType>();
-                        user.treeGrowth = new TreeGrowth();
-                        for (Map.Entry<String, JsonElement> e : source.entrySet()) {
-                            switch (e.getKey()) {
-                                case "id":
-                                    user.Id = UUID.fromString(e.getValue().getAsString());
-                                    break;
-                                case "display_name":
-                                    user.DisplayName = e.getValue().getAsString();
-                                    break;
-                                case "profile_picture":
-                                    user.ProfilePicture = e.getValue().getAsString();
-                                    break;
-                                case "followees":
-                                    List<UUID> followees = new ArrayList<UUID>();
-                                    for (JsonElement element : e.getValue().getAsJsonArray()) {
-                                        followees.add(gson.fromJson(element.getAsString(), UUID.class));
-                                    }
-                                    user.Followees = followees;
-                                    break;
-                                case "followers":
-                                    List<UUID> followers = new ArrayList<UUID>();
-                                    for (JsonElement element : e.getValue().getAsJsonArray()) {
-                                        followers.add(gson.fromJson(element.getAsString(), UUID.class));
-                                    }
-                                    user.Followers = followers;
-                                    break;
-                                case "habits":
-                                    List<HabitType> habits = new ArrayList<HabitType>();
-                                    for (JsonElement element : e.getValue().getAsJsonArray()) {
-                                        JsonElement events = element.getAsJsonObject().get("habitEvents");
-                                        List<Date> dates = new ArrayList<Date>();
-                                        List<Location> locations = new ArrayList<Location>();
-                                        for (JsonElement member : events.getAsJsonArray()) {
-                                            JsonElement date = member.getAsJsonObject().get("completionDate");
-                                            if (date!=null) {
-                                                String stringDate = date.getAsString();
-                                                Date parsedDate = new SimpleDateFormat("yyyy-MM-dd", Locale.CANADA).parse(stringDate);
-                                                dates.add(parsedDate);
-                                            }
-                                            JsonElement location = member.getAsJsonObject().get("location");
-                                            if (location!=null) {
-                                                float latitude = Float.parseFloat(location.getAsJsonObject().get("mLatitude").getAsString());
-                                                float longitude = Float.parseFloat(location.getAsJsonObject().get("mLongitude").getAsString());
-                                                Location loc = new Location("");
-                                                loc.setLatitude(latitude);
-                                                loc.setLongitude(longitude);
-                                                locations.add(loc);
-                                            }
-
-                                        }
-                                        HabitType intermediateHabit = gson.fromJson(element.getAsJsonObject(), HabitType.class);
-                                        for (int i = dates.size(); i<dates.size(); i++) {
-                                            intermediateHabit.getHabitEvents().get(i).setCompletionDate(dates.get(i));
-                                            intermediateHabit.getHabitEvents().get(i).setLocation(locations.get(i));
-                                        }
-                                        habits.add(intermediateHabit);
-                                    }
-                                    user.Habits = habits;
-                                    break;
-                                case "nutrientLevel":
-                                    user.treeGrowth.setNutrientLevel(e.getValue().getAsInt());
-                                    break;
-                                case "previousNutrientLevelTierRankUp":
-                                    user.treeGrowth.setPreviousNutrientLevelTierRankUp(e.getValue().getAsInt());
-                                    break;
-                            }
-                        }
-                        user.Exists = true;
-                        return user;
-                    }
-                }
-                return null;
-            }
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return null;
+    public UUID getId() {
+        return Id;
     }
 
     /**
@@ -488,6 +378,13 @@ public class UserAccount {
     }
 
     /**
+     * @return the user's display name
+     */
+    public String getDisplayName() {
+        return DisplayName;
+    }
+
+    /**
      * Sets the display name to a specified string
      */
     public void setDisplayName(String displayName) {
@@ -495,10 +392,21 @@ public class UserAccount {
     }
 
     /**
+     * @return the user's profile picture
+     */
+    public Bitmap getProfilePicture() {
+        if (ProfilePicture != null) {
+            byte[] decodedByteArray = Base64.decode(ProfilePicture, Base64.URL_SAFE | Base64.NO_WRAP);
+            return BitmapFactory.decodeByteArray(decodedByteArray, 0, decodedByteArray.length);
+        }
+        return null;
+    }
+
+    /**
      * Sets the profile picture to a specified image
      */
     public void setProfilePicture(Bitmap profilePicture) {
-        if (profilePicture!=null) {
+        if (profilePicture != null) {
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
             profilePicture.compress(Bitmap.CompressFormat.JPEG, 50, byteArrayOutputStream);
             byte[] byteArray = byteArrayOutputStream.toByteArray();
@@ -508,42 +416,13 @@ public class UserAccount {
     }
 
     /**
-     *
-     * @return the user id
-     */
-    public UUID getId() {
-        return Id;
-    }
-
-    /**
-     *
-     * @return the user's display name
-     */
-    public String getDisplayName() {
-        return DisplayName;
-    }
-
-    /**
-     *
-     * @return the user's profile picture
-     */
-    public Bitmap getProfilePicture() {
-        if (ProfilePicture!=null) {
-            byte[] decodedByteArray = Base64.decode(ProfilePicture, Base64.URL_SAFE | Base64.NO_WRAP);
-            return BitmapFactory.decodeByteArray(decodedByteArray, 0, decodedByteArray.length);
-        }
-        return null;
-    }
-
-    /**
-     *
      * @return a list of followees
      */
     public List<UserAccount> getFollowees() {
         List<UserAccount> followees = new ArrayList<UserAccount>();
         for (UUID id : Followees) {
             UserAccount followee = UserAccount.fromId(id);
-            if (followee!=null) {
+            if (followee != null) {
                 followees.add(followee);
             }
         }
@@ -551,14 +430,13 @@ public class UserAccount {
     }
 
     /**
-     *
      * @return a list of followers
      */
     public List<UserAccount> getFollowers() {
         List<UserAccount> followers = new ArrayList<UserAccount>();
         for (UUID id : Followers) {
             UserAccount follower = UserAccount.fromId(id);
-            if (follower!=null){
+            if (follower != null) {
                 followers.add(follower);
             }
         }
@@ -624,14 +502,6 @@ public class UserAccount {
     }
 
     /**
-     * Sets the habits based on a passed in list of habit types
-     */
-    public void setHabits(List<HabitType> habits) {
-        Habits = habits;
-    }
-
-    /**
-     *
      * @return a list of habit types
      */
     public List<HabitType> getHabits() {
@@ -639,10 +509,127 @@ public class UserAccount {
     }
 
     /**
-     *
+     * Sets the habits based on a passed in list of habit types
+     */
+    public void setHabits(List<HabitType> habits) {
+        Habits = habits;
+    }
+
+    /**
      * @return a TreeGrowth object
      */
     public TreeGrowth getTreeGrowth() {
         return treeGrowth;
+    }
+
+    /**
+     * Syncs all property data with Elastic Search
+     */
+    public static class syncTask extends AsyncTask<UserAccount, Void, Void> {
+        @Override
+        protected Void doInBackground(UserAccount... userAccounts) {
+            Map<String, Object> source = new LinkedHashMap<String, Object>();
+
+            source.put("id", userAccounts[0].Id.toString());
+
+            if (userAccounts[0].DisplayName != null) {
+                source.put("display_name", userAccounts[0].DisplayName.toString());
+            } else {
+                source.put("display_name", "");
+            }
+
+            if (userAccounts[0].ProfilePicture != null) {
+                source.put("profile_picture", userAccounts[0].ProfilePicture);
+            } else {
+                source.put("profile_picture", null);
+            }
+
+            List<String> followees = new ArrayList<>();
+            if (userAccounts[0].Followees != null) {
+                for (UUID followeeId : userAccounts[0].Followees) {
+                    followees.add(followeeId.toString());
+
+                }
+            }
+
+            source.put("followees", followees);
+            List<String> followers = new ArrayList<>();
+            if (userAccounts[0].Followers != null) {
+                for (UUID followerId : userAccounts[0].Followers) {
+                    followers.add(followerId.toString());
+
+                }
+            }
+            source.put("followers", followers);
+
+            List<HabitType> habits = new ArrayList<>();
+            if (userAccounts[0].Habits != null) {
+                for (HabitType habitId : userAccounts[0].Habits) {
+                    habits.add(habitId);
+                }
+            }
+            source.put("habits", habits);
+
+            if (userAccounts[0].treeGrowth != null) {
+                source.put("nutrientLevel", userAccounts[0].treeGrowth.getNutrientLevel());
+                source.put("previousNutrientLevelTierRankUp", userAccounts[0].treeGrowth.getPreviousNutrientLevelTierRankUp());
+            } else {
+                source.put("nutrientLevel", 0);
+                source.put("previousNutrientLevelTierRankUp", 0);
+            }
+
+            try {
+                DocumentResult result = client.execute(new Update.Builder(source).index("user").id(userAccounts[0].Id.toString()).build());
+                if (!result.isSucceeded()) {
+                    result = client.execute(new Index.Builder(source).index("user").id(userAccounts[0].Id.toString()).build());
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+    }
+
+    private static class findSimilarDisplayNamesTask extends AsyncTask<String, Void, SearchResult> {
+        @Override
+        protected SearchResult doInBackground(String... displayNames) {
+            String source = "{\n" + " \"query\": { \"match\": {\"display_name\":\".*" + displayNames[0].toString() + ".*\"} }\n" + "}";
+
+            Search search = new Search.Builder(source)
+                    .addIndex("user")
+                    .build();
+            try {
+                SearchResult result = client.execute(search);
+                if (result.isSucceeded()) {
+                    return result;
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+    }
+
+    /**
+     * Search task from user id
+     */
+    private static class fromIdTask extends AsyncTask<UUID, Void, SearchResult> {
+        @Override
+        protected SearchResult doInBackground(UUID... uuids) {
+            String source = "{\n" + " \"query\": { \"match\": {\"id\":\"" + uuids[0].toString() + "\"} }\n" + "}";
+
+            Search search = new Search.Builder(source)
+                    .addIndex("user")
+                    .build();
+            try {
+                SearchResult result = client.execute(search);
+                if (result.isSucceeded()) {
+                    return result;
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
     }
 }

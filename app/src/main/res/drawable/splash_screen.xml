@@ -4,6 +4,6 @@
         <bitmap
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:src="@mipmap/splash_screen"/>
+            android:src="@mipmap/splash_screen" />
     </item>
 </layer-list>

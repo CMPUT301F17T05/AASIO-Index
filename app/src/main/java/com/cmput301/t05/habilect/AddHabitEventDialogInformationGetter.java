@@ -11,6 +11,7 @@ import java.util.Date;
  * This class is used to facilitate getting information from an addHabitEventDialog.
  * It should be passed the resultBundle from the dialog when making the class. Then
  * simply call the methods you want to get the information you need.
+ *
  * @author rarog
  */
 
@@ -22,25 +23,22 @@ public class AddHabitEventDialogInformationGetter {
     }
 
     /**
-     *
      * @return the title from the bundle
      */
     public String getTitle() {
         String title = bundle.getString("habitType");
-        return title == null ? "" : title ;
+        return title == null ? "" : title;
     }
 
     /**
-     *
      * @return the comment from the bundle
      */
     public String getComment() {
         String comment = bundle.getString("comment");
-        return comment == null ? "" : comment ;
+        return comment == null ? "" : comment;
     }
 
     /**
-     *
      * @return the date from the bundle
      */
     public Date getDate() {
@@ -55,7 +53,6 @@ public class AddHabitEventDialogInformationGetter {
     }
 
     /**
-     *
      * @return the location from the bundle
      */
     public Location getLocation() {
@@ -63,7 +60,7 @@ public class AddHabitEventDialogInformationGetter {
         String longitude = bundle.getString("longitude");
 
         Location location = new Location("");
-        if(latitude != null || longitude != null) {
+        if (latitude != null || longitude != null) {
             location.setLatitude(Double.parseDouble(latitude));
             location.setLongitude(Double.parseDouble(longitude));
             return location;
@@ -72,11 +69,10 @@ public class AddHabitEventDialogInformationGetter {
     }
 
     /**
-     *
      * @return the image from the bundle
      */
     public String getImage() {
         String image = bundle.getString("Image");
-        return image == null ? "" : image ;
+        return image == null ? "" : image;
     }
 }

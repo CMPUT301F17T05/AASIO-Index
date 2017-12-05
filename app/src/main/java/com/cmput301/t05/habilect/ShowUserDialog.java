@@ -13,18 +13,17 @@ import android.widget.ListView;
 import android.widget.SearchView;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by rarog on 12/4/17.
  */
 
 public class ShowUserDialog extends DialogFragment {
+    static ArrayList<UserAccount> userAccountList = new ArrayList<>();
+    UserAccount userAccount;
     private Context context;
     private ListView userList;
     private SearchView searchView;
-    UserAccount userAccount;
-    static ArrayList<UserAccount> userAccountList = new ArrayList<>();
 
     @Override
     public void onStart() {
