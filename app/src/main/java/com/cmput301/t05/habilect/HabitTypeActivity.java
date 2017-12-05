@@ -70,6 +70,7 @@ public class HabitTypeActivity extends AppCompatActivity {
     private static Context context;
     private static Context mContext;
     private UserAccount userAccount;
+
     /**
      * sets up the activity and grabs the habit type that was passed in through a different
      * activity

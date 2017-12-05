@@ -347,14 +347,23 @@ public class UserAccount {
         return null;
     }
 
+    /**
+     * Sets the Id to a passed in UUID
+     */
     public void setId(UUID id) {
         Id = id;
     }
 
+    /**
+     * Sets the display name to a specified string
+     */
     public void setDisplayName(String displayName) {
         DisplayName = displayName;
     }
 
+    /**
+     * Sets the profile picture to a specified image
+     */
     public void setProfilePicture(Bitmap profilePicture) {
         if (profilePicture!=null) {
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -365,14 +374,26 @@ public class UserAccount {
         }
     }
 
+    /**
+     *
+     * @return the user id
+     */
     public UUID getId() {
         return Id;
     }
 
+    /**
+     *
+     * @return the user's display name
+     */
     public String getDisplayName() {
         return DisplayName;
     }
 
+    /**
+     *
+     * @return the user's profile picture
+     */
     public Bitmap getProfilePicture() {
         if (ProfilePicture!=null) {
             byte[] decodedByteArray = Base64.decode(ProfilePicture, Base64.URL_SAFE | Base64.NO_WRAP);
@@ -381,6 +402,10 @@ public class UserAccount {
         return null;
     }
 
+    /**
+     *
+     * @return a list of followees
+     */
     public List<UserAccount> getFollowees() {
         List<UserAccount> followees = new ArrayList<UserAccount>();
         for (UUID id : Followees) {
@@ -392,6 +417,10 @@ public class UserAccount {
         return followees;
     }
 
+    /**
+     *
+     * @return a list of followers
+     */
     public List<UserAccount> getFollowers() {
         List<UserAccount> followers = new ArrayList<UserAccount>();
         for (UUID id : Followers) {
@@ -403,37 +432,61 @@ public class UserAccount {
         return followers;
     }
 
+    /**
+     * Adds a followee by their user id
+     */
     public void addFollowee(UUID id) {
         if (!Followees.contains(id)) {
             this.Followees.add(id);
         }
     }
 
+    /**
+     * Adds a follower by their user id
+     */
     public void addFollower(UUID id) {
         if (!Followers.contains(id)) {
             this.Followers.add(id);
         }
     }
 
+    /**
+     * Removes a followee by their user id
+     */
     public void removeFollowee(UUID id) {
         if (Followees.contains(id)) {
             this.Followees.remove(id);
         }
     }
 
+    /**
+     * Removes a follower by their user id
+     */
     public void removeFollower(UUID id) {
         if (Followers.contains(id)) {
             this.Followers.remove(id);
         }
     }
 
+    /**
+     * Sets the habits based on a passed in list of habit types
+     */
     public void setHabits(List<HabitType> habits) {
         Habits = habits;
     }
 
+    /**
+     *
+     * @return a list of habit types
+     */
     public List<HabitType> getHabits() {
         return Habits;
     }
+
+    /**
+     *
+     * @return a TreeGrowth object
+     */
     public TreeGrowth getTreeGrowth() {
         return treeGrowth;
     }

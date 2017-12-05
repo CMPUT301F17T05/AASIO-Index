@@ -339,18 +339,30 @@ class Camera {
         return sizes[0];
     }
 
+    /**
+     * Returns the camera sesssion start time
+     */
     long getCameraSessionStartTime() {
         return mCameraSessionStartTime;
     }
 
+    /**
+     * Sets the camera session start time
+     */
     void setCameraSessionStartTime(long mCameraSessionStartTime) {
         this.mCameraSessionStartTime = mCameraSessionStartTime;
     }
 
+    /**
+     * Returns the texture view
+     */
     TextureView getTextureView() {
         return this.mTextureView;
     }
 
+    /**
+     * Returns the camera state
+     */
     int getCameraState() {
         return mCameraState;
     }

@@ -56,16 +56,25 @@ public class HabitEventEditListAdapter extends BaseAdapter implements ListAdapte
         this.eventList = relatedHabitType.getHabitEvents();
     }
 
+    /**
+     * Gets the size of the event list
+     */
     @Override
     public int getCount() {
         return eventList.size();
     }
 
+    /**
+     * Gets a particular event item at a specified index
+     */
     @Override
     public Object getItem(int i) {
         return eventList.get(i);
     }
 
+    /**
+     * Gets the event id of a specified index
+     */
     @Override
     public long getItemId(int i) {
         return 0;
