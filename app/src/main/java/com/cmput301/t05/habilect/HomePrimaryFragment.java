@@ -45,8 +45,8 @@ public class HomePrimaryFragment extends Fragment {
     private Context context;
     private ListView habitTypeList;
     private UserAccount userAccount;
-    private static List<HabitType> all_habit_types;
-    private static ArrayList<HabitType> incomplete_habit_types;
+    private static List<HabitType> allHabitTypes;
+    private static ArrayList<HabitType> incompleteHabitTypes;
     HabitTypeListAdapter adapter;
 
     @Override
@@ -58,7 +58,7 @@ public class HomePrimaryFragment extends Fragment {
         context = this.getContext();
 
         userAccount = new UserAccount().load(context);
-        all_habit_types = userAccount.getHabits();
+        allHabitTypes = userAccount.getHabits();
 
         fragmentManager = getActivity().getSupportFragmentManager();
         habitTypeList = rootView.findViewById(R.id.incompleteHabitsListView);
@@ -70,14 +70,14 @@ public class HomePrimaryFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Intent intent = new Intent(getActivity(), HabitTypeActivity.class);
-                intent.putExtra("ClickedHabitType", incomplete_habit_types.get(i).getTitle());
+                intent.putExtra("ClickedHabitType", incompleteHabitTypes.get(i).getTitle());
                 startActivity(intent);
             }
         });
 
 
         // gets a list of incomplete habit types for that day, those should be the only ones displayed
-        incomplete_habit_types = new ArrayList<>();
+        incompleteHabitTypes = new ArrayList<>();
         getIncompleteHabitTypes();
 
         TreeGrowth userTreeGrowth = userAccount.getTreeGrowth();
@@ -100,7 +100,7 @@ public class HomePrimaryFragment extends Fragment {
             }
         }
 
-        adapter = new HabitTypeListAdapter(incomplete_habit_types, getContext());
+        adapter = new HabitTypeListAdapter(incompleteHabitTypes, getContext());
         habitTypeList.setAdapter(adapter);
 
         // opens the add habit event dialog if the user wants to create a new habit type
@@ -114,16 +114,16 @@ public class HomePrimaryFragment extends Fragment {
                     public void OnAddedOrEdited(String title, String reason, Date start_date, boolean[] weekly_plan) {
                         try {
                             // check to make sure title is unique
-                            all_habit_types = userAccount.getHabits();
-                            for (HabitType h : all_habit_types) {
+                            allHabitTypes = userAccount.getHabits();
+                            for (HabitType h : allHabitTypes) {
                                 if (title.equals(h.getTitle())) {
                                     throw new IllegalArgumentException("title");
                                 }
                             }
                             // creates a new habitType from the users input
                             HabitType habit_type = new HabitType(title, reason, start_date, weekly_plan);
-                            all_habit_types.add(habit_type);
-                            userAccount.setHabits(all_habit_types);
+                            allHabitTypes.add(habit_type);
+                            userAccount.setHabits(allHabitTypes);
                             userAccount.save(context);
                             userAccount.sync(context);
                             getIncompleteHabitTypes();
@@ -157,9 +157,9 @@ public class HomePrimaryFragment extends Fragment {
                         HabitEvent event =
                                 createHabitEventFromBundle(addHabitEventDialog.getResultBundle());
 
-                        HabitType habit_type = findHabitType(all_habit_types, event.getHabitType());
+                        HabitType habit_type = findHabitType(allHabitTypes, event.getHabitType());
                         habit_type.addHabitEvent(event);
-                        userAccount.setHabits(all_habit_types);
+                        userAccount.setHabits(allHabitTypes);
                         userAccount.save(context);
                         userAccount.sync(context);
 
@@ -174,7 +174,7 @@ public class HomePrimaryFragment extends Fragment {
                 // we should only show the dialog if the user has types to make events for and
                 // has types which still need to be completed today, otherwise show an error message
                 ArrayList<String> titleList = getHabitTitles();
-                if (all_habit_types.size() < 1) {
+                if (allHabitTypes.size() < 1) {
                     Toast.makeText(getContext(), "You do not have any habits to make events for!", Toast.LENGTH_SHORT).show();
                 } else if (titleList.size() < 1) {
                     Toast.makeText(getContext(), "You have already completed all of your habits today!", Toast.LENGTH_SHORT).show();
@@ -222,7 +222,7 @@ public class HomePrimaryFragment extends Fragment {
      */
     private ArrayList<String> getHabitTitles() {
         ArrayList<String> list = new ArrayList<>();
-        for (HabitType type : all_habit_types) {
+        for (HabitType type : allHabitTypes) {
             if (checkIfHabitDoneToday(type)) {
                 continue;
             }
@@ -255,27 +255,27 @@ public class HomePrimaryFragment extends Fragment {
         int today = c.get(Calendar.DAY_OF_WEEK);
         //Log.d("Debugging", "today in int:" + Integer.toString(today));
         boolean[] plan;
-        incomplete_habit_types.clear();
-        for (HabitType h : all_habit_types) {
+        incompleteHabitTypes.clear();
+        for (HabitType h : allHabitTypes) {
             boolean doneToday = checkIfHabitDoneToday(h);
             if (doneToday) {
                 continue;
             }
             plan = h.getWeeklyPlan();
             if (today == Calendar.MONDAY && plan[0]) {
-                incomplete_habit_types.add(h);
+                incompleteHabitTypes.add(h);
             } else if (today == Calendar.TUESDAY && plan[1]) {
-                incomplete_habit_types.add(h);
+                incompleteHabitTypes.add(h);
             } else if (today == Calendar.WEDNESDAY && plan[2]) {
-                incomplete_habit_types.add(h);
+                incompleteHabitTypes.add(h);
             } else if (today == Calendar.THURSDAY && plan[3]) {
-                incomplete_habit_types.add(h);
+                incompleteHabitTypes.add(h);
             } else if (today == Calendar.FRIDAY && plan[4]) {
-                incomplete_habit_types.add(h);
+                incompleteHabitTypes.add(h);
             } else if (today == Calendar.SATURDAY && plan[5]) {
-                incomplete_habit_types.add(h);
+                incompleteHabitTypes.add(h);
             } else if (today == Calendar.SUNDAY && plan[6]) {
-                incomplete_habit_types.add(h);
+                incompleteHabitTypes.add(h);
             }
         }
     }
@@ -318,7 +318,7 @@ public class HomePrimaryFragment extends Fragment {
         int yesterday = c.get(Calendar.DAY_OF_WEEK) - 1;
         boolean[] plan;
         ArrayList<HabitType> yesterdaysIncompleteHabitTypes = new ArrayList<>();
-        for (HabitType h : all_habit_types) {
+        for (HabitType h : allHabitTypes) {
             boolean doneYesterday = checkIfHabitDoneYesterday(h);
             if (doneYesterday) {
                 continue;
