@@ -16,6 +16,8 @@ import android.widget.SearchView;
 import android.widget.Spinner;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
@@ -62,6 +64,9 @@ public class HistoryFilterFragment extends Fragment {
         allHabitTypes = userAccount.getHabits();
         allHabitEvents = new ArrayList<>();
         loadAllHabitEvents();
+
+
+        Collections.sort(allHabitEvents, (event, t1) -> t1.getCompletionDate().compareTo(event.getCompletionDate()));
 
         HabitEventListAdapter eventListAdapter = new HabitEventListAdapter(allHabitEvents, rootView.getContext());
         fragmentHabitTypeOptionsListView.setAdapter(eventListAdapter);
