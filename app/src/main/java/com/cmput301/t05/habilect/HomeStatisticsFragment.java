@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,6 +30,7 @@ import static com.cmput301.t05.habilect.UserProfile.HABILECT_USER_PREVIOUS_NUTRI
  *
  *  @see TreeGrowth
  */
+
 
 public class HomeStatisticsFragment extends Fragment {
     FragmentManager fragmentManager;
@@ -262,4 +264,17 @@ public class HomeStatisticsFragment extends Fragment {
         }
     }
 
+    public void update(){
+        FragmentTransaction t = getActivity().getSupportFragmentManager().beginTransaction();
+        t.setAllowOptimization(false);
+        t.detach(this).attach(this).commitAllowingStateLoss();
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser) {
+            setTreeGrowthImageView();
+        }
+    }
 }

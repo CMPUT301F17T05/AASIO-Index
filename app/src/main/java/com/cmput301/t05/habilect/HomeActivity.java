@@ -59,23 +59,6 @@ public class HomeActivity extends AppCompatActivity {
         homeViewPagerAdapter = new ViewPagerHomeAdapter(fragmentManager);
         ViewPager mHomeViewPager = (ViewPager) findViewById(R.id.homeViewPager);
         mHomeViewPager.setAdapter(homeViewPagerAdapter);
-        mHomeViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                Log.i("POSITION: ", "" + position);
-                mHomeViewPager.getAdapter().notifyDataSetChanged();
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
 
         Navigation.setup(findViewById(android.R.id.content));
     }

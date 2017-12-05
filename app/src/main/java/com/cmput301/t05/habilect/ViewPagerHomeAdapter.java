@@ -21,6 +21,7 @@ public class ViewPagerHomeAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0: return new HomePrimaryFragment();
+
             case 1: return new HomeStatisticsFragment();
         }
         return null;
@@ -33,7 +34,11 @@ public class ViewPagerHomeAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getItemPosition(Object object) {
-        return POSITION_NONE;
+        HomeStatisticsFragment f = (HomeStatisticsFragment ) object;
+        if (f != null) {
+            f.update();
+        }
+        return super.getItemPosition(object);
     }
 }
 
