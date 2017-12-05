@@ -119,13 +119,15 @@ public class InitActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         // Create a new user account, with a unique ID
-        UserAccount user;// = new UserAccount();
+        UserAccount user = new UserAccount();
         /*ContextWrapper cw = new ContextWrapper(context.getApplicationContext());
         File directory = cw.getDir("userData", Context.MODE_PRIVATE);
         File path = new File(directory, "LocalUserAccount.sav");
         path.delete();*/
         UserAccount.verifySettings();
-        user = UserAccount.fromId(UUID.fromString("16b0a753-b680-4ecd-9d1b-21ea7a65b676"));
+        user.load(context);
+        user = UserAccount.fromId(user.getId());
+        // TODO
         user.Exists = true;
         if (user.Exists) {
             //user.removeFollowee(UUID.fromString("c7d513cf-db2b-4e15-95c8-f4f8bd0bb142"));
