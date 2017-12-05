@@ -140,11 +140,12 @@ public class InitActivity extends AppCompatActivity {
         user.load(context);
         //user.Exists = false;
         if (user.Exists) {
-            //user.removeFollowee(UUID.fromString("a47f3482-c537-4cdd-a6cd-1244a2424151"));
-            user.addFollowee(UUID.fromString("f925b981-39f9-4a2c-aa70-98e3ca56a5a7"));
+            user.removeFollowee(UUID.fromString("c7d513cf-db2b-4e15-95c8-f4f8bd0bb142"));
+            user.addFollowee(UUID.fromString("a28bedf1-ae3c-44c4-ae9f-a3a875954cad"));
             //remote.removeFollower(UUID.fromString("e06459d4-27f1-49de-b8e8-85ab5b3469ef"));
-            UserAccount remote = UserAccount.fromId(UUID.fromString("f925b981-39f9-4a2c-aa70-98e3ca56a5a7"));
-            remote.addFollower(UUID.fromString("4d67c2ad-b5fd-4c6f-adc9-f2278bedbfea"));
+            UserAccount remote = UserAccount.fromId(UUID.fromString("a28bedf1-ae3c-44c4-ae9f-a3a875954cad"));
+            remote.addFollower(UUID.fromString("c7d513cf-db2b-4e15-95c8-f4f8bd0bb142"));
+            remote.addFollowee(UUID.fromString("c7d513cf-db2b-4e15-95c8-f4f8bd0bb142"));
             //remote.getHabits().get(1).setShared(true);
             user.save(context);
             remote.sync(context);
