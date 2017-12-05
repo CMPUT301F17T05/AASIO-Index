@@ -2,13 +2,16 @@ package com.cmput301.t05.habilect;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.Image;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -21,6 +24,7 @@ public class ViewFriendActivity extends AppCompatActivity {
     private Bundle bundle;
     private TextView userName;
     private ImageView profileImage;
+    private Button deleteButton;
     private Button backButton;
 
 
@@ -33,6 +37,7 @@ public class ViewFriendActivity extends AppCompatActivity {
 
         userName = findViewById(R.id.viewFriendUserName);
         profileImage = findViewById(R.id.viewFriendProfileImage);
+        deleteButton = findViewById(R.id.stopFollowingButton);
         backButton = findViewById(R.id.viewFriendBackButton);
 
         Bitmap imageBitmap = null;
@@ -49,6 +54,23 @@ public class ViewFriendActivity extends AppCompatActivity {
                     R.mipmap.add_image);
         }
         profileImage.setImageBitmap(imageBitmap);
+
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                UserAccount localUser = new UserAccount();
+                localUser.load(getApplicationContext());
+                List<UserAccount> following = localUser.getFollowees();
+                for (UserAccount followee : following) {
+                    if (followee.getId().toString().equals(user.getId().toString())) {
+                        localUser.removeFollowee(followee.getId());
+                        localUser.save(getApplicationContext());
+                        localUser.sync(getApplicationContext());
+                        finish();
+                    }
+                }
+            }
+        });
 
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override

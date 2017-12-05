@@ -7,9 +7,11 @@ import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ListView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This fragment show the user a list of their friends and allows them to find new friends
@@ -22,6 +24,7 @@ public class SocialFollowingFragment extends Fragment {
     private Context context;
     private ArrayList<UserAccount> friendList = new ArrayList<>();
     ListView friendListView;
+    Button socialFriendFindFriendButton;
     SocialFollowingAdapter friendAdapter;
 
     @Override
@@ -39,6 +42,16 @@ public class SocialFollowingFragment extends Fragment {
         profile.load(mContext);
 
         friendListView = rootView.findViewById(R.id.socialFriendListView);
+
+        socialFriendFindFriendButton = rootView.findViewById(R.id.socialFriendFindFriendButton);
+
+        socialFriendFindFriendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                
+                List<UserAccount> users = UserAccount.findSimilarDisplayNames("Andrea");
+            }
+        });
 
         ArrayList<UserAccount> userAccounts = (ArrayList<UserAccount>) profile.getFollowees();
         friendAdapter = new SocialFollowingAdapter(userAccounts, context, mContext);
