@@ -141,13 +141,13 @@ public class InitActivity extends AppCompatActivity {
         //user.Exists = false;
         if (user.Exists) {
             //user.removeFollowee(UUID.fromString("a47f3482-c537-4cdd-a6cd-1244a2424151"));
-            //user.addFollowee(UUID.fromString("a47f3482-c537-4cdd-a6cd-1244a2424151"));
+            user.addFollowee(UUID.fromString("6ca43b59-6827-4f1a-98f6-f68cdc200c2f"));
             //remote.removeFollower(UUID.fromString("e06459d4-27f1-49de-b8e8-85ab5b3469ef"));
-            //UserAccount remote = UserAccount.fromId(UUID.fromString("a47f3482-c537-4cdd-a6cd-1244a2424151"));
-            //remote.addFollower(UUID.fromString("4d67c2ad-b5fd-4c6f-adc9-f2278bedbfea"));
+            UserAccount remote = UserAccount.fromId(UUID.fromString("6ca43b59-6827-4f1a-98f6-f68cdc200c2f"));
+            remote.addFollower(UUID.fromString("4d67c2ad-b5fd-4c6f-adc9-f2278bedbfea"));
             //remote.getHabits().get(1).setShared(true);
-            //user.save(context);
-            //remote.sync(context);
+            user.save(context);
+            remote.sync(context);
             //remote.getHabits().get(0).setShared(true);
             //remote.sync(context);
             //user.save(context);

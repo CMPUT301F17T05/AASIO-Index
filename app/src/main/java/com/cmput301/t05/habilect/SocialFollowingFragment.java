@@ -10,20 +10,19 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 /**
  * This fragment show the user a list of their friends and allows them to find new friends
  * @author rarog
  */
 
-public class SocialFriendFragment extends Fragment {
+public class SocialFollowingFragment extends Fragment {
     FragmentManager fragmentManager;
     private Context mContext;
     private Context context;
     private ArrayList<UserAccount> friendList = new ArrayList<>();
     ListView friendListView;
-    SocialFriendAdapter friendAdapter;
+    SocialFollowingAdapter friendAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater,
@@ -41,10 +40,9 @@ public class SocialFriendFragment extends Fragment {
 
         friendListView = rootView.findViewById(R.id.socialFriendListView);
 
-        friendList.add(profile);
-        friendAdapter = new SocialFriendAdapter(friendList, context, mContext);
+        ArrayList<UserAccount> userAccounts = (ArrayList<UserAccount>) profile.getFollowees();
+        friendAdapter = new SocialFollowingAdapter(userAccounts, context, mContext);
         friendListView.setAdapter(friendAdapter);
-
 
         return rootView;
 
@@ -59,7 +57,7 @@ public class SocialFriendFragment extends Fragment {
         super.setUserVisibleHint(isVisibleToUser);
         if(isVisibleToUser){
             if(getActivity() != null) {
-                getActivity().setTitle("Friend list");
+                getActivity().setTitle("Following");
             }
     }
     }

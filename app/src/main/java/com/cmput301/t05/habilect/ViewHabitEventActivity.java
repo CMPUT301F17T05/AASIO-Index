@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Base64;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -46,9 +47,9 @@ public class ViewHabitEventActivity extends AppCompatActivity {
 
         String fileName = getFilePathFromBundle();
         ContextWrapper cw = new ContextWrapper(this.getApplicationContext());
-        File directory = cw.getDir("eventImages", Context.MODE_PRIVATE);
-        File myPath = new File(directory, fileName);
-        image.setImageBitmap(BitmapFactory.decodeFile(myPath.toString()));
+        //File directory = cw.getDir("eventImages", Context.MODE_PRIVATE);
+        //File myPath = new File(directory, fileName);
+        image.setImageBitmap(getEventImageFromBundle());
 
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -94,6 +95,24 @@ public class ViewHabitEventActivity extends AppCompatActivity {
         }
         catch (Exception e) {
             return "";
+        }
+    }
+
+    /**
+     *
+     * @return a Bitmap representing the habit event image
+     */
+    private Bitmap getEventImageFromBundle() {
+        try {
+            String encodedImage = bundle.getString("Image");
+            if (encodedImage!=null) {
+                byte[] decodedByteArray = Base64.decode(encodedImage, Base64.URL_SAFE | Base64.NO_WRAP);
+                return BitmapFactory.decodeByteArray(decodedByteArray, 0, decodedByteArray.length);
+            }
+            return null;
+        }
+        catch (Exception e) {
+            return null;
         }
     }
 

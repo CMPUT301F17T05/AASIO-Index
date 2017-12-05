@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Base64;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -38,7 +39,7 @@ public class ViewFeedEventActivity extends AppCompatActivity {
         completionDateTextView = findViewById(R.id.viewFeedEventCompletionDate);
         eventImageView = findViewById(R.id.viewFeedEventImage);
         backButton = findViewById(R.id.viewFeedEventBackButton);
-        Bitmap imageBitmap = getImageFromBundle();
+        Bitmap imageBitmap = getEventImageFromBundle();
         if (imageBitmap == null) {
             imageBitmap = BitmapFactory.decodeResource(this.getResources(),
                     R.mipmap.add_image);
@@ -48,7 +49,6 @@ public class ViewFeedEventActivity extends AppCompatActivity {
         commentTextView.setText(getCommentFromBundle());
         completionDateTextView.setText(getDateFromBundle());
         eventImageView.setImageBitmap(imageBitmap);
-
 
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -87,16 +87,19 @@ public class ViewFeedEventActivity extends AppCompatActivity {
 
     /**
      *
-     * @return a bitmap image of the event
+     * @return a Bitmap representing the habit event image
      */
-    private Bitmap getImageFromBundle() {
+    private Bitmap getEventImageFromBundle() {
         try {
-            return bundle.getParcelable("Image");
+            String encodedImage = bundle.getString("Image");
+            if (encodedImage!=null) {
+                byte[] decodedByteArray = Base64.decode(encodedImage, Base64.URL_SAFE | Base64.NO_WRAP);
+                return BitmapFactory.decodeByteArray(decodedByteArray, 0, decodedByteArray.length);
+            }
+            return null;
         }
         catch (Exception e) {
-            Bitmap icon = BitmapFactory.decodeResource(this.getResources(),
-                    R.mipmap.add_image);
-            return icon;
+            return null;
         }
     }
 

@@ -12,6 +12,9 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -61,20 +64,40 @@ public class SocialFeedFragment extends Fragment {
                 if (followerIds.contains(user.getId())) {
                     List<HabitType> habits = followee.getHabits();
                     for (HabitType habit : habits) {
-                        if (habit.getShared()) {
+                        //if (habit.getShared()) {
                             List<HabitEvent> events = habit.getHabitEvents();
+                            HabitEvent mostRecent=null;
                             for (HabitEvent event : events) {
                                 if (event.getCompletionDate()!=null & event.getHabitType()!=null) {
                                     HabitEvent feedHabitEvent = new HabitEvent(event.getComment(), event.getEventPicture(), event.getLocation(), event.getCompletionDate(), event.getHabitType());
-                                    FeedEvent feedEvent = new FeedEvent(followee, feedHabitEvent);
-                                    feedEventList.add(feedEvent);
+                                    if (mostRecent==null) {
+                                        mostRecent = feedHabitEvent;
+                                    }else if (mostRecent.getCompletionDate().before(feedHabitEvent.getCompletionDate())) {
+                                        mostRecent = feedHabitEvent;
+                                    }
                                 }
                             }
-                        }
+                            if (mostRecent!=null) {
+                                FeedEvent feedEvent = new FeedEvent(followee, mostRecent);
+                                feedEventList.add(feedEvent);
+                            }
+                        //}
                     }
                 }
             }
         }
+        Collections.sort(feedEventList, new Comparator<FeedEvent>() {
+            @Override
+            public int compare(FeedEvent o1, FeedEvent o2) {
+                if (o1.getEvent().getCompletionDate().after(o2.getEvent().getCompletionDate())) {
+                    return 1;
+                }
+                else if (o1.getEvent().getCompletionDate().before(o2.getEvent().getCompletionDate())) {
+                    return -1;
+                }
+                return 0;
+            }
+        });
         SocialFeedAdapter feedAdapter = new SocialFeedAdapter(feedEventList, context, mContext);
         feedListView.setAdapter(feedAdapter);
 
@@ -91,7 +114,7 @@ public class SocialFeedFragment extends Fragment {
         super.setUserVisibleHint(isVisibleToUser);
         if(isVisibleToUser){
             if(getActivity() != null) {
-                getActivity().setTitle("Social feed");
+                getActivity().setTitle("Social Feed");
             }
         }
     }

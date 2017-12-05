@@ -23,10 +23,10 @@ import java.util.ArrayList;
  * in a ListView
  * @author rarog
  * @see UserAccount
- * @see SocialFriendFragment
+ * @see SocialFollowingFragment
  */
 
-public class SocialFriendAdapter extends BaseAdapter implements ListAdapter {
+public class SocialFollowerAdapter extends BaseAdapter implements ListAdapter {
     private ArrayList<UserAccount> friendList = new ArrayList<>();
     private Context context;
     private Context mContext;
@@ -34,7 +34,7 @@ public class SocialFriendAdapter extends BaseAdapter implements ListAdapter {
     private TextView profileNameTextView;
     private Button selectButton;
 
-    SocialFriendAdapter(ArrayList<UserAccount> friendList, Context context, Context mContext) {
+    SocialFollowerAdapter(ArrayList<UserAccount> friendList, Context context, Context mContext) {
         this.friendList = friendList;
         this.context = context;
         this.mContext = mContext;
