@@ -30,5 +30,10 @@ public class ViewPagerHomeAdapter extends FragmentPagerAdapter {
     public int getCount() {
         return NUM_PAGES;
     }
+
+    @Override
+    public int getItemPosition(Object object) {
+        return POSITION_NONE;
+    }
 }
 

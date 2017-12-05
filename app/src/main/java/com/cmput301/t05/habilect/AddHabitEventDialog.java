@@ -74,6 +74,7 @@ import static com.cmput301.t05.habilect.UserProfile.HABILECT_USER_INFO;
  */
 
 public class AddHabitEventDialog extends DialogFragment {
+    private UserAccount userAccount;
     private OnAddHabitEventListener onAddHabitEventListener;
     private Bundle resultBundle;
 
@@ -231,9 +232,7 @@ public class AddHabitEventDialog extends DialogFragment {
 
         context = getContext();
         mContext = getActivity().getApplicationContext();
-        final UserProfile profile = new UserProfile(mContext);
-        TreeGrowth profileTreeGrowth = profile.treeGrowth;
-
+        userAccount = new UserAccount().load(this.getContext());
         // creates all of the necessary view controllers
         TextView eventTitle = view.findViewById(R.id.addHabitEventDialogTitle);
         spinner = view.findViewById(R.id.addHabitEventSpinner);
@@ -316,18 +315,15 @@ public class AddHabitEventDialog extends DialogFragment {
                 onAddHabitEventListener.OnAdded();
                 dialog.dismiss();
 
-                SharedPreferences sharedPreferences = context.getSharedPreferences(HABILECT_USER_INFO, Context.MODE_PRIVATE);
-                String preference = sharedPreferences.getString(UserProfile.HABILECT_USER_TREE_GROWTH, null);
-
-                int nutrientLevel = Integer.parseInt(preference);
+                TreeGrowth userTreeGrowth = userAccount.getTreeGrowth();
+                int nutrientLevel = userAccount.getTreeGrowth().getNutrientLevel();
 
                 nutrientLevel += 1;
+                userTreeGrowth.setNutrientLevel(nutrientLevel);
+                userAccount.save(context);
+                userAccount.sync(context);
 
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                profile.setTreeGrowth(Integer.toString(nutrientLevel));
-                editor.putString(UserProfile.HABILECT_USER_TREE_GROWTH, Integer.toString(nutrientLevel));
-                editor.commit();
-                Log.i("NUTRIENTLEVEL: ", "" + profileTreeGrowth.getNutrientLevel());
+                Log.i("NUTRIENTLEVEL: ", "" + userAccount.getTreeGrowth().getNutrientLevel());
 
             }
         });

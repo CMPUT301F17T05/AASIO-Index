@@ -85,23 +85,26 @@ public class HomePrimaryFragment extends Fragment {
         incomplete_habit_types = new ArrayList<>();
         getIncompleteHabitTypes();
 
-        // checks if there are incomplete habit types for the previous day. Returns the number of incomplete.
-        int numberOfIncompletedHabits = getIncompleteHabitTypesFromYesterday();
-        if (numberOfIncompletedHabits > 0) {
-            SharedPreferences sharedPreferences = context.getSharedPreferences(HABILECT_USER_INFO, Context.MODE_PRIVATE);
-            String preference = sharedPreferences.getString(UserProfile.HABILECT_USER_TREE_GROWTH, null);
+        TreeGrowth userTreeGrowth = userAccount.getTreeGrowth();
 
-            int nutrientLevel = Integer.parseInt(preference);
+        // only check if did not run today already
+        if(userTreeGrowth.getLastCheckDateForPreviousDaysIncompleteHabitTypes() != Calendar.getInstance().get(Calendar.DAY_OF_WEEK)){
+            // checks if there are incomplete habit types for the previous day. Returns the number of incomplete.
+            int numberOfIncompletedHabits = getIncompleteHabitTypesFromYesterday();
+            if (numberOfIncompletedHabits > 0) {
 
-            nutrientLevel -= numberOfIncompletedHabits;
-            UserProfile profile = new UserProfile(context);
-            TreeGrowth profileTreeGrowth = profile.treeGrowth;
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            profile.setTreeGrowth(Integer.toString(nutrientLevel));
-            editor.putString(UserProfile.HABILECT_USER_TREE_GROWTH, Integer.toString(nutrientLevel));
-            editor.commit();
-            Log.i("NUTRIENTLEVEL: ", "" + profileTreeGrowth.getNutrientLevel());
+                int nutrientLevel = userAccount.getTreeGrowth().getNutrientLevel();
+
+                nutrientLevel -= numberOfIncompletedHabits;
+                userTreeGrowth.setNutrientLevel(nutrientLevel);
+                userTreeGrowth.setLastCheckDateForPreviousDaysIncompleteHabitTypes();
+                userAccount.save(context);
+                userAccount.sync(context);
+
+                Log.i("NUTRIENTLEVEL: ", "" + nutrientLevel);
+            }
         }
+
         adapter = new HabitTypeListAdapter(incomplete_habit_types, getContext());
         habitTypeList.setAdapter(adapter);
 

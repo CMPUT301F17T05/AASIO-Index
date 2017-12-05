@@ -1,5 +1,8 @@
 package com.cmput301.t05.habilect;
 
+import java.util.Calendar;
+import java.util.Date;
+
 /**
  * Class that is responsible for tree growth to track nutrient level and also the last rank up tier.
  *
@@ -9,9 +12,11 @@ package com.cmput301.t05.habilect;
 public class TreeGrowth {
     int nutrientLevel;
     int previousNutrientLevelTierRankUp;
+    int lastCheckDateForPreviousDaysIncompleteHabitTypes;
     public TreeGrowth() {
         this.nutrientLevel = 0;
         this.previousNutrientLevelTierRankUp = 0;
+        this.lastCheckDateForPreviousDaysIncompleteHabitTypes = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
     }
 
     public int getNutrientLevel() {
@@ -20,8 +25,18 @@ public class TreeGrowth {
 
     public void setNutrientLevel(int nutrientLevel) {
         this.nutrientLevel = nutrientLevel;
+        if (this.nutrientLevel < 0) {
+            this.nutrientLevel = 0;
+        }
     }
 
+    public int getLastCheckDateForPreviousDaysIncompleteHabitTypes(){
+        return lastCheckDateForPreviousDaysIncompleteHabitTypes;
+    }
+
+    public void setLastCheckDateForPreviousDaysIncompleteHabitTypes(){
+        this.lastCheckDateForPreviousDaysIncompleteHabitTypes = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
+    }
     public int getPreviousNutrientLevelTierRankUp() {
         return previousNutrientLevelTierRankUp;
     }

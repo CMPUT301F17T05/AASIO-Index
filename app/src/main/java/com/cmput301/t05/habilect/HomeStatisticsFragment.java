@@ -33,6 +33,7 @@ import static com.cmput301.t05.habilect.UserProfile.HABILECT_USER_PREVIOUS_NUTRI
 public class HomeStatisticsFragment extends Fragment {
     FragmentManager fragmentManager;
     private Context context;
+    private UserAccount userAccount;
 
     private Map<Integer, Integer> tierThresholds = new HashMap<Integer, Integer>() {{
         put(1, 10);
@@ -64,6 +65,7 @@ public class HomeStatisticsFragment extends Fragment {
         View rootView = inflater.inflate(
                 R.layout.fragment_home_statistics, container, false);
 
+        userAccount = new UserAccount().load(this.getContext());
         context = getActivity();
 
         fragmentManager = getActivity().getSupportFragmentManager();
@@ -89,7 +91,7 @@ public class HomeStatisticsFragment extends Fragment {
     /**
      * Adjusts the tree growth ImageView if necessary
      */
-    private void setTreeGrowthImageView() {
+    public void setTreeGrowthImageView() {
 
         final UserAccount user = new UserAccount();
         user.load(context);
@@ -189,13 +191,15 @@ public class HomeStatisticsFragment extends Fragment {
     private void checkAndAdjustTierProperties(int nutrientLevel, int tier) {
         Log.i("INFORMATION", "nutlevel: " + nutrientLevel + " tier: " + tier);
 
-        SharedPreferences sharedPreferences = context.getSharedPreferences(HABILECT_USER_INFO, Context.MODE_PRIVATE);
-        String preference = sharedPreferences.getString(HABILECT_USER_PREVIOUS_NUTRIENT_LEVEL_TIER_RANK_UP, null);
+        TreeGrowth userTreeGrowth = userAccount.getTreeGrowth();
+        int previousNutrientLevelTierRankUp = userAccount.getTreeGrowth().getPreviousNutrientLevelTierRankUp();
+
         //if true, trigger rank up popup
-        if (Integer.parseInt(preference) < tierThresholds.get(tier)) {
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putString(UserProfile.HABILECT_USER_PREVIOUS_NUTRIENT_LEVEL_TIER_RANK_UP, Integer.toString(nutrientLevel));
-            editor.commit();
+        if (previousNutrientLevelTierRankUp < tierThresholds.get(tier)) {
+            previousNutrientLevelTierRankUp = nutrientLevel;
+            userTreeGrowth.setPreviousNutrientLevelTierRankUp(previousNutrientLevelTierRankUp);
+            userAccount.save(context);
+            userAccount.sync(context);
             buildRankUpDialog(tier);
         }
         if(tier == 16){

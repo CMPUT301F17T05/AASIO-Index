@@ -155,23 +155,16 @@ public class HabitEventEditListAdapter extends BaseAdapter implements ListAdapte
                 eventList.remove(event);
                 notifyDataSetChanged();
 
-                SharedPreferences sharedPreferences = context.getSharedPreferences(HABILECT_USER_INFO, Context.MODE_PRIVATE);
-                String preference = sharedPreferences.getString(UserProfile.HABILECT_USER_TREE_GROWTH, null);
 
-                int nutrientLevel = Integer.parseInt(preference);
+                TreeGrowth userTreeGrowth = userAccount.getTreeGrowth();
+                int nutrientLevel = userAccount.getTreeGrowth().getNutrientLevel();
 
                 nutrientLevel -= 1;
+                userTreeGrowth.setNutrientLevel(nutrientLevel);
+                userAccount.save(context);
+                userAccount.sync(context);
 
-                if(nutrientLevel < 0){
-                    nutrientLevel = 0;
-                }
-
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                profile.setTreeGrowth(Integer.toString(nutrientLevel));
-                editor.putString(UserProfile.HABILECT_USER_TREE_GROWTH, Integer.toString(nutrientLevel));
-                editor.commit();
-
-                Log.i("NUTRIENTLEVEL: ", "" + profileTreeGrowth.getNutrientLevel());
+                Log.i("NUTRIENTLEVEL: ", "" + nutrientLevel);
             }
         });
 
