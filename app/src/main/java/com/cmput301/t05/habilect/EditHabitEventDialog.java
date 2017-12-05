@@ -387,7 +387,7 @@ public class EditHabitEventDialog extends DialogFragment {
         } else {
             habitType = "";
         }
-
+        eventBitmap = ((BitmapDrawable) eventImage.getDrawable()).getBitmap();
         // put all information in bundle
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         eventBitmap.compress(Bitmap.CompressFormat.JPEG, 50, byteArrayOutputStream);
