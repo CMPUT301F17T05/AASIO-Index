@@ -18,6 +18,8 @@ import android.widget.ListAdapter;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * This adapter shows a user, their name and profile image. When the user is clicked,
@@ -86,6 +88,7 @@ public class SocialAddFriendAdapter extends BaseAdapter implements ListAdapter {
                 localUser.addFollowee(userAccount.getId());
                 localUser.save(context);
                 localUser.sync(context);
+                List<UUID> requestList = userAccount.getPendingRequests();
                 userAccount.addPendingFollower(localUser.getId());
                 userAccount.sync(context);
                 dialog.dismiss();

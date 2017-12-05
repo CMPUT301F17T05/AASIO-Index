@@ -602,12 +602,18 @@ public class UserAccount {
     }
 
     public void addPendingFollower(UUID id) {
+        if(this.pendingRequests == null) {
+            this.pendingRequests = new ArrayList<UUID>();
+        }
         if (!pendingRequests.contains(id)) {
             this.pendingRequests.add(id);
         }
     }
 
     public void removePendingFollower(UUID id) {
+        if(this.pendingRequests == null) {
+            this.pendingRequests = new ArrayList<UUID>();
+        }
         if (!pendingRequests.contains(id)) {
             this.pendingRequests.remove(id);
         }
