@@ -66,6 +66,7 @@ public class UserAccount {
     private String ProfilePicture;
     private List<UUID> Followees;
     private List<UUID> Followers;
+    private  List<UUID> pendingRequests;
 
     private List<HabitType> Habits;
 
@@ -258,6 +259,13 @@ public class UserAccount {
                                         followers.add(gson.fromJson(element.getAsString(), UUID.class));
                                     }
                                     user.Followers = followers;
+                                    break;
+                                case "pending_requests":
+                                    List<UUID> pendingRequests = new ArrayList<UUID>();
+                                    for (JsonElement element : e.getValue().getAsJsonArray()) {
+                                        pendingRequests.add(gson.fromJson(element.getAsString(), UUID.class));
+                                    }
+                                    user.pendingRequests = pendingRequests;
                                     break;
                                 case "habits":
                                     List<HabitType> habits = new ArrayList<HabitType>();
@@ -591,6 +599,22 @@ public class UserAccount {
         if (Followers.contains(id)) {
             this.Followers.remove(id);
         }
+    }
+
+    public void addPendingFollower(UUID id) {
+        if (!pendingRequests.contains(id)) {
+            this.pendingRequests.add(id);
+        }
+    }
+
+    public void removePendingFollower(UUID id) {
+        if (!pendingRequests.contains(id)) {
+            this.pendingRequests.remove(id);
+        }
+    }
+
+    public List<UUID> getPendingRequests() {
+        return this.pendingRequests;
     }
 
     /**

@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -23,6 +24,7 @@ public class SocialFollowerFragment extends Fragment {
     private ArrayList<UserAccount> friendList = new ArrayList<>();
     ListView friendListView;
     SocialFollowerAdapter friendAdapter;
+    Button mangeRequestButton;
 
     @Override
     public View onCreateView(LayoutInflater inflater,
@@ -43,6 +45,17 @@ public class SocialFollowerFragment extends Fragment {
         ArrayList<UserAccount> userAccounts = (ArrayList<UserAccount>) profile.getFollowers();
         friendAdapter = new SocialFollowerAdapter(userAccounts, context, mContext);
         friendListView.setAdapter(friendAdapter);
+
+        mangeRequestButton = rootView.findViewById(R.id.socialFriendManageButton);
+        mangeRequestButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                FragmentManager fragmentManager = getFragmentManager();
+                ManageRequestsDialog dialog = new ManageRequestsDialog();
+                dialog.show(fragmentManager, "showUserDialog");
+            }
+        });
 
         return rootView;
 

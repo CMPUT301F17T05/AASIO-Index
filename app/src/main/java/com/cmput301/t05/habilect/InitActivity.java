@@ -128,7 +128,6 @@ public class InitActivity extends AppCompatActivity {
         user.load(context);
         user = UserAccount.fromId(user.getId());
         // TODO
-        user.Exists = true;
         if (user.Exists) {
             //user.removeFollowee(UUID.fromString("c7d513cf-db2b-4e15-95c8-f4f8bd0bb142"));
             user.addFollowee(UUID.fromString("33ae2bf6-ef63-40f1-9671-6eb1ecae5445"));
@@ -155,6 +154,7 @@ public class InitActivity extends AppCompatActivity {
             EditText displayNameEditText = (EditText) findViewById(R.id.displayNameInput);
             Button confirmButton = (Button) findViewById(R.id.confirmButton);
 
+            UserAccount finalUser = user;
             displayNameEditText.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -163,7 +163,7 @@ public class InitActivity extends AppCompatActivity {
 
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
-                    user.setDisplayName(displayNameEditText.getText().toString());
+                    finalUser.setDisplayName(displayNameEditText.getText().toString());
                 }
 
                 @Override
@@ -172,13 +172,14 @@ public class InitActivity extends AppCompatActivity {
                 }
             });
 
+            UserAccount finalUser1 = user;
             confirmButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    user.setProfilePicture(((BitmapDrawable)profileImageView.getDrawable()).getBitmap());
+                    finalUser1.setProfilePicture(((BitmapDrawable)profileImageView.getDrawable()).getBitmap());
 
-                    user.save(context);
-                    user.sync(context);
+                    finalUser1.save(context);
+                    finalUser1.sync(context);
 
                     Intent intent = new Intent(context, HomeActivity.class);
                     startActivity(intent);

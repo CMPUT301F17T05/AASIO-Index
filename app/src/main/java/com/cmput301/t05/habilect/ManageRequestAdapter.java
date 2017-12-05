@@ -2,39 +2,37 @@ package com.cmput301.t05.habilect;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 /**
- * This adapter shows a user, their name and profile image. When the user is clicked,
- * it sends a follow request
- * @see UserAccount
- * @author rarog
- * @author ioltuszy
+ * Created by rarog on 12/4/17.
  */
-public class SocialAddFriendAdapter extends BaseAdapter implements ListAdapter {
+
+public class ManageRequestAdapter extends BaseAdapter implements ListAdapter {
     private Dialog dialog;
-    private ArrayList<UserAccount> accountList = new ArrayList<>();
+    private List<UUID> accountList = new ArrayList<>();
     private Context context;
     private ImageView profileImageView;
     private TextView profileNameTextView;
-    private Button selectButton;
+    private ImageButton acceptButton;
+    private ImageButton declineButton;
 
-    SocialAddFriendAdapter(Dialog dialog, ArrayList<UserAccount> accountList, Context context) {
+    ManageRequestAdapter(Dialog dialog, List<UUID> accountList, Context context) {
         this.dialog = dialog;
         this.accountList = accountList;
         this.context = context;
@@ -60,13 +58,16 @@ public class SocialAddFriendAdapter extends BaseAdapter implements ListAdapter {
         // inflates the view
         if (view == null) {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            view = inflater.inflate(R.layout.social_add_friend_row, null);
+            view = inflater.inflate(R.layout.manage_requests_row, null);
         }
-        UserAccount userAccount = accountList.get(i);
+        UUID uuid = accountList.get(i);
+        UserAccount userAccount = UserAccount.fromId(uuid);
 
-        profileImageView = view.findViewById(R.id.socialAddFriendImage);
-        profileNameTextView = view.findViewById(R.id.socialAddFriendName);
-        selectButton = view.findViewById(R.id.socialAddFriendSelectButton);
+
+        profileImageView = view.findViewById(R.id.manageRequestsImage);
+        profileNameTextView = view.findViewById(R.id.manageRequestsName);
+        acceptButton = view.findViewById(R.id.manageRequestAccept);
+        declineButton = view.findViewById(R.id.manageRequestDecline);
 
         profileNameTextView.setText(userAccount.getDisplayName());
 
@@ -78,16 +79,29 @@ public class SocialAddFriendAdapter extends BaseAdapter implements ListAdapter {
 
         profileImageView.setImageBitmap(scaleDownBitmap(profileImage));
 
-        selectButton.setOnClickListener(new View.OnClickListener() {
+        acceptButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 UserAccount localUser = new UserAccount();
                 localUser.load(context);
-                localUser.addFollowee(userAccount.getId());
+                userAccount.addFollower(localUser.getId());
+                userAccount.removePendingFollower(localUser.getId());
+                userAccount.sync(context);
                 localUser.save(context);
                 localUser.sync(context);
-                userAccount.addPendingFollower(localUser.getId());
+                dialog.dismiss();
+            }
+        });
+
+        declineButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                UserAccount localUser = new UserAccount();
+                localUser.load(context);
+                userAccount.removePendingFollower(localUser.getId());
                 userAccount.sync(context);
+                localUser.save(context);
+                localUser.sync(context);
                 dialog.dismiss();
             }
         });
@@ -117,5 +131,4 @@ public class SocialAddFriendAdapter extends BaseAdapter implements ListAdapter {
         DisplayMetrics metrics = context.getResources().getDisplayMetrics();
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dipValue, metrics);
     }
-
 }
