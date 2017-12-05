@@ -412,6 +412,10 @@ public class EditHabitEventDialog extends DialogFragment {
         }
     }
 
+    /**
+     *
+     * @return a String representing the comment if there is one
+     */
     private String getCommentFromBundle() {
         try {
             return getArguments().getString("Comment");
@@ -434,6 +438,10 @@ public class EditHabitEventDialog extends DialogFragment {
         }
     }
 
+    /**
+     *
+     * @return a String representing the date if there is one
+     */
     private String getDateFromBundle() {
         try {
             return getArguments().getString("Date");
@@ -443,6 +451,10 @@ public class EditHabitEventDialog extends DialogFragment {
         }
     }
 
+    /**
+     *
+     * @return a Bitmap representing the event image if there is one
+     */
     private Bitmap getEventBitmapFromBundle() {
         try {
             String imageString = getArguments().getString("Image");
@@ -455,6 +467,9 @@ public class EditHabitEventDialog extends DialogFragment {
         }
     }
 
+    /**
+     * Gets the last location
+     */
     @SuppressWarnings("MissingPermission")
     private void getLastLocation() {
         fusedLocationClient.getLastLocation()

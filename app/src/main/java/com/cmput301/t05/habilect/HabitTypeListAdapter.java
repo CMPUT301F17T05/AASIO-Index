@@ -24,16 +24,25 @@ public class HabitTypeListAdapter extends BaseAdapter implements ListAdapter {
         this.context = context;
     }
 
+    /**
+     * Returns an integer representing the size of the habit type list
+     */
     @Override
     public int getCount() {
         return typeList.size();
     }
 
+    /**
+     * Returns an Object item at a particular specified index
+     */
     @Override
     public Object getItem(int i) {
         return typeList.get(i);
     }
 
+    /**
+     * Returns a Long at a particular specified index
+     */
     @Override
     public long getItemId(int i) {
         return 0;

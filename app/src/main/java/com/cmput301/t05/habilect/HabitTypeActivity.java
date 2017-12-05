@@ -75,6 +75,7 @@ public class HabitTypeActivity extends AppCompatActivity {
     static TextView habitReason;
     static TextView habitStartDate;
     static TextView habitWeeklyPlan;
+
     /**
      * sets up the activity and grabs the habit type that was passed in through a different
      * activity

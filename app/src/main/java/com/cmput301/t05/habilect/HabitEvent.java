@@ -69,26 +69,56 @@ class HabitEvent implements Parcelable {
         }
     };
 
-    // Getters
+    /**
+     * Returns a string of the comment
+     */
     public String getComment() {
         return comment;
     }
+
+    /**
+     * Returns a string of the event picture
+     */
     public String getEventPicture() {
         return eventPicture;
     }
+
+    /**
+     * Returns a Location object of the location
+     */
     public Location getLocation() {
         return location;
     }
+
+    /**
+     * Returns a Date object of the completion date
+     */
     public Date getCompletionDate() {
         return completionDate;
     }
+
+    /**
+     * Returns a string of formatted date
+     */
     public String getCompletionDateString() {
         Locale locale = new Locale("English", "Canada");
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEEE',' MMMM d',' yyyy", locale);
         return simpleDateFormat.format(this.completionDate);
     }
+
+    /**
+     * Gets the associated habit type
+     */
     public String getHabitType() { return habitType; }
+
+    /**
+     * Gets the associated user id
+     */
     public String getUserId() { return userId; }
+
+    /**
+     * Gets the associated event bitmap
+     */
     public Bitmap getEventBitmap() {
         if (eventPicture!=null) {
             byte[] decodedByteArray = Base64.decode(eventPicture, Base64.URL_SAFE | Base64.NO_WRAP);
@@ -97,7 +127,9 @@ class HabitEvent implements Parcelable {
         return null;
     }
 
-    // Setters
+    /**
+     * Sets the comment
+     */
     public void setComment(String comment) {
         if (comment.length() > 20) {
             throw new IllegalArgumentException();
@@ -105,19 +137,33 @@ class HabitEvent implements Parcelable {
             this.comment = comment;
         }
     }
+
+    /**
+     * Sets the event picture
+     */
     public void setEventPicture(String eventPicture) {
         if (eventPicture != null) {
             this.eventPicture = eventPicture;
         }
     }
 
+    /**
+     * Sets the habit type
+     */
     public void setHabitType(String habitType) {
         this.habitType = habitType;
     }
 
+    /**
+     * Sets the location
+     */
     public void setLocation(Location location) {
         this.location = location;
     }
+
+    /**
+     * Set the completion date
+     */
     public void setCompletionDate(Date completion_date) {
         if (completion_date == null) {
             throw new IllegalArgumentException();
@@ -126,6 +172,9 @@ class HabitEvent implements Parcelable {
         }
     }
 
+    /**
+     * Sets the user id
+     */
     public void setUserId(String userId) { this.userId = userId; }
 
     @Override

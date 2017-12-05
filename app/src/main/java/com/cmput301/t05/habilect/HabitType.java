@@ -60,25 +60,46 @@ public class HabitType extends Observable implements Serializable {
         this.habitEvents = copy.habitEvents;
     }
 
-    // GETTERS
-
+    /**
+     * Returns a string of the title
+     */
     public String getTitle() {
         return this.title;
     }
+
+    /**
+     * Returns a string of the reason
+     */
     public String getReason() {
         return this.reason;
     }
+
+    /**
+     * Returns a Date of the starting date
+     */
     public Date getStartDate() {
         return this.start_date;
     }
+
+    /**
+     * Returns a String of a formatted starting date
+     */
     public String getStartDateString() {
         Locale locale = new Locale("English", "Canada");
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEEE',' MMMM d',' yyyy", locale);
         return simpleDateFormat.format(this.start_date);
     }
+
+    /**
+     * Returns a Boolean list of the weekly plan
+     */
     public boolean[] getWeeklyPlan() {
         return this.weekly_plan;
     }
+
+    /**
+     * Returns a String of the weekly plan
+     */
     public String getWeeklyPlanString() {
         String plan = "Every ";
         int count = 0;
@@ -97,16 +118,30 @@ public class HabitType extends Observable implements Serializable {
         else { plan = plan.substring(0, plan.length() - 2); }
         return plan;
     }
+
+    /**
+     * Returns a Boolean indicating the share status
+     */
     public boolean getShared() {
         return this.shared;
     }
+
+    /**
+     * Returns a list of user profiles of all followers
+     */
     public List<UserProfile> getFollowers() {
         return this.followers;
     }
-    public Date getRecentHabitEvent() { return this.recent_habit_event; }
-    public ArrayList<HabitEvent> getHabitEvents() { return this.habitEvents; }
 
-    // SETTERS
+    /**
+     * Returns the date of recent habit event
+     */
+    public Date getRecentHabitEvent() { return this.recent_habit_event; }
+
+    /**
+     * Returns an ArrayList of habit events
+     */
+    public ArrayList<HabitEvent> getHabitEvents() { return this.habitEvents; }
 
     /**
      * sets the habit type title. An IllegalArgumentException is thrown

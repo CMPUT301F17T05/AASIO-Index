@@ -61,12 +61,18 @@ public class LocationHandler implements ActivityCompat.OnRequestPermissionsResul
         return permissionState == PackageManager.PERMISSION_GRANTED;
     }
 
+    /**
+     * Initiates the location permission request
+     */
     private void startLocationPermissionRequest() {
         ActivityCompat.requestPermissions((Activity) context,
                 new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION},
                 REQUEST_PERMISSIONS_REQUEST_CODE);
     }
 
+    /**
+     * Request permissions required for the application to function
+     */
     private void requestPermissions() {
         boolean shouldProvideRationale =
                 ActivityCompat.shouldShowRequestPermissionRationale((Activity) context,

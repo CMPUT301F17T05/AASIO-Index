@@ -18,18 +18,30 @@ public class FeedEvent {
         this.event = event;
     }
 
+    /**
+     * Sets the HabitEvent event
+     */
     public void setEvent(HabitEvent event) {
         this.event = event;
     }
 
+    /**
+     * Sets the User user
+     */
     public void setUser(UserAccount user) {
         this.user = user;
     }
 
+    /**
+     * Gets the habit event
+     */
     public HabitEvent getEvent() {
         return event;
     }
 
+    /**
+     * Get the user
+     */
     public UserAccount getUser() {
         return user;
     }

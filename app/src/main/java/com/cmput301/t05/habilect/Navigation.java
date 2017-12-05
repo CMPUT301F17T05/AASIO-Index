@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Button;
 
 /**
+ * Navigation drawer that allows navigation around the application through a globally accessible drawer
  * Created by Ian on 2017-11-12.
  */
 

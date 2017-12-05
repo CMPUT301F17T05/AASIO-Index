@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 
 /**
+ * ImageViewSquare class used for assisting in creating layouts
  * Created by Ian on 2017-11-06.
  */
 
