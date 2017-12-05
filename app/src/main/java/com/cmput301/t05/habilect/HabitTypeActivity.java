@@ -35,6 +35,7 @@ import java.io.ByteArrayOutputStream;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -70,6 +71,10 @@ public class HabitTypeActivity extends AppCompatActivity {
     private static Context context;
     private static Context mContext;
     private UserAccount userAccount;
+    static TextView habitTitle;
+    static TextView habitReason;
+    static TextView habitStartDate;
+    static TextView habitWeeklyPlan;
 
     /**
      * sets up the activity and grabs the habit type that was passed in through a different
@@ -214,6 +219,10 @@ public class HabitTypeActivity extends AppCompatActivity {
 
                         habit_type = new HabitType(edited_habit_type);
 
+                        habitTitle.setText(habit_type.getTitle());
+                        habitReason.setText(habit_type.getReason());
+                        habitStartDate.setText(habit_type.getStartDateString());
+                        habitWeeklyPlan.setText(habit_type.getWeeklyPlanString());
                     } catch (IllegalArgumentException e) {
                         throw e;
                     }
@@ -274,11 +283,6 @@ public class HabitTypeActivity extends AppCompatActivity {
      * The fragment that displays all of the details of the habit type (excluding stats).
      */
     public static class HabitDetailsFragment extends Fragment {
-
-        TextView habitTitle;
-        TextView habitReason;
-        TextView habitStartDate;
-        TextView habitWeeklyPlan;
 
         public HabitDetailsFragment() {
         }
@@ -508,6 +512,14 @@ public class HabitTypeActivity extends AppCompatActivity {
         Locale locale = new Locale("English", "Canada");
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEEE',' MMMM d',' yyyy", locale);
         String currentDate = simpleDateFormat.format(new Date());
+        Calendar calendar = Calendar.getInstance();
+        int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
+        if(dayOfWeek == 1) {
+            dayOfWeek = 8;
+        }
+        if(!habit_type.getWeeklyPlan()[dayOfWeek-2]) {
+            return true;
+        }
         for(HabitEvent event : eventList) {
             if(currentDate.equals(event.getCompletionDateString())) {
                 return true;

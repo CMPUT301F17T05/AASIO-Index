@@ -317,8 +317,6 @@ public class AddHabitEventDialog extends DialogFragment {
 
                 nutrientLevel += 1;
                 userTreeGrowth.setNutrientLevel(nutrientLevel);
-                userAccount.save(context);
-                userAccount.sync(context);
 
                 Log.i("NUTRIENTLEVEL: ", "" + userAccount.getTreeGrowth().getNutrientLevel());
 
