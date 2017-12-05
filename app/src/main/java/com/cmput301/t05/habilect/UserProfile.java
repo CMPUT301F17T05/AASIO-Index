@@ -44,10 +44,6 @@ public class UserProfile {
         this.setTreeGrowth(this.Lookup(context, HABILECT_USER_TREE_GROWTH));
         this.setPreviousNutrientLevelTierRankUp(this.Lookup(context, HABILECT_USER_PREVIOUS_NUTRIENT_LEVEL_TIER_RANK_UP));
 
-        if (isNewUser) {
-            WebService.AddUserProfileTask addUserProfileTask = new WebService.AddUserProfileTask();
-            addUserProfileTask.execute(this);
-        }
     }
 
     public void setContext() {

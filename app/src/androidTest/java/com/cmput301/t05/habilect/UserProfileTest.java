@@ -16,8 +16,8 @@ import java.util.Arrays;
  */
 
 public class UserProfileTest extends ActivityInstrumentationTestCase2  {
-    private String TEST1_FILENAME = "test1.1.jpg";            // valid picture, 40000 bytes
-    private String TEST2_FILENAME = "test2.1.jpg";            // invalid picture, 31961088 bytes
+    private String test1Filename = "test1.1.jpg";            // valid picture, 40000 bytes
+    private String test2Filename = "test2.1.jpg";            // invalid picture, 31961088 bytes
 
     public UserProfileTest() {
         super(com.cmput301.t05.habilect.UserProfile.class);
@@ -58,8 +58,8 @@ public class UserProfileTest extends ActivityInstrumentationTestCase2  {
     - must be shorter than 65536 bytes
      */
     public void testDisplayImage() {
-        Bitmap testPicture1 = getBitmapFromTestAssets(TEST1_FILENAME);
-        Bitmap testPicture2 = getBitmapFromTestAssets(TEST2_FILENAME);
+        Bitmap testPicture1 = getBitmapFromTestAssets(test1Filename);
+        Bitmap testPicture2 = getBitmapFromTestAssets(test2Filename);
 
         UserProfile profile = new UserProfile(getActivity().getApplicationContext());
 
