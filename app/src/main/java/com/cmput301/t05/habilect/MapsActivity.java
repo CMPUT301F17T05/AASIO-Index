@@ -139,9 +139,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         setUserMarkers(allHabitEvents);
     }
 
-    /**
-     * Returns a HabitEvent that is associated with a specified particular title
-     */
     private HabitEvent findHabitEvent(String title) {
         for(HabitEvent event : allHabitEvents) {
             if(event.getHabitType().equals(title)) {
@@ -151,18 +148,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         return null;
     }
 
-    /**
-     *  gotoLocation with a zoomed in focus - focus downtown Edmonton
-     */
+    //gotoLocation with a zoomed in focus - focus downtown Edmonton
     private void goToLocationZoom(double lat, double lng) {
         LatLng latLng = new LatLng(lat, lng);
         CameraUpdate update = CameraUpdateFactory.newLatLngZoom(latLng, ZOOM_LEVEL);
         mMap.moveCamera(update);
     }
 
-    /**
-     * set markers for habit events that have locations
-     */
+    //set markers for habit events that have locations
     public void setUserMarkers(List<HabitEvent> eventList) {
         //add all User events Markers (azure)
         LatLng latLng = new LatLng(0, 0);
@@ -172,11 +165,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             //LatLng loc = e.getLocation();
             if (location != null){
                 latLng = new LatLng(location.getLatitude(), location.getLongitude());
-                UserAccount userAccount = UserAccount.fromId(UUID.fromString(e.getUserId()));
-                String userName = userAccount.getDisplayName();
                 mMap.addMarker(new MarkerOptions()
                         .position(latLng)
-                        .title(e.getHabitType() + " - " + userName)
+                        .title(e.getHabitType())
                         .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
             }
         }
@@ -185,9 +176,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
-    /**
-     * Sets the current location marker onto the map
-     */
     private void setCurrentLocationMarker() {
         if(lastLocation != null) {
             LatLng latLng = new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude());
@@ -200,11 +188,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     /**
-     *
-     * @param eventList the list of habit events that are to be filtered
-     * @return a list of filtered habit events
+     * From a list of events, allows user to filter by showing event only 5km away or less
+     * @param eventList the list of events you want to filer
+     * @return returns the filtered list
      */
-    public List<HabitEvent> filterBy5km(List<HabitEvent> eventList) {
+    private List<HabitEvent> filterBy5km(List<HabitEvent> eventList) {
         Iterator<HabitEvent> iterator = eventList.iterator();
         getLastLocation();
         while(iterator.hasNext()) {
@@ -217,9 +205,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         return  eventList;
     }
 
-    /**
-     * Gets the last location
-     */
     @SuppressWarnings("MissingPermission")
     private void getLastLocation() {
         fusedLocationClient.getLastLocation()
@@ -237,8 +222,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     /**
-     * Returns a boolean and calcualtes withint 5km distance
-     * */
+     * Calculates if a given event is 5km or less from your current location
+     * @param event the event you want to check
+     * @return boolean representing if it is nearby
+     */
     private boolean eventNear(HabitEvent event){
         // Adapted from https://stackoverflow.com/questions/3694380/calculating-distance-between-two-points-using-latitude-longitude-what-am-i-doi
         if (lastLocation == null || event.getLocation() == null){
