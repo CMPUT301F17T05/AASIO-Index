@@ -31,14 +31,5 @@ public class ViewPagerHomeAdapter extends FragmentPagerAdapter {
     public int getCount() {
         return NUM_PAGES;
     }
-
-    @Override
-    public int getItemPosition(Object object) {
-        HomeStatisticsFragment f = (HomeStatisticsFragment ) object;
-        if (f != null) {
-            f.update();
-        }
-        return super.getItemPosition(object);
-    }
 }
 

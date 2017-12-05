@@ -264,12 +264,6 @@ public class HomeStatisticsFragment extends Fragment {
         }
     }
 
-    public void update(){
-        FragmentTransaction t = getActivity().getSupportFragmentManager().beginTransaction();
-        t.setAllowOptimization(false);
-        t.detach(this).attach(this).commitAllowingStateLoss();
-    }
-
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
