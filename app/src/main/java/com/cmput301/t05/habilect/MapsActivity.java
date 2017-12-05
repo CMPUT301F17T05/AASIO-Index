@@ -165,11 +165,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             //LatLng loc = e.getLocation();
             if (location != null){
                 latLng = new LatLng(location.getLatitude(), location.getLongitude());
-                UserAccount userAccount = UserAccount.fromId(UUID.fromString(e.getUserId()));
-                String userName = userAccount.getDisplayName();
                 mMap.addMarker(new MarkerOptions()
                         .position(latLng)
-                        .title(e.getHabitType() + " - " + userName)
+                        .title(e.getHabitType())
                         .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
             }
         }
@@ -189,7 +187,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
-    public List<HabitEvent> filterBy5km(List<HabitEvent> eventList) {
+    /**
+     * From a list of events, allows user to filter by showing event only 5km away or less
+     * @param eventList the list of events you want to filer
+     * @return returns the filtered list
+     */
+    private List<HabitEvent> filterBy5km(List<HabitEvent> eventList) {
         Iterator<HabitEvent> iterator = eventList.iterator();
         getLastLocation();
         while(iterator.hasNext()) {
@@ -218,7 +221,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 });
     }
 
-    //for calulating within 5km distance 
+    /**
+     * Calculates if a given event is 5km or less from your current location
+     * @param event the event you want to check
+     * @return boolean representing if it is nearby
+     */
     private boolean eventNear(HabitEvent event){
         // Adapted from https://stackoverflow.com/questions/3694380/calculating-distance-between-two-points-using-latitude-longitude-what-am-i-doi
         if (lastLocation == null || event.getLocation() == null){
