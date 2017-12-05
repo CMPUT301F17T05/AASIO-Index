@@ -5,6 +5,7 @@ import android.content.ContextWrapper;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Location;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
@@ -286,6 +287,7 @@ public class UserAccount {
                                     for (JsonElement element : e.getValue().getAsJsonArray()) {
                                         JsonElement events = element.getAsJsonObject().get("habitEvents");
                                         List<Date> dates = new ArrayList<Date>();
+                                        List<Location> locations = new ArrayList<Location>();
                                         for (JsonElement member : events.getAsJsonArray()) {
                                             JsonElement date = member.getAsJsonObject().get("completionDate");
                                             if (date!=null) {
@@ -293,10 +295,21 @@ public class UserAccount {
                                                 Date parsedDate = new SimpleDateFormat("yyyy-MM-dd", Locale.CANADA).parse(stringDate);
                                                 dates.add(parsedDate);
                                             }
+                                            JsonElement location = member.getAsJsonObject().get("location");
+                                            if (location!=null) {
+                                                float latitude = Float.parseFloat(location.getAsJsonObject().get("mLatitude").getAsString());
+                                                float longitude = Float.parseFloat(location.getAsJsonObject().get("mLongitude").getAsString());
+                                                Location loc = new Location("");
+                                                loc.setLatitude(latitude);
+                                                loc.setLongitude(longitude);
+                                                locations.add(loc);
+                                            }
+
                                         }
                                         HabitType intermediateHabit = gson.fromJson(element.getAsJsonObject(), HabitType.class);
                                         for (int i = dates.size(); i<dates.size(); i++) {
                                             intermediateHabit.getHabitEvents().get(i).setCompletionDate(dates.get(i));
+                                            intermediateHabit.getHabitEvents().get(i).setLocation(locations.get(i));
                                         }
                                         habits.add(intermediateHabit);
                                     }

@@ -69,7 +69,7 @@ public class SocialFeedFragment extends Fragment {
                             HabitEvent mostRecent=null;
                             for (HabitEvent event : events) {
                                 if (event.getCompletionDate()!=null & event.getHabitType()!=null) {
-                                    HabitEvent feedHabitEvent = new HabitEvent(event.getComment(), event.getEventPicture(), event.getLocation(), event.getCompletionDate(), event.getHabitType());
+                                    HabitEvent feedHabitEvent = new HabitEvent(event.getComment(), event.getEventPicture(), event.getLocation(), event.getCompletionDate(), event.getHabitType(),user.getId().toString());
                                     if (mostRecent==null) {
                                         mostRecent = feedHabitEvent;
                                     }else if (mostRecent.getCompletionDate().before(feedHabitEvent.getCompletionDate())) {
