@@ -12,6 +12,7 @@ import android.widget.ListView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * This fragment show the user a list of their friends and allows them to find new friends
@@ -55,24 +56,36 @@ public class SocialFollowingFragment extends Fragment {
         });
 
         ArrayList<UserAccount> userAccounts = (ArrayList<UserAccount>) profile.getFollowees();
-        friendAdapter = new SocialFollowingAdapter(userAccounts, context, mContext);
+        ArrayList<UserAccount> validAccounts = new ArrayList<>();
+        for (UserAccount followee : userAccounts) {
+            if (followee != null) {
+                List<UserAccount> followers = followee.getFollowers();
+                List<UUID> followerIds = new ArrayList<UUID>();
+                for (UserAccount follower : followers) {
+                    if (follower != null) {
+                        followerIds.add(follower.getId());
+                    }
+                }
+                if (followerIds.contains(profile.getId())) {
+                    validAccounts.add(followee);
+                }
+            }
+        }
+        friendAdapter = new SocialFollowingAdapter(validAccounts, context, mContext);
         friendListView.setAdapter(friendAdapter);
-
         return rootView;
-
     }
-
     /**
      * When the user is currently on this fragment, set the title
      * @param isVisibleToUser
      */
     @Override
-    public void setUserVisibleHint(boolean isVisibleToUser){
+    public void setUserVisibleHint ( boolean isVisibleToUser){
         super.setUserVisibleHint(isVisibleToUser);
-        if(isVisibleToUser){
-            if(getActivity() != null) {
+        if (isVisibleToUser) {
+            if (getActivity() != null) {
                 getActivity().setTitle("Following");
             }
-    }
+        }
     }
 }
