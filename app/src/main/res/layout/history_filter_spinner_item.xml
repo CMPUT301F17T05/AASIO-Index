@@ -2,9 +2,9 @@
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/historyFilterSpinnerItem"
     style="?android:attr/spinnerItemStyle"
-    android:textSize="@dimen/font_size_medium"
-    android:singleLine="true"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:ellipsize="marquee"
-    android:textAlignment="inherit"/>
+    android:singleLine="true"
+    android:textAlignment="inherit"
+    android:textSize="@dimen/font_size_medium" />

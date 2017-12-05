@@ -9,32 +9,32 @@
         android:id="@+id/accept_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Accept"
-        android:fontFamily="sans-serif-thin"
-        android:textSize="50sp"
-        android:textColor="@color/white"
+        android:layout_marginTop="10dp"
         android:background="@color/colorPrimary"
-        android:layout_marginTop="10dp"/>
+        android:fontFamily="sans-serif-thin"
+        android:text="Accept"
+        android:textColor="@color/white"
+        android:textSize="50sp" />
 
     <Button
         android:id="@+id/decline_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Decline"
-        android:fontFamily="sans-serif-thin"
-        android:textSize="50sp"
-        android:textColor="@color/white"
+        android:layout_marginTop="10dp"
         android:background="@color/colorPrimary"
-        android:layout_marginTop="10dp"/>
+        android:fontFamily="sans-serif-thin"
+        android:text="Decline"
+        android:textColor="@color/white"
+        android:textSize="50sp" />
 
     <Button
         android:id="@+id/ignore_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Ignore"
-        android:fontFamily="sans-serif-thin"
-        android:textSize="50sp"
-        android:textColor="@color/white"
+        android:layout_marginTop="10dp"
         android:background="@color/colorPrimary"
-        android:layout_marginTop="10dp"/>
+        android:fontFamily="sans-serif-thin"
+        android:text="Ignore"
+        android:textColor="@color/white"
+        android:textSize="50sp" />
 </LinearLayout>

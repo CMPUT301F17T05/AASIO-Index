@@ -18,9 +18,11 @@ public class ViewPagerHomeAdapter extends FragmentPagerAdapter {
     @Override
     public Fragment getItem(int position) {
         switch (position) {
-            case 0: return new HomePrimaryFragment();
+            case 0:
+                return new HomePrimaryFragment();
 
-            case 1: return new HomeStatisticsFragment();
+            case 1:
+                return new HomeStatisticsFragment();
         }
         return null;
     }

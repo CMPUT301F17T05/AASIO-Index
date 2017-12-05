@@ -20,15 +20,16 @@ import java.util.Locale;
 
 /**
  * This allows a habit event to be displayed in a ListView.
+ *
  * @author rarog
  */
 public class HabitEventListAdapter extends BaseAdapter implements ListAdapter, Filterable {
+    public String option = "";
     private ArrayList<HabitEvent> eventList = new ArrayList<>();
     private ArrayList<HabitEvent> allEventList = new ArrayList<>();
     private Context context;
     private String habitType;
     private Date date;
-    public String option = "";
 
     HabitEventListAdapter(ArrayList<HabitEvent> eventList, Context context) {
         this.eventList = eventList;
@@ -80,7 +81,7 @@ public class HabitEventListAdapter extends BaseAdapter implements ListAdapter, F
         habitTitle.setText(event.getHabitType());
         habitDate.setText(event.getCompletionDateString());
         String comment = event.getComment();
-        if(comment.equals("")) {
+        if (comment.equals("")) {
             habitComment.setText("[no comment]");
         } else {
             habitComment.setText(comment);
@@ -102,6 +103,7 @@ public class HabitEventListAdapter extends BaseAdapter implements ListAdapter, F
 
     /**
      * Using the events information, makes a bundle so the view event activity can be properly filled
+     *
      * @param event the habit event that you want to view
      * @return a bundle that can be sent off to the activity
      */
@@ -110,7 +112,7 @@ public class HabitEventListAdapter extends BaseAdapter implements ListAdapter, F
         bundle.putString("Title", event.getHabitType());
         String dateString = new SimpleDateFormat("yyyy_MM_dd", Locale.ENGLISH).format(event.getCompletionDate());
         String comment = event.getComment();
-        if(comment.equals("")) {
+        if (comment.equals("")) {
             comment = "[no comment]";
         }
         bundle.putString("Date", event.getCompletionDateString());
@@ -123,6 +125,7 @@ public class HabitEventListAdapter extends BaseAdapter implements ListAdapter, F
     /**
      * This allows you to search of the habit event array list to filter by a keyword. It also
      * allows you to filter by habit event comments of habit types by setting the 'option' field
+     *
      * @return A filter object used internally to search over an ArrayList
      */
     @Override

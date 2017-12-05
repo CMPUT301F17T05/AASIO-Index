@@ -1,65 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@android:color/transparent"
-    android:gravity="center">
+    android:gravity="center"
+    android:orientation="vertical">
 
 
     <Button
         android:id="@+id/followRequestButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="F o l l o w  R e q u e s t"
-        android:textSize="30sp"
         android:layout_marginTop="5dp"
-        android:textColor="@color/white"
-        android:fontFamily="sans-serif-light"
         android:background="@color/colorPrimary"
-        />
+        android:fontFamily="sans-serif-light"
+        android:text="F o l l o w  R e q u e s t"
+        android:textColor="@color/white"
+        android:textSize="30sp" />
 
     <Button
         android:id="@+id/delete_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="D e l e t e"
-        android:textSize="30sp"
         android:layout_marginTop="5dp"
-        android:textColor="@color/white"
+        android:background="@color/colorPrimary"
         android:fontFamily="sans-serif-light"
-        android:background="@color/colorPrimary"/>
+        android:text="D e l e t e"
+        android:textColor="@color/white"
+        android:textSize="30sp" />
 
     <Button
         android:id="@+id/save_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="S a v e"
-        android:textSize="30sp"
         android:layout_marginTop="5dp"
-        android:textColor="@color/white"
+        android:background="@color/colorPrimary"
         android:fontFamily="sans-serif-light"
-        android:background="@color/colorPrimary"/>
+        android:text="S a v e"
+        android:textColor="@color/white"
+        android:textSize="30sp" />
 
     <Button
         android:id="@+id/follow_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="F o l l o w"
-        android:textSize="30sp"
         android:layout_marginTop="5dp"
-        android:textColor="@color/white"
+        android:background="@color/colorPrimary"
         android:fontFamily="sans-serif-light"
-        android:background="@color/colorPrimary"/>
+        android:text="F o l l o w"
+        android:textColor="@color/white"
+        android:textSize="30sp" />
 
     <Button
         android:id="@+id/cancel_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
-        android:text="C a n c e l"
-        android:textSize="30sp"
         android:layout_marginTop="5dp"
+        android:background="@color/colorPrimary"
+        android:fontFamily="sans-serif-light"
+        android:text="C a n c e l"
         android:textColor="@color/white"
-        android:fontFamily="sans-serif-light"/>
+        android:textSize="30sp" />
 </LinearLayout>

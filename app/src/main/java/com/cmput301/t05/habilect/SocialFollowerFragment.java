@@ -14,17 +14,18 @@ import java.util.ArrayList;
 
 /**
  * This fragment show the user a list of their friends and allows them to find new friends
+ *
  * @author rarog
  */
 
 public class SocialFollowerFragment extends Fragment {
     FragmentManager fragmentManager;
-    private Context mContext;
-    private Context context;
-    private ArrayList<UserAccount> friendList = new ArrayList<>();
     ListView friendListView;
     SocialFollowerAdapter friendAdapter;
     Button mangeRequestButton;
+    private Context mContext;
+    private Context context;
+    private ArrayList<UserAccount> friendList = new ArrayList<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater,
@@ -63,15 +64,16 @@ public class SocialFollowerFragment extends Fragment {
 
     /**
      * When the user is currently on this fragment, set the title
+     *
      * @param isVisibleToUser
      */
     @Override
-    public void setUserVisibleHint(boolean isVisibleToUser){
+    public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        if(isVisibleToUser){
-            if(getActivity() != null) {
+        if (isVisibleToUser) {
+            if (getActivity() != null) {
                 getActivity().setTitle("Followers");
             }
-    }
+        }
     }
 }

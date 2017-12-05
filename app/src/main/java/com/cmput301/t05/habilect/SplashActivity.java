@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 
 /**
  * This shows the splash screen of the app while data is being loaded
+ *
  * @author amwhitta
  */
 

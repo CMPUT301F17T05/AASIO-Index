@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources><string-array name="filter_options">
-    <item>Habit Comment</item>
-    <item>Habit Type</item>
-</string-array></resources>
+<resources>
+    <string-array name="filter_options">
+        <item>Habit Comment</item>
+        <item>Habit Type</item>
+    </string-array>
+</resources>

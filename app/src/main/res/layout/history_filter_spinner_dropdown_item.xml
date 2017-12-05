@@ -2,8 +2,8 @@
 <CheckedTextView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/historyFilterSpinnerDropdownItem"
     style="?android:attr/spinnerDropDownItemStyle"
-    android:textSize="@dimen/font_size_medium"
-    android:singleLine="true"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:ellipsize="marquee"/>
+    android:ellipsize="marquee"
+    android:singleLine="true"
+    android:textSize="@dimen/font_size_medium" />

@@ -20,6 +20,7 @@ import java.util.ArrayList;
 
 /**
  * This adapter takes FeedEvents and allows them to be displayed in a listView
+ *
  * @see FeedEvent
  */
 
@@ -37,6 +38,18 @@ public class SocialFeedAdapter extends BaseAdapter implements ListAdapter {
         this.feedList = feedList;
         this.context = context;
         this.mContext = mContext;
+    }
+
+    /**
+     * Converts dp to pixels. Taken from https://stackoverflow.com/questions/8399184/convert-dip-to-px-in-android
+     *
+     * @param context  the context of the activity
+     * @param dipValue the dp value you want to convert
+     * @return the converted pixel value
+     */
+    private static float dipToPixels(Context context, float dipValue) {
+        DisplayMetrics metrics = context.getResources().getDisplayMetrics();
+        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dipValue, metrics);
     }
 
     @Override
@@ -78,7 +91,7 @@ public class SocialFeedAdapter extends BaseAdapter implements ListAdapter {
         eventDateTextView.setText(feedEvent.getEvent().getCompletionDateString());
 
         Bitmap profileImage = feedEvent.getUser().getProfilePicture();
-        if(profileImage == null) {
+        if (profileImage == null) {
             profileImage = BitmapFactory.decodeResource(context.getResources(),
                     R.mipmap.no_profile_image);
         }
@@ -100,6 +113,7 @@ public class SocialFeedAdapter extends BaseAdapter implements ListAdapter {
 
     /**
      * Using the events information, makes a bundle so the view event activity can be properly filled
+     *
      * @param event the feed event that you want to view
      * @return a bundle that can be sent off to the activity
      */
@@ -108,7 +122,7 @@ public class SocialFeedAdapter extends BaseAdapter implements ListAdapter {
         bundle.putString("User Name", event.getUser().getDisplayName());
         bundle.putString("Habit Type", event.getEvent().getHabitType());
         String comment = event.getEvent().getComment();
-        if(comment.equals("")) {
+        if (comment.equals("")) {
             comment = "[no comment]";
         }
         bundle.putString("Date", event.getEvent().getCompletionDateString());
@@ -120,6 +134,7 @@ public class SocialFeedAdapter extends BaseAdapter implements ListAdapter {
     /**
      * The image must be scaled down to fit in a 24dpx24dp box, this function
      * scales down a given bitmap to that size
+     *
      * @param bitmap the bitmap that needs to be scaled down
      * @return a bitmap with the size of 24dpx24dp
      */
@@ -127,17 +142,6 @@ public class SocialFeedAdapter extends BaseAdapter implements ListAdapter {
         int width = (int) dipToPixels(context, (float) 24);
         int height = (int) dipToPixels(context, (float) 24);
         return Bitmap.createScaledBitmap(bitmap, width, height, true);
-    }
-
-    /**
-     * Converts dp to pixels. Taken from https://stackoverflow.com/questions/8399184/convert-dip-to-px-in-android
-     * @param context the context of the activity
-     * @param dipValue the dp value you want to convert
-     * @return the converted pixel value
-     */
-    private static float dipToPixels(Context context, float dipValue) {
-        DisplayMetrics metrics = context.getResources().getDisplayMetrics();
-        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dipValue, metrics);
     }
 
 }

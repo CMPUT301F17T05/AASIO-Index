@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -15,9 +14,10 @@ import java.util.UUID;
 
 /**
  * This activity allows the user to see details about one of their friends
+ *
+ * @author rarog
  * @see SocialFollowingFragment
  * @see UserAccount
- * @author rarog
  */
 public class ViewFriendActivity extends AppCompatActivity {
     private Bundle bundle;
@@ -41,8 +41,7 @@ public class ViewFriendActivity extends AppCompatActivity {
 
         Bitmap imageBitmap = null;
         UserAccount user = getUserFromBundle();
-        if (user!=null)
-        {
+        if (user != null) {
             userName.setText(user.getDisplayName());
             imageBitmap = user.getProfilePicture();
         } else {
@@ -80,14 +79,12 @@ public class ViewFriendActivity extends AppCompatActivity {
     }
 
     /**
-     *
      * @return a UserAccount representing the friend if there is one
      */
     private UserAccount getUserFromBundle() {
         try {
             return UserAccount.fromId(UUID.fromString(bundle.getString("ID")));
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return null;
         }
     }

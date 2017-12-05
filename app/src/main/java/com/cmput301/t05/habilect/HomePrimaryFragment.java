@@ -41,13 +41,13 @@ import java.util.Locale;
  * @see HabitEvent
  */
 public class HomePrimaryFragment extends Fragment {
+    private static List<HabitType> allHabitTypes;
+    private static ArrayList<HabitType> incompleteHabitTypes;
     FragmentManager fragmentManager;
+    HabitTypeListAdapter adapter;
     private Context context;
     private ListView habitTypeList;
     private UserAccount userAccount;
-    private static List<HabitType> allHabitTypes;
-    private static ArrayList<HabitType> incompleteHabitTypes;
-    HabitTypeListAdapter adapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater,
@@ -83,7 +83,7 @@ public class HomePrimaryFragment extends Fragment {
         TreeGrowth userTreeGrowth = userAccount.getTreeGrowth();
 
         // only check if did not run today already
-        if(userTreeGrowth.getLastCheckDateForPreviousDaysIncompleteHabitTypes() != Calendar.getInstance().get(Calendar.DAY_OF_WEEK)){
+        if (userTreeGrowth.getLastCheckDateForPreviousDaysIncompleteHabitTypes() != Calendar.getInstance().get(Calendar.DAY_OF_WEEK)) {
             // checks if there are incomplete habit types for the previous day. Returns the number of incomplete.
             int numberOfIncompletedHabits = getIncompleteHabitTypesFromYesterday();
             if (numberOfIncompletedHabits > 0) {
@@ -293,10 +293,10 @@ public class HomePrimaryFragment extends Fragment {
         String currentDate = simpleDateFormat.format(new Date());
         Calendar calendar = Calendar.getInstance();
         int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
-        if(dayOfWeek == 1) {
+        if (dayOfWeek == 1) {
             dayOfWeek = 8;
         }
-        if(!habit.getWeeklyPlan()[dayOfWeek-2]) {
+        if (!habit.getWeeklyPlan()[dayOfWeek - 2]) {
             return true;
         }
         for (HabitEvent event : eventList) {

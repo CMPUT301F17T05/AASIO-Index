@@ -3,10 +3,11 @@ package com.cmput301.t05.habilect;
 /**
  * This class creates events comprised of a user account and habit event, these events
  * are meant to be put into the social feed so that users can see habit events from their friends
+ *
+ * @author rarog
  * @see SocialActivity
  * @see SocialFeedAdapter
  * @see SocialFeedFragment
- * @author rarog
  */
 
 public class FeedEvent {
@@ -19,20 +20,6 @@ public class FeedEvent {
     }
 
     /**
-     * Sets the HabitEvent event
-     */
-    public void setEvent(HabitEvent event) {
-        this.event = event;
-    }
-
-    /**
-     * Sets the User user
-     */
-    public void setUser(UserAccount user) {
-        this.user = user;
-    }
-
-    /**
      * Gets the habit event
      */
     public HabitEvent getEvent() {
@@ -40,9 +27,23 @@ public class FeedEvent {
     }
 
     /**
+     * Sets the HabitEvent event
+     */
+    public void setEvent(HabitEvent event) {
+        this.event = event;
+    }
+
+    /**
      * Get the user
      */
     public UserAccount getUser() {
         return user;
+    }
+
+    /**
+     * Sets the User user
+     */
+    public void setUser(UserAccount user) {
+        this.user = user;
     }
 }

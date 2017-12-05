@@ -24,14 +24,12 @@ public class HomeActivity extends AppCompatActivity {
     private static final int REQUEST_PERMISSIONS__LOCATION_REQUEST_CODE = 10;
     private static final int REQUEST_PERMISSIONS__CAMERA_REQUEST_CODE = 20;
     private static final int REQUEST_PERMISSIONS__MULTIPLE_REQUEST_CODE = 20;
-    private boolean cameraPermission;
-    private boolean locationPermission;
-
     Activity currentActivity = this;
-
     FragmentManager fragmentManager = getSupportFragmentManager();
     ViewPagerHomeAdapter homeViewPagerAdapter;
     ActionBarDrawerToggle drawerToggle;
+    private boolean cameraPermission;
+    private boolean locationPermission;
 
     @Override
     protected void onStart() {

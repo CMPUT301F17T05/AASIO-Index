@@ -146,8 +146,7 @@ public class InitActivity extends AppCompatActivity {
             Intent intent = new Intent(context, HomeActivity.class);
             startActivity(intent);
             finish();
-        }
-        else {
+        } else {
             user.init();
 
             setContentView(R.layout.activity_init);
@@ -176,7 +175,7 @@ public class InitActivity extends AppCompatActivity {
             confirmButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    finalUser1.setProfilePicture(((BitmapDrawable)profileImageView.getDrawable()).getBitmap());
+                    finalUser1.setProfilePicture(((BitmapDrawable) profileImageView.getDrawable()).getBitmap());
 
                     finalUser1.save(context);
                     finalUser1.sync(context);
@@ -234,6 +233,7 @@ public class InitActivity extends AppCompatActivity {
             });
         }
     }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -241,7 +241,7 @@ public class InitActivity extends AppCompatActivity {
             cameraTextureView.setSurfaceTextureListener(cameraPreviewSurfaceTextureListener);
         } else {
             camera.setup(this, cameraTextureView.getWidth(), cameraTextureView.getHeight());
-            camera.open((Activity)InitActivity.this);
+            camera.open((Activity) InitActivity.this);
         }
     }
 

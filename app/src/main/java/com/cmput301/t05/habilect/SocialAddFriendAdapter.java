@@ -2,10 +2,8 @@ package com.cmput301.t05.habilect;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -22,9 +20,10 @@ import java.util.ArrayList;
 /**
  * This adapter shows a user, their name and profile image. When the user is clicked,
  * it sends a follow request
- * @see UserAccount
+ *
  * @author rarog
  * @author ioltuszy
+ * @see UserAccount
  */
 public class SocialAddFriendAdapter extends BaseAdapter implements ListAdapter {
     private Dialog dialog;
@@ -38,6 +37,18 @@ public class SocialAddFriendAdapter extends BaseAdapter implements ListAdapter {
         this.dialog = dialog;
         this.accountList = accountList;
         this.context = context;
+    }
+
+    /**
+     * Converts dp to pixels. Taken from https://stackoverflow.com/questions/8399184/convert-dip-to-px-in-android
+     *
+     * @param context  the context of the activity
+     * @param dipValue the dp value you want to convert
+     * @return the converted pixel value
+     */
+    private static float dipToPixels(Context context, float dipValue) {
+        DisplayMetrics metrics = context.getResources().getDisplayMetrics();
+        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dipValue, metrics);
     }
 
     @Override
@@ -71,7 +82,7 @@ public class SocialAddFriendAdapter extends BaseAdapter implements ListAdapter {
         profileNameTextView.setText(userAccount.getDisplayName());
 
         Bitmap profileImage = userAccount.getProfilePicture();
-        if(profileImage == null) {
+        if (profileImage == null) {
             profileImage = BitmapFactory.decodeResource(context.getResources(),
                     R.mipmap.no_profile_image);
         }
@@ -98,6 +109,7 @@ public class SocialAddFriendAdapter extends BaseAdapter implements ListAdapter {
     /**
      * The image must be scaled down to fit in a 24dpx24dp box, this function
      * scales down a given bitmap to that size
+     *
      * @param bitmap the bitmap that needs to be scaled down
      * @return a bitmap with the size of 24dpx24dp
      */
@@ -105,17 +117,6 @@ public class SocialAddFriendAdapter extends BaseAdapter implements ListAdapter {
         int width = (int) dipToPixels(context, (float) 24);
         int height = (int) dipToPixels(context, (float) 24);
         return Bitmap.createScaledBitmap(bitmap, width, height, true);
-    }
-
-    /**
-     * Converts dp to pixels. Taken from https://stackoverflow.com/questions/8399184/convert-dip-to-px-in-android
-     * @param context the context of the activity
-     * @param dipValue the dp value you want to convert
-     * @return the converted pixel value
-     */
-    private static float dipToPixels(Context context, float dipValue) {
-        DisplayMetrics metrics = context.getResources().getDisplayMetrics();
-        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dipValue, metrics);
     }
 
 }

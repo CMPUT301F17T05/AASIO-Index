@@ -35,6 +35,7 @@ import java.util.Locale;
  */
 // TODO: get rid of the user profile and replace with user account
 public class HabitEventEditListAdapter extends BaseAdapter implements ListAdapter {
+    public ImageButton deleteButton;
     // all of the views in the event that we need to populate
     private ArrayList<HabitEvent> eventList = new ArrayList<>();
     private UserAccount userAccount;
@@ -45,7 +46,6 @@ public class HabitEventEditListAdapter extends BaseAdapter implements ListAdapte
     private Context mContext;
     private String habitType;
     private Date date;
-    public ImageButton deleteButton;
 
     HabitEventEditListAdapter(String habitType, Context context, Context mContext) {
         this.context = context;
@@ -106,7 +106,7 @@ public class HabitEventEditListAdapter extends BaseAdapter implements ListAdapte
         habitTitle.setText(event.getHabitType());
         habitDate.setText(event.getCompletionDateString());
         String comment = event.getComment();
-        if(comment.equals("")) {
+        if (comment.equals("")) {
             habitComment.setText("[no comment]");
         } else {
             habitComment.setText(comment);
@@ -191,14 +191,15 @@ public class HabitEventEditListAdapter extends BaseAdapter implements ListAdapte
 
     /**
      * Finds the habit type object from a list given it title
+     *
      * @param habitType the title of the habit type you want to find
      * @return The habit type that you wanted
      */
     private HabitType findRelatedHabitType(String habitType) {
         Iterator<HabitType> iterator = habitTypeList.iterator();
-        while(iterator.hasNext()) {
+        while (iterator.hasNext()) {
             HabitType habit = iterator.next();
-            if(habit.getTitle().equals(habitType)) {
+            if (habit.getTitle().equals(habitType)) {
                 return habit;
             }
         }

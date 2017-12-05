@@ -18,21 +18,21 @@ public final class MathUtility {
         Handler requestHandler = new Handler(handlerThread.getLooper());
 
         final long startTime = System.currentTimeMillis();
-        for (int i=0; i<steps; i++) {
+        for (int i = 0; i < steps; i++) {
             final int finalI = i;
             Runnable myRunnable = new Runnable() {
                 @Override
                 public void run() {
                     try {
-                        sleep(totalDuration/steps);
+                        sleep(totalDuration / steps);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                     try {
                         Message msg = new Message();
-                        msg.obj = new long[] {startTime, totalDuration, finalI};
+                        msg.obj = new long[]{startTime, totalDuration, finalI};
                         handler.sendMessage(msg);
-                        if (finalI == steps-1) {
+                        if (finalI == steps - 1) {
                             Message finishedMsg = new Message();
                             msg.obj = null;
                             handler.sendMessage(msg);

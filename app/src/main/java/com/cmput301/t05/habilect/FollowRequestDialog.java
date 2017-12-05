@@ -14,6 +14,7 @@ import android.widget.Button;
 
 public class FollowRequestDialog extends DialogFragment {
     private OnFollowRequestListener onFollowRequestListener;
+
     public void setOnFollowRequestListener(OnFollowRequestListener onFollowRequestListener) {
         this.onFollowRequestListener = onFollowRequestListener;
     }
@@ -34,21 +35,21 @@ public class FollowRequestDialog extends DialogFragment {
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.dialog_followrequest, null);
         dialog.setContentView(view);
-        ((Button)dialog.findViewById(R.id.accept_button)).setOnClickListener(new View.OnClickListener() {
+        ((Button) dialog.findViewById(R.id.accept_button)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 onFollowRequestListener.OnAccepted();
                 dialog.dismiss();
             }
         });
-        ((Button)dialog.findViewById(R.id.decline_button)).setOnClickListener(new View.OnClickListener() {
+        ((Button) dialog.findViewById(R.id.decline_button)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 onFollowRequestListener.OnDeclined();
                 dialog.dismiss();
             }
         });
-        ((Button)dialog.findViewById(R.id.ignore_button)).setOnClickListener(new View.OnClickListener() {
+        ((Button) dialog.findViewById(R.id.ignore_button)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 onFollowRequestListener.OnIgnored();

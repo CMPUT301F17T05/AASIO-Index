@@ -16,17 +16,18 @@ import java.util.UUID;
 
 /**
  * This fragment show the user a list of their friends and allows them to find new friends
+ *
  * @author rarog
  */
 
 public class SocialFollowingFragment extends Fragment {
     FragmentManager fragmentManager;
-    private Context mContext;
-    private Context context;
-    private ArrayList<UserAccount> friendList = new ArrayList<>();
     ListView friendListView;
     Button socialFriendFindFriendButton;
     SocialFollowingAdapter friendAdapter;
+    private Context mContext;
+    private Context context;
+    private ArrayList<UserAccount> friendList = new ArrayList<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater,
@@ -75,12 +76,14 @@ public class SocialFollowingFragment extends Fragment {
         friendListView.setAdapter(friendAdapter);
         return rootView;
     }
+
     /**
      * When the user is currently on this fragment, set the title
+     *
      * @param isVisibleToUser
      */
     @Override
-    public void setUserVisibleHint ( boolean isVisibleToUser){
+    public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         if (isVisibleToUser) {
             if (getActivity() != null) {

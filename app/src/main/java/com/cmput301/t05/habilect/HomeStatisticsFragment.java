@@ -20,17 +20,19 @@ import java.util.Map;
 /**
  * Shows the current progression of the user's tree as well as total nutrient level and the level needed for the next rank.
  *
- *  @author ioltuszy
- *
- *  @see TreeGrowth
+ * @author ioltuszy
+ * @see TreeGrowth
  */
 
 
 public class HomeStatisticsFragment extends Fragment {
     FragmentManager fragmentManager;
+    TextView nutrientLevelTextView;
+    ProgressBar nutrientLevelProgressBar;
+    TextView nutrientLevelToNextTierTextView;
+    ImageView treeGrowthImageView;
     private Context context;
     private UserAccount userAccount;
-
     private Map<Integer, Integer> tierThresholds = new HashMap<Integer, Integer>() {{
         put(1, 10);
         put(2, 21);
@@ -49,11 +51,6 @@ public class HomeStatisticsFragment extends Fragment {
         put(15, 408);
         put(16, 478);
     }};
-
-    TextView nutrientLevelTextView;
-    ProgressBar nutrientLevelProgressBar;
-    TextView nutrientLevelToNextTierTextView;
-    ImageView treeGrowthImageView;
 
     @Override
     public View onCreateView(LayoutInflater inflater,
@@ -78,6 +75,7 @@ public class HomeStatisticsFragment extends Fragment {
 
         return rootView;
     }
+
     @Override
     public void onResume() {
         super.onResume();
@@ -156,19 +154,19 @@ public class HomeStatisticsFragment extends Fragment {
                 dialog.dismiss();
             }
         });
-        if(tier == 4){
+        if (tier == 4) {
             ImageView completedTreeImage = new ImageView(context);
             completedTreeImage.setImageResource(R.drawable.green_3);
             builder.setView(completedTreeImage);
-        } else if(tier == 8){
+        } else if (tier == 8) {
             ImageView completedTreeImage = new ImageView(context);
             completedTreeImage.setImageResource(R.drawable.orange_3);
             builder.setView(completedTreeImage);
-        }else if(tier == 12){
+        } else if (tier == 12) {
             ImageView completedTreeImage = new ImageView(context);
             completedTreeImage.setImageResource(R.drawable.purple_3);
             builder.setView(completedTreeImage);
-        }else if(tier == 16){
+        } else if (tier == 16) {
             ImageView completedTreeImage = new ImageView(context);
             completedTreeImage.setImageResource(R.drawable.rainbow_3);
             builder.setView(completedTreeImage);
@@ -182,7 +180,7 @@ public class HomeStatisticsFragment extends Fragment {
      * Checks the nutrient level and tier to call corresponding helper methods as well as set ImageView.
      *
      * @param nutrientLevel the current nutrientLevel of the user
-     * @param tier the tier to be initialized
+     * @param tier          the tier to be initialized
      */
     private void checkAndAdjustTierProperties(int nutrientLevel, int tier) {
         Log.i("INFORMATION", "nutlevel: " + nutrientLevel + " tier: " + tier);
@@ -198,17 +196,17 @@ public class HomeStatisticsFragment extends Fragment {
             userAccount.sync(context);
             buildRankUpDialog(tier);
         }
-        if(tier == 16){
+        if (tier == 16) {
             nutrientLevelProgressBar.setMax(tierThresholds.get(tier));
             nutrientLevelProgressBar.setProgress(nutrientLevel);
             nutrientLevelToNextTierTextView.setText("MAXED");
             treeGrowthImageView.setImageResource(R.drawable.all_trees_completed);
-        }else{
+        } else {
             nutrientLevelProgressBar.setMax(tierThresholds.get(tier + 1));
             nutrientLevelProgressBar.setProgress(nutrientLevel);
             nutrientLevelToNextTierTextView.setText(nutrientLevel + "/" + tierThresholds.get(tier + 1));
 
-            switch(tier){
+            switch (tier) {
                 case 1:
                     treeGrowthImageView.setImageResource(R.drawable.level_02);
                     break;

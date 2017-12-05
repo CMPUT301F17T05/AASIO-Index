@@ -8,7 +8,6 @@ import android.os.Parcelable;
 import android.util.Base64;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -17,14 +16,25 @@ import java.util.Locale;
  * describes what happened by a user supplied comment and photo. If the user wishes, they can
  * enable their location to track it on a map and so that their friends can view their events
  * as well
- * @see HabitType
+ *
  * @author ioltuszy
  * @author amwhitta
+ * @see HabitType
  */
 
 class HabitEvent implements Parcelable {
-    static int MAX_COMMENT_LENGTH = 20;
+    public static final Creator<HabitEvent> CREATOR = new Creator<HabitEvent>() {
+        @Override
+        public HabitEvent createFromParcel(Parcel in) {
+            return new HabitEvent(in);
+        }
 
+        @Override
+        public HabitEvent[] newArray(int size) {
+            return new HabitEvent[size];
+        }
+    };
+    static int MAX_COMMENT_LENGTH = 20;
     private String comment;
     private String eventPicture;
     private Location location;
@@ -34,11 +44,12 @@ class HabitEvent implements Parcelable {
 
     /**
      * Creates a new habit event
-     * @param comment comment that goes with the event. Must be less than 20 characters
-     * @param eventPicture Base64 encoded string for the bitmap image of an event
-     * @param location Location object of the event
+     *
+     * @param comment        comment that goes with the event. Must be less than 20 characters
+     * @param eventPicture   Base64 encoded string for the bitmap image of an event
+     * @param location       Location object of the event
      * @param completionDate Date object of the event
-     * @param habitType The associated habitType for the event
+     * @param habitType      The associated habitType for the event
      */
     public HabitEvent(String comment, String eventPicture, Location location, Date completionDate, String habitType, String userId) {
         this.setComment(comment);
@@ -57,74 +68,11 @@ class HabitEvent implements Parcelable {
         userId = in.readString();
     }
 
-    public static final Creator<HabitEvent> CREATOR = new Creator<HabitEvent>() {
-        @Override
-        public HabitEvent createFromParcel(Parcel in) {
-            return new HabitEvent(in);
-        }
-
-        @Override
-        public HabitEvent[] newArray(int size) {
-            return new HabitEvent[size];
-        }
-    };
-
     /**
      * Returns a string of the comment
      */
     public String getComment() {
         return comment;
-    }
-
-    /**
-     * Returns a string of the event picture
-     */
-    public String getEventPicture() {
-        return eventPicture;
-    }
-
-    /**
-     * Returns a Location object of the location
-     */
-    public Location getLocation() {
-        return location;
-    }
-
-    /**
-     * Returns a Date object of the completion date
-     */
-    public Date getCompletionDate() {
-        return completionDate;
-    }
-
-    /**
-     * Returns a string of formatted date
-     */
-    public String getCompletionDateString() {
-        Locale locale = new Locale("English", "Canada");
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEEE',' MMMM d',' yyyy", locale);
-        return simpleDateFormat.format(this.completionDate);
-    }
-
-    /**
-     * Gets the associated habit type
-     */
-    public String getHabitType() { return habitType; }
-
-    /**
-     * Gets the associated user id
-     */
-    public String getUserId() { return userId; }
-
-    /**
-     * Gets the associated event bitmap
-     */
-    public Bitmap getEventBitmap() {
-        if (eventPicture!=null) {
-            byte[] decodedByteArray = Base64.decode(eventPicture, Base64.URL_SAFE | Base64.NO_WRAP);
-            return BitmapFactory.decodeByteArray(decodedByteArray, 0, decodedByteArray.length);
-        }
-        return null;
     }
 
     /**
@@ -139,6 +87,13 @@ class HabitEvent implements Parcelable {
     }
 
     /**
+     * Returns a string of the event picture
+     */
+    public String getEventPicture() {
+        return eventPicture;
+    }
+
+    /**
      * Sets the event picture
      */
     public void setEventPicture(String eventPicture) {
@@ -148,10 +103,10 @@ class HabitEvent implements Parcelable {
     }
 
     /**
-     * Sets the habit type
+     * Returns a Location object of the location
      */
-    public void setHabitType(String habitType) {
-        this.habitType = habitType;
+    public Location getLocation() {
+        return location;
     }
 
     /**
@@ -159,6 +114,13 @@ class HabitEvent implements Parcelable {
      */
     public void setLocation(Location location) {
         this.location = location;
+    }
+
+    /**
+     * Returns a Date object of the completion date
+     */
+    public Date getCompletionDate() {
+        return completionDate;
     }
 
     /**
@@ -173,9 +135,52 @@ class HabitEvent implements Parcelable {
     }
 
     /**
+     * Returns a string of formatted date
+     */
+    public String getCompletionDateString() {
+        Locale locale = new Locale("English", "Canada");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEEE',' MMMM d',' yyyy", locale);
+        return simpleDateFormat.format(this.completionDate);
+    }
+
+    /**
+     * Gets the associated habit type
+     */
+    public String getHabitType() {
+        return habitType;
+    }
+
+    /**
+     * Sets the habit type
+     */
+    public void setHabitType(String habitType) {
+        this.habitType = habitType;
+    }
+
+    /**
+     * Gets the associated user id
+     */
+    public String getUserId() {
+        return userId;
+    }
+
+    /**
      * Sets the user id
      */
-    public void setUserId(String userId) { this.userId = userId; }
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    /**
+     * Gets the associated event bitmap
+     */
+    public Bitmap getEventBitmap() {
+        if (eventPicture != null) {
+            byte[] decodedByteArray = Base64.decode(eventPicture, Base64.URL_SAFE | Base64.NO_WRAP);
+            return BitmapFactory.decodeByteArray(decodedByteArray, 0, decodedByteArray.length);
+        }
+        return null;
+    }
 
     @Override
     public int describeContents() {

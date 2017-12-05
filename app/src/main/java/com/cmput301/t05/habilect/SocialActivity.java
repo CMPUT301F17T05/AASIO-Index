@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 
 /**
  * This activity handles the social fragments
+ *
  * @author rarog
  */
 public class SocialActivity extends AppCompatActivity {

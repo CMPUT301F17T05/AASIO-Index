@@ -32,7 +32,7 @@ public class AddHabitTypeDialog extends DialogFragment {
     private EditText habitTitleText;
     private EditText habitReasonText;
     private DatePicker habitStartDate;
-    private boolean[] weekly_plan = {true,true,true,true,true,true,true}; // initialize all checkboxes to checked
+    private boolean[] weekly_plan = {true, true, true, true, true, true, true}; // initialize all checkboxes to checked
 
     public void setHabitTypeListener(HabitTypeListener habitTypeListener) {
         this.habitTypeListener = habitTypeListener;
@@ -52,7 +52,7 @@ public class AddHabitTypeDialog extends DialogFragment {
      * ADD BUTTON: will retrieve the information from the view and pass it on
      * to the habitTypeListener, which will try creating a new HabitType with the given
      * information. If any errors are thrown, they will be caught here.
-     *
+     * <p>
      * DELETE BUTTON: N/A here.
      *
      * @see HomePrimaryFragment
@@ -88,50 +88,50 @@ public class AddHabitTypeDialog extends DialogFragment {
         checkboxes.add(checkSunday);
         setListeners(checkboxes);
 
-        ((Button)dialog.findViewById(R.id.add_button))
-            .setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Context context = getActivity();
-                    String title = habitTitleText.getText().toString();
-                    String reason = habitReasonText.getText().toString();
-                    Calendar calendar = Calendar.getInstance();
-                    calendar.set(habitStartDate.getYear(),
-                            habitStartDate.getMonth(), habitStartDate.getDayOfMonth());
-                    Date start_date = calendar.getTime();
+        ((Button) dialog.findViewById(R.id.add_button))
+                .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Context context = getActivity();
+                        String title = habitTitleText.getText().toString();
+                        String reason = habitReasonText.getText().toString();
+                        Calendar calendar = Calendar.getInstance();
+                        calendar.set(habitStartDate.getYear(),
+                                habitStartDate.getMonth(), habitStartDate.getDayOfMonth());
+                        Date start_date = calendar.getTime();
 
-                    try {
-                        habitTypeListener.OnAddedOrEdited(title, reason, start_date, weekly_plan);
-                        dialog.dismiss();
-                    } catch (IllegalArgumentException e) {
-                        if (e.getMessage().equals("title")) {
-                            habitTitleText.setError("This field cannot be blank, and cannot be greater than 20 characters. The title has to be unique.");
-                        }
-                        if (e.getMessage().equals("reason")) {
-                            habitReasonText.setError("This field cannot be blank, and cannot be greater than 30 characters.");
-                        }
-                        if (e.getMessage().equals("plan")) {
-                            AlertDialog alertDialog = new AlertDialog.Builder(context).create();
-                            alertDialog.setMessage("You must select at least one day for your weekly plan.");
-                            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                                    new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            dialog.dismiss();
-                                        }
-                                    });
-                            alertDialog.show();
+                        try {
+                            habitTypeListener.OnAddedOrEdited(title, reason, start_date, weekly_plan);
+                            dialog.dismiss();
+                        } catch (IllegalArgumentException e) {
+                            if (e.getMessage().equals("title")) {
+                                habitTitleText.setError("This field cannot be blank, and cannot be greater than 20 characters. The title has to be unique.");
+                            }
+                            if (e.getMessage().equals("reason")) {
+                                habitReasonText.setError("This field cannot be blank, and cannot be greater than 30 characters.");
+                            }
+                            if (e.getMessage().equals("plan")) {
+                                AlertDialog alertDialog = new AlertDialog.Builder(context).create();
+                                alertDialog.setMessage("You must select at least one day for your weekly plan.");
+                                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                                        new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                dialog.dismiss();
+                                            }
+                                        });
+                                alertDialog.show();
+                            }
                         }
                     }
-                }
-            });
+                });
 
-        ((Button)dialog.findViewById(R.id.cancel_button))
+        ((Button) dialog.findViewById(R.id.cancel_button))
                 .setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.dismiss();
-            }
-        });
+                    @Override
+                    public void onClick(View view) {
+                        dialog.dismiss();
+                    }
+                });
 
         return dialog;
     }
@@ -145,7 +145,7 @@ public class AddHabitTypeDialog extends DialogFragment {
     public void onCheckboxClicked(View view) {
         boolean checked = ((CheckBox) view).isChecked();
         // Check which checkbox was clicked
-        switch(view.getId()) {
+        switch (view.getId()) {
             case R.id.checkBoxMonday:
                 weekly_plan[0] = checked;
                 break;
@@ -175,7 +175,7 @@ public class AddHabitTypeDialog extends DialogFragment {
      * Sets OnClickListeners for each CheckBox object in the ArrayList. The onClick method
      * is overridden with the custom method onCheckboxClicked.
      *
-     * @param checkboxes            an ArrayList of CheckBox objects in the view that need listeners
+     * @param checkboxes an ArrayList of CheckBox objects in the view that need listeners
      */
     public void setListeners(ArrayList<CheckBox> checkboxes) {
         for (CheckBox c : checkboxes) {

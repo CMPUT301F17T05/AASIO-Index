@@ -46,65 +46,11 @@ public class UserProfile {
 
     }
 
-    public void setContext() {
-        context = null;
-    }
-
-    public String getDisplayName() {
-        return displayName;
-    }
-
-    public Bitmap getProfilePicture() {
-        if (profilePicture==null) {
-            return null;
-        }
-        return BitmapFactory.decodeByteArray(Base64.decode(profilePicture, Base64.DEFAULT), 0, Base64.decode(profilePicture, Base64.DEFAULT).length);
-    }
-
-    public String getIdentifier() {
-        return identifier;
-    }
-
-    public List<HabitType> getHabitTypesList() {
-        return habitTypesList;
-    }
-
-    public void addPlans(HabitType habitType){
-        this.habitTypesList.add(habitType);
-    }
-
-    public void deletePlans(HabitType habitType){
-        this.habitTypesList.remove(habitType);
-    }
-
-    public void setHabitTypesList(List<HabitType> habitTypesList) {
-        this.habitTypesList = habitTypesList;
-    }
-
-    public void setDisplayName(String displayName) {
-        this.displayName = displayName;
-    }
-
-    public void setProfilePicture(String encodedProfilePicture) { this.profilePicture = encodedProfilePicture; }
-
-    public void setIdentifier(String identifier) {
-        this.identifier = identifier;
-    }
-
-    public void setTreeGrowth(String nutrientLevel){
-        this.treeGrowth.setNutrientLevel(Integer.parseInt(nutrientLevel));
-    }
-
-    public void setPreviousNutrientLevelTierRankUp(String level){
-        this.treeGrowth.setPreviousNutrientLevelTierRankUp(Integer.parseInt(level));
-    }
-
     /**
      * Checks locally if there are values set for the specified preferenceKey.
      *
-     * @param context the current application context
+     * @param context       the current application context
      * @param preferenceKey the key to search for locally
-     *
      * @return the value if found or a default value
      */
     static String Lookup(Context context, String preferenceKey) {
@@ -146,5 +92,60 @@ public class UserProfile {
             return newPreference;
         }
         return preference;
+    }
+
+    public void setContext() {
+        context = null;
+    }
+
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
+
+    public Bitmap getProfilePicture() {
+        if (profilePicture == null) {
+            return null;
+        }
+        return BitmapFactory.decodeByteArray(Base64.decode(profilePicture, Base64.DEFAULT), 0, Base64.decode(profilePicture, Base64.DEFAULT).length);
+    }
+
+    public void setProfilePicture(String encodedProfilePicture) {
+        this.profilePicture = encodedProfilePicture;
+    }
+
+    public String getIdentifier() {
+        return identifier;
+    }
+
+    public void setIdentifier(String identifier) {
+        this.identifier = identifier;
+    }
+
+    public List<HabitType> getHabitTypesList() {
+        return habitTypesList;
+    }
+
+    public void setHabitTypesList(List<HabitType> habitTypesList) {
+        this.habitTypesList = habitTypesList;
+    }
+
+    public void addPlans(HabitType habitType) {
+        this.habitTypesList.add(habitType);
+    }
+
+    public void deletePlans(HabitType habitType) {
+        this.habitTypesList.remove(habitType);
+    }
+
+    public void setTreeGrowth(String nutrientLevel) {
+        this.treeGrowth.setNutrientLevel(Integer.parseInt(nutrientLevel));
+    }
+
+    public void setPreviousNutrientLevelTierRankUp(String level) {
+        this.treeGrowth.setPreviousNutrientLevelTierRankUp(Integer.parseInt(level));
     }
 }

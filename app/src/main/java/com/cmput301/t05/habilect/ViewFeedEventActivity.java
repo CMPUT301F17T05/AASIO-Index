@@ -12,9 +12,10 @@ import android.widget.TextView;
 
 /**
  * This activity shows the details of a particular feed event
+ *
+ * @author rarog
  * @see FeedEvent
  * @see SocialFeedFragment
- * @author rarog
  */
 public class ViewFeedEventActivity extends AppCompatActivity {
     private TextView userNameTextView;
@@ -60,71 +61,61 @@ public class ViewFeedEventActivity extends AppCompatActivity {
     }
 
     /**
-     *
      * @return a String representing the habit event title if there is one
      */
     private String getHabitTypeFromBundle() {
         try {
             return bundle.getString("Habit Type");
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return "";
         }
     }
 
     /**
-     *
      * @return a String representing the habit event title if there is one
      */
     private String getUserNameFromBundle() {
         try {
             return bundle.getString("User Name");
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return "";
         }
     }
 
     /**
-     *
      * @return a Bitmap representing the habit event image
      */
     private Bitmap getEventImageFromBundle() {
         try {
             String encodedImage = bundle.getString("Image");
-            if (encodedImage!=null) {
+            if (encodedImage != null) {
                 byte[] decodedByteArray = Base64.decode(encodedImage, Base64.URL_SAFE | Base64.NO_WRAP);
                 return BitmapFactory.decodeByteArray(decodedByteArray, 0, decodedByteArray.length);
             }
             return null;
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return null;
         }
     }
 
     /**
-     *
      * @return a String representing the habit event comment if there is one
      */
     private String getCommentFromBundle() {
         try {
             return bundle.getString("Comment");
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return "";
         }
     }
 
     /**
-     *
      * @return a String representing the habit event date if there is one
      */
     private String getDateFromBundle() {
         try {
             return bundle.getString("Date");
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return "";
         }
     }

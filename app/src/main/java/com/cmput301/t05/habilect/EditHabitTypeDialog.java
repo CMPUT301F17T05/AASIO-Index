@@ -57,7 +57,7 @@ public class EditHabitTypeDialog extends DialogFragment {
      * ADD BUTTON: will retrieve the information from the view and pass it on
      * to the habitTypeListener, which will try creating a new HabitType with the given
      * information. If any errors are thrown, they will be caught here.
-     *
+     * <p>
      * CANCEL BUTTON: closes the dialog.
      *
      * @see HomePrimaryFragment
@@ -105,7 +105,7 @@ public class EditHabitTypeDialog extends DialogFragment {
         int day = calendar.get(Calendar.DAY_OF_MONTH);
         habitStartDate.updateDate(year, month, day);
 
-        ((Button)dialog.findViewById(R.id.add_button))
+        ((Button) dialog.findViewById(R.id.add_button))
                 .setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -141,7 +141,7 @@ public class EditHabitTypeDialog extends DialogFragment {
                     }
                 });
 
-        ((Button)dialog.findViewById(R.id.cancel_button))
+        ((Button) dialog.findViewById(R.id.cancel_button))
                 .setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -162,15 +162,16 @@ public class EditHabitTypeDialog extends DialogFragment {
 
     /**
      * Finds the habit type object from a list given its title
+     *
      * @param habitList the list of habits you want to search over
-     * @param title the title of the habit type
+     * @param title     the title of the habit type
      * @return
      */
     private HabitType findHabitType(List<HabitType> habitList, String title) {
         Iterator<HabitType> iterator = habitList.iterator();
-        while(iterator.hasNext()) {
+        while (iterator.hasNext()) {
             HabitType habit = iterator.next();
-            if(habit.getTitle().equals(title)) {
+            if (habit.getTitle().equals(title)) {
                 return habit;
             }
         }
@@ -187,7 +188,7 @@ public class EditHabitTypeDialog extends DialogFragment {
     public void onCheckboxClicked(View view) {
         boolean checked = ((CheckBox) view).isChecked();
         // Check which checkbox was clicked
-        switch(view.getId()) {
+        switch (view.getId()) {
             case R.id.checkBoxMonday:
                 weekly_plan[0] = checked;
                 break;
@@ -217,7 +218,7 @@ public class EditHabitTypeDialog extends DialogFragment {
      * Sets OnClickListeners for each CheckBox object in the ArrayList. The onClick method
      * is overridden with the custom method onCheckboxClicked.
      *
-     * @param checkboxes            an ArrayList of CheckBox objects in the view that need listeners
+     * @param checkboxes an ArrayList of CheckBox objects in the view that need listeners
      */
     public void setListenersAndValues(ArrayList<CheckBox> checkboxes) {
         int i = 0;
