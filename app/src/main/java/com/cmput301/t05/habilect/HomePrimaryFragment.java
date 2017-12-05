@@ -291,6 +291,14 @@ public class HomePrimaryFragment extends Fragment {
         Locale locale = new Locale("English", "Canada");
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEEE',' MMMM d',' yyyy", locale);
         String currentDate = simpleDateFormat.format(new Date());
+        Calendar calendar = Calendar.getInstance();
+        int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
+        if(dayOfWeek == 1) {
+            dayOfWeek = 8;
+        }
+        if(!habit.getWeeklyPlan()[dayOfWeek-2]) {
+            return true;
+        }
         for (HabitEvent event : eventList) {
             if (currentDate.equals(event.getCompletionDateString())) {
                 return true;
