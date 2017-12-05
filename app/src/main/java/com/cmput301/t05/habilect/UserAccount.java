@@ -215,6 +215,131 @@ public class UserAccount {
         return this;
     }
 
+    public static List<UserAccount> findSimilarDisplayNames(String displayName) {
+        SearchResult result = null;
+        List<UserAccount> userAccountListResult = new ArrayList<UserAccount>();
+        try {
+            result = new findSimilarDisplayNamesTask().execute(displayName).get();
+            if (result!=null) {
+                JsonObject json = result.getJsonObject();
+                JsonObject hits = json.getAsJsonObject("hits");
+                JsonArray hitArray = hits.getAsJsonArray("hits");
+                for (Object hit : hitArray) {
+                    if (hit instanceof JsonObject) {
+                        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ").create();
+                        JsonObject object = (JsonObject) hit;
+                        JsonObject source = object.getAsJsonObject("_source");
+                        UserAccount user = new UserAccount();
+                        user.Followees = new ArrayList<UUID>();
+                        user.Followers = new ArrayList<UUID>();
+                        user.Habits = new ArrayList<HabitType>();
+                        user.treeGrowth = new TreeGrowth();
+                        for (Map.Entry<String, JsonElement> e : source.entrySet()) {
+                            switch (e.getKey()) {
+                                case "id":
+                                    user.Id = UUID.fromString(e.getValue().getAsString());
+                                    break;
+                                case "display_name":
+                                    user.DisplayName = e.getValue().getAsString();
+                                    break;
+                                case "profile_picture":
+                                    user.ProfilePicture = e.getValue().getAsString();
+                                    break;
+                                case "followees":
+                                    List<UUID> followees = new ArrayList<UUID>();
+                                    for (JsonElement element : e.getValue().getAsJsonArray()) {
+                                        followees.add(gson.fromJson(element.getAsString(), UUID.class));
+                                    }
+                                    user.Followees = followees;
+                                    break;
+                                case "followers":
+                                    List<UUID> followers = new ArrayList<UUID>();
+                                    for (JsonElement element : e.getValue().getAsJsonArray()) {
+                                        followers.add(gson.fromJson(element.getAsString(), UUID.class));
+                                    }
+                                    user.Followers = followers;
+                                    break;
+                                case "habits":
+                                    List<HabitType> habits = new ArrayList<HabitType>();
+                                    for (JsonElement element : e.getValue().getAsJsonArray()) {
+                                        JsonElement events = element.getAsJsonObject().get("habitEvents");
+                                        List<Date> dates = new ArrayList<Date>();
+                                        List<Location> locations = new ArrayList<Location>();
+                                        for (JsonElement member : events.getAsJsonArray()) {
+                                            JsonElement date = member.getAsJsonObject().get("completionDate");
+                                            if (date!=null) {
+                                                String stringDate = date.getAsString();
+                                                Date parsedDate = null;
+                                                try {
+                                                    parsedDate = new SimpleDateFormat("yyyy-MM-dd", Locale.CANADA).parse(stringDate);
+                                                } catch (ParseException e1) {
+                                                    e1.printStackTrace();
+                                                }
+                                                dates.add(parsedDate);
+                                            }
+                                            JsonElement location = member.getAsJsonObject().get("location");
+                                            if (location!=null) {
+                                                float latitude = Float.parseFloat(location.getAsJsonObject().get("mLatitude").getAsString());
+                                                float longitude = Float.parseFloat(location.getAsJsonObject().get("mLongitude").getAsString());
+                                                Location loc = new Location("");
+                                                loc.setLatitude(latitude);
+                                                loc.setLongitude(longitude);
+                                                locations.add(loc);
+                                            }
+
+                                        }
+                                        HabitType intermediateHabit = gson.fromJson(element.getAsJsonObject(), HabitType.class);
+                                        for (int i = dates.size(); i<dates.size(); i++) {
+                                            intermediateHabit.getHabitEvents().get(i).setCompletionDate(dates.get(i));
+                                            intermediateHabit.getHabitEvents().get(i).setLocation(locations.get(i));
+                                        }
+                                        habits.add(intermediateHabit);
+                                    }
+                                    user.Habits = habits;
+                                    break;
+                                case "nutrientLevel":
+                                    user.treeGrowth.setNutrientLevel(e.getValue().getAsInt());
+                                    break;
+                                case "previousNutrientLevelTierRankUp":
+                                    user.treeGrowth.setPreviousNutrientLevelTierRankUp(e.getValue().getAsInt());
+                                    break;
+                            }
+                        }
+                        user.Exists = true;
+                        userAccountListResult.add(user);
+                    }
+                }
+                return userAccountListResult;
+            }
+        }
+        catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private static class findSimilarDisplayNamesTask extends AsyncTask<String, Void, SearchResult> {
+        @Override
+        protected SearchResult doInBackground(String... displayNames) {
+            String source = "{\n" + " \"query\": { \"match\": {\"display_name\":\".*" + displayNames[0].toString() + ".*\"} }\n" + "}";
+
+            Search search = new Search.Builder(source)
+                    .addIndex("user")
+                    .build();
+            try {
+                SearchResult result = client.execute(search);
+                if (result.isSucceeded()) {
+                    return result;
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+    }
+
     /**
      * Execute sync task
      */

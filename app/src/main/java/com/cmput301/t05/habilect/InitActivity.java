@@ -119,19 +119,21 @@ public class InitActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         // Create a new user account, with a unique ID
-        UserAccount user = new UserAccount();
+        UserAccount user;// = new UserAccount();
         /*ContextWrapper cw = new ContextWrapper(context.getApplicationContext());
         File directory = cw.getDir("userData", Context.MODE_PRIVATE);
         File path = new File(directory, "LocalUserAccount.sav");
         path.delete();*/
-        user.load(context);
-        //user.Exists = false;
+        UserAccount.verifySettings();
+        user = UserAccount.fromId(UUID.fromString("16b0a753-b680-4ecd-9d1b-21ea7a65b676"));
+        user.Exists = true;
         if (user.Exists) {
-            //user.removeFollowee(UUID.fromString("a47f3482-c537-4cdd-a6cd-1244a2424151"));
-            //user.addFollowee(UUID.fromString("f925b981-39f9-4a2c-aa70-98e3ca56a5a7"));
+            //user.removeFollowee(UUID.fromString("c7d513cf-db2b-4e15-95c8-f4f8bd0bb142"));
+            user.addFollowee(UUID.fromString("33ae2bf6-ef63-40f1-9671-6eb1ecae5445"));
             //remote.removeFollower(UUID.fromString("e06459d4-27f1-49de-b8e8-85ab5b3469ef"));
-            //UserAccount remote = UserAccount.fromId(UUID.fromString("f925b981-39f9-4a2c-aa70-98e3ca56a5a7"));
-            //remote.addFollower(UUID.fromString("4d67c2ad-b5fd-4c6f-adc9-f2278bedbfea"));
+            UserAccount remote = UserAccount.fromId(UUID.fromString("33ae2bf6-ef63-40f1-9671-6eb1ecae5445"));
+            remote.addFollower(UUID.fromString("16b0a753-b680-4ecd-9d1b-21ea7a65b676"));
+            remote.addFollowee(UUID.fromString("16b0a753-b680-4ecd-9d1b-21ea7a65b676"));
             //remote.getHabits().get(1).setShared(true);
             //user.save(context);
             //remote.sync(context);
