@@ -157,17 +157,16 @@ public class HabitEventEditListAdapter extends BaseAdapter implements ListAdapte
                 eventList.remove(event);
                 notifyDataSetChanged();
 
+                TreeGrowth userTreeGrowth = userAccount.getTreeGrowth();
 
                 int nutrientLevel = userAccount.getTreeGrowth().getNutrientLevel();
 
                 nutrientLevel -= 1;
+                userTreeGrowth.setNutrientLevel(nutrientLevel);
+                userAccount.save(context);
+                userAccount.sync(context);
 
-                if(nutrientLevel < 0){
-                    nutrientLevel = 0;
-                }
-
-                userAccount.getTreeGrowth().setNutrientLevel(nutrientLevel);
-                Log.i("NUTRIENTLEVEL: ", "" + userAccount.getTreeGrowth().getNutrientLevel());
+                Log.i("NUTRIENTLEVEL: ", "" + nutrientLevel);
             }
         });
 

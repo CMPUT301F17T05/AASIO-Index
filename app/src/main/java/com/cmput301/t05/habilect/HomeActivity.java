@@ -21,6 +21,7 @@ import com.google.android.gms.common.GoogleApiAvailability;
 /**
  * The main activity of the app, displays the users habit types that still need to be done
  * options to add types and events and shows their progress tree
+ *
  * @author ioltuszy
  */
 
@@ -55,7 +56,6 @@ public class HomeActivity extends AppCompatActivity {
 //        if (googleServicesAvailable()){
 //            Toast.makeText(this, "Google services available!", Toast.LENGTH_LONG).show();
 //        }
-
         homeViewPagerAdapter = new ViewPagerHomeAdapter(fragmentManager);
         ViewPager mHomeViewPager = (ViewPager) findViewById(R.id.homeViewPager);
         mHomeViewPager.setAdapter(homeViewPagerAdapter);
@@ -65,6 +65,7 @@ public class HomeActivity extends AppCompatActivity {
 
     /**
      * Return the current state of the permissions needed.
+     *
      * @return returns true if we have access to the users location
      */
     private boolean checkLocationPermissions() {
@@ -75,6 +76,7 @@ public class HomeActivity extends AppCompatActivity {
 
     /**
      * Return the current state of the permissions needed.
+     *
      * @return returns true if we have access to the users camera
      */
     private boolean checkCameraPermissions() {
@@ -87,17 +89,15 @@ public class HomeActivity extends AppCompatActivity {
      * Depending on which permissions may be need, ask the user to enable them
      */
     private void startPermissionRequest() {
-        if(cameraPermission && !locationPermission) {
+        if (cameraPermission && !locationPermission) {
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                     REQUEST_PERMISSIONS__LOCATION_REQUEST_CODE);
-        }
-        else if (!cameraPermission && locationPermission) {
+        } else if (!cameraPermission && locationPermission) {
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.CAMERA},
                     REQUEST_PERMISSIONS__CAMERA_REQUEST_CODE);
-        }
-        else {
+        } else {
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.CAMERA, Manifest.permission.ACCESS_FINE_LOCATION},
                     REQUEST_PERMISSIONS__MULTIPLE_REQUEST_CODE);
