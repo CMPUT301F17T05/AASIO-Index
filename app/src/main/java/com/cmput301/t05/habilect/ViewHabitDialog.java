@@ -16,10 +16,6 @@ import android.widget.Button;
 public class ViewHabitDialog extends DialogFragment {
     FragmentManager fragmentManager;
 
-    //PagerViewHabitAdapter viewHabitPagerAdapter = new PagerViewHabitAdapter();
-    //ListViewFollowRequestAdapter followRequestListViewAdapter = new ListViewFollowRequestAdapter();
-    //ArrayList<FollowRequest> followRequests;
-
     private OnViewHabitListener onViewHabitListener;
     public void setOnViewHabitListener(OnViewHabitListener onViewHabitListener) {
         this.onViewHabitListener = onViewHabitListener;

@@ -124,17 +124,6 @@ public class EditHabitEventDialog extends DialogFragment {
     };
 
     CameraCaptureSession.CaptureCallback cameraCaptureSessionCallback = new CameraCaptureSession.CaptureCallback() {
-        /*@Override
-        public void onCaptureStarted(CameraCaptureSession session, CaptureRequest request, long timestamp, long frameNumber) {
-            Handler responseHandler = new Handler(Looper.getMainLooper()) {
-                @Override
-                public void handleMessage(Message params) {
-                    cameraTextureView.setAlpha(0f+0.2f*MathUtility.EasingOut(System.currentTimeMillis() - ((long[])params.obj)[0], ((long[])params.obj)[1], 3));
-                }
-            };
-            MathUtility.Animate(100, 500, responseHandler);
-        }*/
-
         @Override
         public void onCaptureCompleted(CameraCaptureSession session, @NonNull CaptureRequest request, TotalCaptureResult result) {
             switch (camera.getCameraState()) {
