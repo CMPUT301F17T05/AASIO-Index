@@ -60,7 +60,7 @@ public class SocialFollowerAdapter extends BaseAdapter implements ListAdapter {
         // inflates the view
         if (view == null) {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            view = inflater.inflate(R.layout.social_friend_row, null);
+            view = inflater.inflate(R.layout.social_follower_row, null);
         }
         final UserAccount userAccount = new UserAccount();
         userAccount.load(mContext);

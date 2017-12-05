@@ -28,7 +28,7 @@ public class SocialFollowingFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(
-                R.layout.fragment_social_friend, container, false);
+                R.layout.fragment_social_followee, container, false);
         fragmentManager = getActivity().getSupportFragmentManager();
 
         mContext = getActivity().getApplicationContext();
