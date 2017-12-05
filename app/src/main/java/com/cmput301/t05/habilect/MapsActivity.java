@@ -1,32 +1,36 @@
 package com.cmput301.t05.habilect;
 
 
-import android.app.Dialog;
+import android.app.Activity;
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.content.Intent;
 import android.location.Location;
-import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.support.annotation.NonNull;
+import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.Button;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
+import java.util.UUID;
 
 /**
  * @author alexisseniuk
@@ -34,16 +38,20 @@ import java.util.List;
  * Currently something wrong with API key.....
  */
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
+public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
     private UserAccount userAccount;
     private Context context;
     private GoogleMap mMap;
-    private HabitType habit_type;
-    private Bundle bundle;
-    private TextView userName;
-    private Location location;
-    private List<HabitType> allHabitTypes;
+    private List<HabitEvent> originalEventList;
     private List<HabitEvent> allHabitEvents;
+    private Button show5kmButton;
+    private Button resetButton;
+    private Button backButton;
+
+    private FusedLocationProviderClient fusedLocationClient;
+    protected Location lastLocation;
+
+    private int ZOOM_LEVEL = 15;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,52 +60,71 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         context = this;
         userAccount = new UserAccount().load(context);
-        allHabitTypes = userAccount.getHabits();
-        loadAllHabitEvents();
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(context);
 
+        allHabitEvents = getEventsFromBundle();
+        originalEventList = new ArrayList<>(allHabitEvents);
 
-        setTitle("H a b i l e c t - Map");
+        if(allHabitEvents.size() < 1) {
+            ZOOM_LEVEL = 1; // if we have nothing to show, display the whole world
+        }
+
+        Navigation.setup(findViewById(android.R.id.content));
+
+        setTitle("Habilect - Map");
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        //googlesevices good to go
-        if (googleServicesAvailable()) {
-            Toast.makeText(this, "GoogleMaps Services Available!", Toast.LENGTH_LONG).show();
+        show5kmButton = findViewById(R.id.mapActivityShow5kmButton);
+        resetButton = findViewById(R.id.mapActivityResetMapButton);
+        backButton = findViewById(R.id.mapActivityBackButton);
 
-            //no googleservices
-        }else {
-            Toast.makeText(this, "No GoogleMap Services Available...", Toast.LENGTH_LONG).show();
+        show5kmButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mMap.clear();
+                setCurrentLocationMarker();
+                allHabitEvents = filterBy5km(allHabitEvents);
+                ZOOM_LEVEL = 15;
+                setUserMarkers(allHabitEvents);
+            }
+        });
 
-        }
+        resetButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mMap.clear();
+                setCurrentLocationMarker();
+                ZOOM_LEVEL = 15;
+                setUserMarkers(originalEventList);
+            }
+        });
 
-        //TODO: get friend info and plot from setFriendsMarkers (if working)
-        //get friend info
-/*        bundle = getIntent().getExtras();
-        userName = findViewById(R.id.viewFriendUserName);
-        location = findViewById(R.id.viewFriendLocation);
-
-        userName.setText(getUserNameFromBundle());
-        location.setLocation(Location);*/
-
-
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
     }
 
-    private boolean googleServicesAvailable() {
-        GoogleApiAvailability api = GoogleApiAvailability.getInstance();
-        int isAvailable = api.isGooglePlayServicesAvailable(this);
-        if (isAvailable == ConnectionResult.SUCCESS){
-            return true;
-        } else if (api.isUserResolvableError(isAvailable)){
-            Dialog dialog = api.getErrorDialog(this, isAvailable, 0);
-            dialog.show();
-        } else {
-            Toast.makeText(this, "Cannot connect to play services", Toast.LENGTH_LONG).show();
-        }
-        return false;
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        getLastLocation();
+        setCurrentLocationMarker();
     }
 
+    private List<HabitEvent> getEventsFromBundle() {
+        try {
+            return (List<HabitEvent>) getIntent().getExtras().getSerializable("Events");
+        } catch (Exception e) {
+            return new ArrayList<>();
+        }
+    }
 
     /**
      * Manipulates the map once available.
@@ -111,116 +138,100 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        setUserMarkers(allHabitEvents);
+    }
 
-
-
-       //edmonton ---  goToLocationZoom(53.534172,-113.488460, 10);
-        LatLng Edmonton = new LatLng(53.534172,-113.488460);
-        mMap.addMarker(new MarkerOptions().position(Edmonton).title("Marker in Edmonton"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(Edmonton));
-
-        //Default setting:
-        // Add a marker in Sydney and move the camera
-        //LatLng sydney = new LatLng(-34, 151);
-        //mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-
-        //INSERT BUTTON IF WORKS...
-        setUsermarkers();
-
-
+    private HabitEvent findHabitEvent(String title) {
+        for(HabitEvent event : allHabitEvents) {
+            if(event.getHabitType().equals(title)) {
+                return event;
+            }
+        }
+        return null;
     }
 
     //gotoLocation with a zoomed in focus - focus downtown Edmonton
-    private void goToLocationZoom(double lat, double lng, float zoom) {
-        LatLng ll = new LatLng(lat, lng);
-        CameraUpdate update = CameraUpdateFactory.newLatLngZoom(ll, zoom);
+    private void goToLocationZoom(double lat, double lng) {
+        LatLng latLng = new LatLng(lat, lng);
+        CameraUpdate update = CameraUpdateFactory.newLatLngZoom(latLng, ZOOM_LEVEL);
         mMap.moveCamera(update);
     }
 
-    private int totalEvents() {
-        List<HabitEvent> events = habit_type.getHabitEvents();
-        return events.size();
-    }
-
     //set markers for habit events that have locations
-    public void setUsermarkers() {
+    public void setUserMarkers(List<HabitEvent> eventList) {
         //add all User events Markers (azure)
-        for (HabitEvent e: allHabitEvents) {
+        LatLng latLng = new LatLng(0, 0);
+        for (HabitEvent e: eventList) {
             //final Lat Lng position = new LatLng(habit_type.getHabitEvents().get)
             Location location = e.getLocation();
             //LatLng loc = e.getLocation();
             if (location != null){
-                LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+                latLng = new LatLng(location.getLatitude(), location.getLongitude());
+                UserAccount userAccount = UserAccount.fromId(UUID.fromString(e.getUserId()));
+                String userName = userAccount.getDisplayName();
                 mMap.addMarker(new MarkerOptions()
                         .position(latLng)
-                        .title(e.getHabitType())
+                        .title(e.getHabitType() + " - " + userName)
                         .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
             }
-
-
+        }
+        if(latLng.latitude != 0 && latLng.longitude != 0) {
+            goToLocationZoom(latLng.latitude, latLng.longitude);
         }
     }
 
-    private void loadAllHabitEvents() {
-        Iterator<HabitType> iterator = allHabitTypes.iterator();
-        allHabitEvents = new ArrayList<>();
+    private void setCurrentLocationMarker() {
+        if(lastLocation != null) {
+            LatLng latLng = new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude());
+
+            mMap.addMarker(new MarkerOptions()
+                    .position(latLng)
+                    .title("Current location")
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+        }
+    }
+
+    public List<HabitEvent> filterBy5km(List<HabitEvent> eventList) {
+        Iterator<HabitEvent> iterator = eventList.iterator();
+        getLastLocation();
         while(iterator.hasNext()) {
-            HabitType habit = iterator.next();
-            ArrayList<HabitEvent> eventList = habit.getHabitEvents();
-            allHabitEvents.addAll(eventList);
-        }
-    }
-//set markers for user's friend's habits
-/*    public void setFriendMarkers() {
-        //List<FriendHabitEvent> events = habit_type.getHabitEvents();
-
-        //add Friends markers (magenta)
-        for (FriendHabitEvents friende: events){
-            LatLng location = friende.getLocation();
-            if (location != null){
-                mMap.addMarker(new MarkerOptions()
-                    .position(location)
-                    .title(friende.getHabitType())
-                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA)));
+            HabitEvent event = iterator.next();
+            if(eventNear(event)) {
+                continue;
             }
+            iterator.remove();
         }
-    }*/
-
-    //use if using bundles for habitfriend list
-    /**
-     *
-     * @return a String representing the habit event title if there is one
-     */
-/*    private String getUserNameFromBundle() {
-        try {
-            return bundle.getString("User Name");
-        }
-        catch (Exception e) {
-            return "";
-        }
+        return  eventList;
     }
 
-    private Location getLocationFromBundle() {
-        try {
-            return bundle.getParcelable("Location");
-        }
-        catch (Exception e) {
-            return null;
-        }
-    }*/
+    @SuppressWarnings("MissingPermission")
+    private void getLastLocation() {
+        fusedLocationClient.getLastLocation()
+                .addOnCompleteListener((Activity) context, new OnCompleteListener<Location>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Location> task) {
+                        if (task.isSuccessful() && task.getResult() != null) {
+                            lastLocation = task.getResult();
+                            setCurrentLocationMarker();
+                        } else {
+                            lastLocation = null;
+                        }
+                    }
+                });
+    }
 
     //for calulating within 5km distance 
-/*    private boolean eventNear(HabitEvent e){
+    private boolean eventNear(HabitEvent event){
         // Adapted from https://stackoverflow.com/questions/3694380/calculating-distance-between-two-points-using-latitude-longitude-what-am-i-doi
-        if (mLastLocation == null || !highlight_near){
+        if (lastLocation == null || event.getLocation() == null){
             return false;
         }
 
         double earthRadius = 6371000; //meters
-        double dLat = Math.toRadians(e.getLocation().latitude-mLastLocation.getLatitude());
-        double dLng = Math.toRadians(e.getLocation().longitude-mLastLocation.getLongitude());
+        double dLat = Math.toRadians(event.getLocation().getLatitude()-lastLocation.getLatitude());
+        double dLng = Math.toRadians(event.getLocation().getLongitude()-lastLocation.getLongitude());
         double a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-                Math.cos(Math.toRadians(mLastLocation.getLatitude())) * Math.cos(Math.toRadians(e.getLocation().latitude)) *
+                Math.cos(Math.toRadians(lastLocation.getLatitude())) * Math.cos(Math.toRadians(event.getLocation().getLatitude())) *
                         Math.sin(dLng/2) * Math.sin(dLng/2);
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
         float dist = (float) (earthRadius * c);
@@ -230,5 +241,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         } else {
             return false;
         }
-    }*/
+    }
+
+    /**
+     * Using the events information, makes a bundle so the view event activity can be properly filled
+     *
+     * @param event the habit event that you want to view
+     * @return a bundle that can be sent off to the activity
+     */
+    private Bundle sendHabitInfoToView(HabitEvent event) {
+        Bundle bundle = new Bundle();
+        bundle.putString("Title", event.getHabitType());
+        String dateString = new SimpleDateFormat("yyyy_MM_dd", Locale.ENGLISH).format(event.getCompletionDate());
+        bundle.putString("Date", event.getCompletionDateString());
+        bundle.putString("Comment", event.getComment());
+        bundle.putString("File Path", event.getHabitType().replace(" ", "_") + "_" + dateString);
+
+        return bundle;
+    }
 }

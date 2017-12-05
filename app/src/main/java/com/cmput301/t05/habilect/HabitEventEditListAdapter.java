@@ -9,6 +9,7 @@ import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +20,7 @@ import android.widget.ImageButton;
 import android.widget.ListAdapter;
 import android.widget.TextView;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -84,9 +86,8 @@ public class HabitEventEditListAdapter extends BaseAdapter implements ListAdapte
         event = eventList.get(i);
         relatedHabitType = findRelatedHabitType(event.getHabitType());
 
-        // gets the
-        final UserProfile profile = new UserProfile(mContext);
-        TreeGrowth profileTreeGrowth = profile.treeGrowth;
+        final UserAccount user = new UserAccount();
+        TreeGrowth profileTreeGrowth = user.getTreeGrowth();
 
 
         Button viewButton = view.findViewById(R.id.habitEventEditRowSelectButton);
@@ -124,6 +125,7 @@ public class HabitEventEditListAdapter extends BaseAdapter implements ListAdapte
                         // removes the old event from the habit type list and adds in the new one
                         relatedHabitType.removeHabitEvent(event);
                         relatedHabitType.addHabitEvent(newEvent);
+                        userAccount.setHabits(habitTypeList);
                         userAccount.save(context);
                         userAccount.sync(context);
                         notifyDataSetChanged();
@@ -155,8 +157,8 @@ public class HabitEventEditListAdapter extends BaseAdapter implements ListAdapte
                 eventList.remove(event);
                 notifyDataSetChanged();
 
-
                 TreeGrowth userTreeGrowth = userAccount.getTreeGrowth();
+
                 int nutrientLevel = userAccount.getTreeGrowth().getNutrientLevel();
 
                 nutrientLevel -= 1;
@@ -176,7 +178,6 @@ public class HabitEventEditListAdapter extends BaseAdapter implements ListAdapte
                 Intent intent = new Intent(view.getContext(), ViewHabitEventActivity.class);
                 intent.putExtras(bundle);
                 view.getContext().startActivity(intent);
-
             }
         });
 
@@ -213,7 +214,7 @@ public class HabitEventEditListAdapter extends BaseAdapter implements ListAdapte
         String dateString = new SimpleDateFormat("yyyy_MM_dd", Locale.ENGLISH).format(date);
         bundle.putString("Date", dateString);
         bundle.putSerializable("Habit Type", list);
-
+        bundle.putString("Image", event.getEventPicture());
         return bundle;
     }
 
@@ -229,7 +230,7 @@ public class HabitEventEditListAdapter extends BaseAdapter implements ListAdapte
         String dateString = new SimpleDateFormat("yyyy_MM_dd", Locale.ENGLISH).format(date);
         bundle.putString("Date", event.getCompletionDateString());
         bundle.putString("Comment", event.getComment());
-        bundle.putString("File Path", habitType.replace(" ", "_") + "_" + dateString);
+        bundle.putString("Image", event.getEventPicture());
 
         return bundle;
     }
@@ -248,24 +249,14 @@ public class HabitEventEditListAdapter extends BaseAdapter implements ListAdapte
         String comment = getter.getComment();
         Location location = getter.getLocation();
         Date date = getter.getDate();
-        String filePath = getter.getFileName();
-        String directory = getter.getDirectory();
-        Bitmap eventImage = getBitmapFromFilePath(directory, filePath);
-
-        return new HabitEvent(comment, eventImage, location, date, title);
+        String imageString = getter.getImage();
+        byte[] decodedByteArray = Base64.decode(imageString, Base64.URL_SAFE | Base64.NO_WRAP);
+        Bitmap eventImage = BitmapFactory.decodeByteArray(decodedByteArray, 0, decodedByteArray.length);
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        eventImage.compress(Bitmap.CompressFormat.JPEG, 50, byteArrayOutputStream);
+        byte[] byteArray = byteArrayOutputStream.toByteArray();
+        String encodedString = Base64.encodeToString(byteArray, Base64.URL_SAFE | Base64.NO_WRAP);
+        return new HabitEvent(comment, encodedString, location, date, title, userAccount.getId().toString());
     }
 
-    /**
-     * Gets a bitmap from a file name and directory path
-     *
-     * @param directory the directory with the image file
-     * @param filePath  the image file name
-     * @return a bitmap of the decoded file
-     */
-    private Bitmap getBitmapFromFilePath(String directory, String filePath) {
-        File image = new File(directory, filePath);
-        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-        Bitmap bitmap = BitmapFactory.decodeFile(image.getAbsolutePath(), bmOptions);
-        return bitmap;
-    }
 }

@@ -17,36 +17,38 @@ import android.widget.ListAdapter;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 /**
- * This adapter takes FeedEvents and allows them to be displayed in a listView
- * @see FeedEvent
+ * This adapter allows for the app users friend's profiles to be displayed
+ * in a ListView
+ * @author rarog
+ * @see UserAccount
+ * @see SocialFollowingFragment
  */
 
-public class SocialFeedAdapter extends BaseAdapter implements ListAdapter {
-    private ArrayList<FeedEvent> feedList = new ArrayList<>();
+public class SocialFollowingAdapter extends BaseAdapter implements ListAdapter {
+    private ArrayList<UserAccount> friendList = new ArrayList<>();
     private Context context;
     private Context mContext;
     private ImageView profileImageView;
     private TextView profileNameTextView;
-    private TextView eventTextView;
-    private TextView eventDateTextView;
     private Button selectButton;
 
-    SocialFeedAdapter(ArrayList<FeedEvent> feedList, Context context, Context mContext) {
-        this.feedList = feedList;
+    SocialFollowingAdapter(ArrayList<UserAccount> friendList, Context context, Context mContext) {
+        this.friendList = friendList;
         this.context = context;
         this.mContext = mContext;
     }
 
     @Override
     public int getCount() {
-        return feedList.size();
+        return friendList.size();
     }
 
     @Override
     public Object getItem(int i) {
-        return feedList.get(i);
+        return friendList.get(i);
     }
 
     @Override
@@ -59,37 +61,32 @@ public class SocialFeedAdapter extends BaseAdapter implements ListAdapter {
         // inflates the view
         if (view == null) {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            view = inflater.inflate(R.layout.social_feed_row, null);
+            view = inflater.inflate(R.layout.social_following_row, null);
         }
         final UserAccount userAccount = new UserAccount();
         userAccount.load(mContext);
-        TreeGrowth profileTreeGrowth = userAccount.getTreeGrowth();
 
-        FeedEvent feedEvent = feedList.get(i);
+        UserAccount friend = friendList.get(i);
 
-        profileImageView = view.findViewById(R.id.socialFeedRowProfileImage);
-        profileNameTextView = view.findViewById(R.id.socialFeedRowProfileName);
-        eventTextView = view.findViewById(R.id.socialFeedRowEvent);
-        eventDateTextView = view.findViewById(R.id.socialFeedDateText);
-        selectButton = view.findViewById(R.id.socialFeedRowSelectButton);
+        profileImageView = view.findViewById(R.id.socialFriendProfileImage);
+        profileNameTextView = view.findViewById(R.id.socialFriendUserName);
+        selectButton = view.findViewById(R.id.socialFriendSelectButton);
 
-        profileNameTextView.setText(feedEvent.getUser().getDisplayName());
-        eventTextView.setText(feedEvent.getEvent().getHabitType());
-        eventDateTextView.setText(feedEvent.getEvent().getCompletionDateString());
-
-        Bitmap profileImage = feedEvent.getUser().getProfilePicture();
+        Bitmap profileImage = friend.getProfilePicture();
         if(profileImage == null) {
             profileImage = BitmapFactory.decodeResource(context.getResources(),
                     R.mipmap.no_profile_image);
         }
-
         profileImageView.setImageBitmap(scaleDownBitmap(profileImage));
 
+        profileNameTextView.setText(friend.getDisplayName());
+
+        // if a user selects a profile, launch an activity showing their details
         selectButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Bundle bundle = sendHabitInfoToView(feedEvent);
-                Intent intent = new Intent(view.getContext(), ViewFeedEventActivity.class);
+                Bundle bundle = sendHabitInfoToView(friend.getId());
+                Intent intent = new Intent(view.getContext(), ViewFriendActivity.class);
                 intent.putExtras(bundle);
                 view.getContext().startActivity(intent);
             }
@@ -100,20 +97,12 @@ public class SocialFeedAdapter extends BaseAdapter implements ListAdapter {
 
     /**
      * Using the events information, makes a bundle so the view event activity can be properly filled
-     * @param event the feed event that you want to view
+     * @param friend the friend that you want to view
      * @return a bundle that can be sent off to the activity
      */
-    private Bundle sendHabitInfoToView(FeedEvent event) {
+    private Bundle sendHabitInfoToView(UUID friend) {
         Bundle bundle = new Bundle();
-        bundle.putString("User Name", event.getUser().getDisplayName());
-        bundle.putString("Habit Type", event.getEvent().getHabitType());
-        String comment = event.getEvent().getComment();
-        if(comment.equals("")) {
-            comment = "[no comment]";
-        }
-        bundle.putString("Date", event.getEvent().getCompletionDateString());
-        bundle.putString("Comment", comment);
-        bundle.putString("Image", event.getEvent().getEventPicture());
+        bundle.putString("ID", friend.toString());
         return bundle;
     }
 
@@ -139,5 +128,4 @@ public class SocialFeedAdapter extends BaseAdapter implements ListAdapter {
         DisplayMetrics metrics = context.getResources().getDisplayMetrics();
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dipValue, metrics);
     }
-
 }

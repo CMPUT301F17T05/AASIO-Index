@@ -15,10 +15,10 @@
         android:layout_alignParentTop="true"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
+        android:text="Display Name"
         android:textColor="@color/black"
         android:textSize="@dimen/font_size_large"
-        android:textStyle="bold"
-        android:text="gwioergjeop"/>
+        android:textStyle="bold" />
 
     <ImageView
         android:id="@+id/viewFriendProfileImage"
@@ -41,6 +41,14 @@
         android:layout_marginEnd="16dp"
         android:background="@android:color/transparent"
         android:text="Back" />
+
+    <Button
+        android:id="@+id/stopFollowingButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/viewFriendBackButton"
+        android:layout_centerHorizontal="true"
+        android:text="Stop Following" />
 
 
 </RelativeLayout>

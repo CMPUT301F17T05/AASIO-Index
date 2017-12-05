@@ -16,6 +16,7 @@ import android.widget.TextView;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -106,7 +107,7 @@ public class HabitEventListAdapter extends BaseAdapter implements ListAdapter, F
         }
         bundle.putString("Date", event.getCompletionDateString());
         bundle.putString("Comment", comment);
-        bundle.putString("File Path", event.getHabitType().replace(" ", "_") + "_" + dateString);
+        bundle.putString("Image", event.getEventPicture());
 
         return bundle;
     }
@@ -156,5 +157,9 @@ public class HabitEventListAdapter extends BaseAdapter implements ListAdapter, F
         }};
 
         return filter[0];
+    }
+
+    public ArrayList<HabitEvent> getAllEvents() {
+        return eventList;
     }
 }

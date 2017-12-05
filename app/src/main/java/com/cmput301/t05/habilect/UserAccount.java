@@ -5,6 +5,7 @@ import android.content.ContextWrapper;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Location;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
@@ -35,10 +36,13 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
@@ -157,7 +161,6 @@ public class UserAccount {
         Followees = new ArrayList<UUID>();
         Followers = new ArrayList<UUID>();
         Habits = new ArrayList<HabitType>();
-        Habits.add(new HabitType("Title", "Reason", new Date(), new boolean[] {true, true, true, true, true, true, true}));
         treeGrowth = new TreeGrowth();
     }
 
@@ -283,13 +286,31 @@ public class UserAccount {
                                     List<HabitType> habits = new ArrayList<HabitType>();
                                     for (JsonElement element : e.getValue().getAsJsonArray()) {
                                         JsonElement events = element.getAsJsonObject().get("habitEvents");
+                                        List<Date> dates = new ArrayList<Date>();
+                                        List<Location> locations = new ArrayList<Location>();
                                         for (JsonElement member : events.getAsJsonArray()) {
                                             JsonElement date = member.getAsJsonObject().get("completionDate");
-                                            String stringDate = date.getAsString();
-                                            Date parsedDate = new SimpleDateFormat("yyyy-MM-dd'T'hh:MM:ssZ").parse(stringDate);
-                                            continue;
+                                            if (date!=null) {
+                                                String stringDate = date.getAsString();
+                                                Date parsedDate = new SimpleDateFormat("yyyy-MM-dd", Locale.CANADA).parse(stringDate);
+                                                dates.add(parsedDate);
+                                            }
+                                            JsonElement location = member.getAsJsonObject().get("location");
+                                            if (location!=null) {
+                                                float latitude = Float.parseFloat(location.getAsJsonObject().get("mLatitude").getAsString());
+                                                float longitude = Float.parseFloat(location.getAsJsonObject().get("mLongitude").getAsString());
+                                                Location loc = new Location("");
+                                                loc.setLatitude(latitude);
+                                                loc.setLongitude(longitude);
+                                                locations.add(loc);
+                                            }
+
                                         }
                                         HabitType intermediateHabit = gson.fromJson(element.getAsJsonObject(), HabitType.class);
+                                        for (int i = dates.size(); i<dates.size(); i++) {
+                                            intermediateHabit.getHabitEvents().get(i).setCompletionDate(dates.get(i));
+                                            intermediateHabit.getHabitEvents().get(i).setLocation(locations.get(i));
+                                        }
                                         habits.add(intermediateHabit);
                                     }
                                     user.Habits = habits;

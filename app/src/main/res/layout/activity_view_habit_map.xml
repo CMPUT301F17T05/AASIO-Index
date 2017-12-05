@@ -13,13 +13,13 @@
         android:layout_width="match_parent"
         android:layout_height="401dp"
         android:layout_marginBottom="9dp"
-        app:layout_constraintBottom_toTopOf="@+id/myhabiteventsbutton"
+        app:layout_constraintBottom_toTopOf="@+id/mapActivityMyHabitEventButton"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/myhabiteventsbutton"
+        android:id="@+id/mapActivityMyHabitEventButton"
         android:layout_width="167dp"
         android:layout_height="45dp"
         android:layout_marginBottom="7dp"
@@ -27,13 +27,13 @@
         android:layout_marginStart="31dp"
         android:layout_marginTop="9dp"
         android:text="MyHabitEvents"
-        app:layout_constraintBottom_toTopOf="@+id/friendhabiteventsbutton"
-        app:layout_constraintEnd_toStartOf="@+id/show5kmbutton"
+        app:layout_constraintBottom_toTopOf="@+id/mapActivityShowFriendsButton"
+        app:layout_constraintEnd_toStartOf="@+id/mapActivityShow5kmButton"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/mapFragment" />
 
     <Button
-        android:id="@+id/show5kmbutton"
+        android:id="@+id/mapActivityShow5kmButton"
         android:layout_width="wrap_content"
         android:layout_height="41dp"
         android:layout_marginBottom="4dp"
@@ -43,11 +43,11 @@
         android:text="Show Only 5km"
         app:layout_constraintBottom_toTopOf="@+id/resetMapButton"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/myhabiteventsbutton"
+        app:layout_constraintStart_toEndOf="@+id/mapActivityMyHabitEventButton"
         app:layout_constraintTop_toBottomOf="@+id/mapFragment" />
 
     <Button
-        android:id="@+id/friendhabiteventsbutton"
+        android:id="@+id/mapActivityShowFriendsButton"
         android:layout_width="168dp"
         android:layout_height="45dp"
         android:layout_marginBottom="4dp"
@@ -58,7 +58,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/resetMapButton"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/myhabiteventsbutton" />
+        app:layout_constraintTop_toBottomOf="@+id/mapActivityMyHabitEventButton" />
 
     <Button
         android:id="@+id/resetMapButton"
@@ -71,7 +71,7 @@
         android:text="Reset Map"
         app:layout_constraintBottom_toTopOf="@+id/mapFragment"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/friendhabiteventsbutton"
-        app:layout_constraintTop_toBottomOf="@+id/show5kmbutton" />
+        app:layout_constraintStart_toEndOf="@+id/mapActivityShowFriendsButton"
+        app:layout_constraintTop_toBottomOf="@+id/mapActivityShow5kmButton" />
 
 </android.support.constraint.ConstraintLayout>

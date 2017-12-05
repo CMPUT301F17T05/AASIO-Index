@@ -1,10 +1,15 @@
 package com.cmput301.t05.habilect;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Location;
+import android.os.Parcel;
+import android.os.Parcelable;
+import android.util.Base64;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -20,36 +25,58 @@ import java.util.Locale;
  * @author amwhitta
  */
 
-class HabitEvent {
+class HabitEvent implements Parcelable {
     static int MAX_COMMENT_LENGTH = 20;
 
     private String comment;
-    private Bitmap eventPicture;
+    private String eventPicture;
     private Location location;
     private Date completionDate;
     private String habitType;
+    private String userId;
 
     /**
      * Creates a new habit event
      * @param comment comment that goes with the event. Must be less than 20 characters
-     * @param eventPicture bitmap image of the event
+     * @param eventPicture Base64 encoded string for the bitmap image of an event
      * @param location Location object of the event
      * @param completionDate Date object of the event
      * @param habitType The associated habitType for the event
      */
-    public HabitEvent(String comment, Bitmap eventPicture, Location location, Date completionDate, String habitType) {
+    public HabitEvent(String comment, String eventPicture, Location location, Date completionDate, String habitType, String userId) {
         this.setComment(comment);
         this.setEventPicture(eventPicture);
         this.setLocation(location);
         this.setCompletionDate(completionDate);
         this.setHabitType(habitType);
+        this.userId = userId;
     }
+
+    protected HabitEvent(Parcel in) {
+        comment = in.readString();
+        eventPicture = in.readString();
+        location = in.readParcelable(Location.class.getClassLoader());
+        habitType = in.readString();
+        userId = in.readString();
+    }
+
+    public static final Creator<HabitEvent> CREATOR = new Creator<HabitEvent>() {
+        @Override
+        public HabitEvent createFromParcel(Parcel in) {
+            return new HabitEvent(in);
+        }
+
+        @Override
+        public HabitEvent[] newArray(int size) {
+            return new HabitEvent[size];
+        }
+    };
 
     // Getters
     public String getComment() {
         return comment;
     }
-    public Bitmap getEventPicture() {
+    public String getEventPicture() {
         return eventPicture;
     }
     public Location getLocation() {
@@ -64,6 +91,14 @@ class HabitEvent {
         return simpleDateFormat.format(this.completionDate);
     }
     public String getHabitType() { return habitType; }
+    public String getUserId() { return userId; }
+    public Bitmap getEventBitmap() {
+        if (eventPicture!=null) {
+            byte[] decodedByteArray = Base64.decode(eventPicture, Base64.URL_SAFE | Base64.NO_WRAP);
+            return BitmapFactory.decodeByteArray(decodedByteArray, 0, decodedByteArray.length);
+        }
+        return null;
+    }
 
     // Setters
     public void setComment(String comment) {
@@ -73,17 +108,9 @@ class HabitEvent {
             this.comment = comment;
         }
     }
-    public void setEventPicture(Bitmap eventPicture) {
+    public void setEventPicture(String eventPicture) {
         if (eventPicture != null) {
-            if (eventPicture.getByteCount() >= 65536) {
-                eventPicture = Bitmap.createScaledBitmap(eventPicture, 127, 127, false);
-            }
-            if(eventPicture.getByteCount() >= 65536) {
-                throw new IllegalArgumentException();
-            }
             this.eventPicture = eventPicture;
-        } else {
-            this.eventPicture = null;
         }
     }
 
@@ -100,5 +127,21 @@ class HabitEvent {
         } else {
             this.completionDate = completion_date;
         }
+    }
+
+    public void setUserId(String userId) { this.userId = userId; }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(comment);
+        parcel.writeString(eventPicture);
+        parcel.writeParcelable(location, i);
+        parcel.writeString(habitType);
+        parcel.writeString(userId);
     }
 }

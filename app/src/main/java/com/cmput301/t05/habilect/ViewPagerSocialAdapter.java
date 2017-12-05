@@ -9,7 +9,7 @@ import android.support.v4.app.FragmentPagerAdapter;
  */
 
 public class ViewPagerSocialAdapter extends FragmentPagerAdapter {
-    static final int NUM_PAGES = 2;
+    static final int NUM_PAGES = 3;
 
     public ViewPagerSocialAdapter(FragmentManager fm) {
         super(fm);
@@ -19,7 +19,8 @@ public class ViewPagerSocialAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0: return new SocialFeedFragment();
-            case 1: return new SocialFriendFragment();
+            case 1: return new SocialFollowingFragment();
+            case 2: return new SocialFollowerFragment();
         }
         return null;
     }

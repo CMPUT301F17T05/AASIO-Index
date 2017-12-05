@@ -9,9 +9,11 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.UUID;
+
 /**
  * This activity allows the user to see details about one of their friends
- * @see SocialFriendFragment
+ * @see SocialFollowingFragment
  * @see UserAccount
  * @author rarog
  */
@@ -33,8 +35,15 @@ public class ViewFriendActivity extends AppCompatActivity {
         profileImage = findViewById(R.id.viewFriendProfileImage);
         backButton = findViewById(R.id.viewFriendBackButton);
 
-        userName.setText(getUserNameFromBundle());
-        Bitmap imageBitmap = getImageFromBundle();
+        Bitmap imageBitmap = null;
+        UserAccount user = getUserFromBundle();
+        if (user!=null)
+        {
+            userName.setText(user.getDisplayName());
+            imageBitmap = user.getProfilePicture();
+        } else {
+            userName.setText("Error finding user");
+        }
         if (imageBitmap == null) {
             imageBitmap = BitmapFactory.decodeResource(this.getResources(),
                     R.mipmap.add_image);
@@ -51,29 +60,15 @@ public class ViewFriendActivity extends AppCompatActivity {
 
     /**
      *
-     * @return a String representing the habit event title if there is one
+     * @return a UserAccount representing the friend if there is one
      */
-    private String getUserNameFromBundle() {
+    private UserAccount getUserFromBundle() {
         try {
-            return bundle.getString("User Name");
+            return UserAccount.fromId(UUID.fromString(bundle.getString("ID")));
         }
         catch (Exception e) {
-            return "";
+            return null;
         }
     }
 
-    /**
-     *
-     * @return a bitmap image of the event
-     */
-    private Bitmap getImageFromBundle() {
-        try {
-            return bundle.getParcelable("Image");
-        }
-        catch (Exception e) {
-            Bitmap icon = BitmapFactory.decodeResource(this.getResources(),
-                    R.mipmap.add_image);
-            return icon;
-        }
-    }
 }

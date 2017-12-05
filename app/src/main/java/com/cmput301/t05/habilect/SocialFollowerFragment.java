@@ -10,40 +10,39 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 /**
  * This fragment show the user a list of their friends and allows them to find new friends
  * @author rarog
  */
 
-public class SocialFriendFragment extends Fragment {
+public class SocialFollowerFragment extends Fragment {
     FragmentManager fragmentManager;
     private Context mContext;
     private Context context;
-    private ArrayList<UserProfile> friendList = new ArrayList<>();
+    private ArrayList<UserAccount> friendList = new ArrayList<>();
     ListView friendListView;
-    SocialFriendAdapter friendAdapter;
+    SocialFollowerAdapter friendAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(
-                R.layout.fragment_social_friend, container, false);
+                R.layout.fragment_social_follower, container, false);
         fragmentManager = getActivity().getSupportFragmentManager();
 
         mContext = getActivity().getApplicationContext();
 
         context = getActivity();
 
-        final UserProfile profile = new UserProfile(mContext);
+        final UserAccount profile = new UserAccount();
+        profile.load(mContext);
 
         friendListView = rootView.findViewById(R.id.socialFriendListView);
 
-        friendList.add(profile);
-        friendAdapter = new SocialFriendAdapter(friendList, context, mContext);
+        ArrayList<UserAccount> userAccounts = (ArrayList<UserAccount>) profile.getFollowers();
+        friendAdapter = new SocialFollowerAdapter(userAccounts, context, mContext);
         friendListView.setAdapter(friendAdapter);
-
 
         return rootView;
 
@@ -58,7 +57,7 @@ public class SocialFriendFragment extends Fragment {
         super.setUserVisibleHint(isVisibleToUser);
         if(isVisibleToUser){
             if(getActivity() != null) {
-                getActivity().setTitle("Friend list");
+                getActivity().setTitle("Followers");
             }
     }
     }

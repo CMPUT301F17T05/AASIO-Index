@@ -15,6 +15,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -32,6 +33,7 @@ import com.jjoe64.graphview.helper.StaticLabelsFormatter;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
@@ -134,8 +136,9 @@ public class HabitTypeActivity extends AppCompatActivity {
                                     createHabitEventFromBundle(addHabitEventDialog.getResultBundle());
 
                             habit_type.addHabitEvent(event);
-                            userAccount.save(context);
-                            userAccount.sync(context);
+                            userAccount.setHabits(allHabits);
+                            userAccount.save(mContext);
+                            userAccount.sync(mContext);
 
                             //eList.add(event);
                             if(eventListAdapter != null) {
@@ -207,8 +210,9 @@ public class HabitTypeActivity extends AppCompatActivity {
 
                         all_habit_types.remove(habit_type);
                         all_habit_types.add(edited_habit_type);
-                        userAccount.save(context);
-                        userAccount.sync(context);
+                        userAccount.setHabits(all_habit_types);
+                        userAccount.save(mContext);
+                        userAccount.sync(mContext);
 
                         habit_type = new HabitType(edited_habit_type);
 
@@ -236,8 +240,9 @@ public class HabitTypeActivity extends AppCompatActivity {
                 @Override
                 public void OnDeleted() {
                     allHabits.remove(habit_type);
-                    userAccount.save(context);
-                    userAccount.sync(context);
+                    userAccount.setHabits(allHabits);
+                    userAccount.save(mContext);
+                    userAccount.sync(mContext);
                 }
             };
             AlertDialog alertDialog = new AlertDialog.Builder(context).create();
@@ -486,24 +491,16 @@ public class HabitTypeActivity extends AppCompatActivity {
         String comment = getter.getComment();
         Location location = getter.getLocation();
         Date date = getter.getDate();
-        String filePath = getter.getFileName();
-        String directory = getter.getDirectory();
-        Bitmap eventImage = getBitmapFromFilePath(directory, filePath);
-
-        return new HabitEvent(comment, eventImage, location, date, title);
+        String eventImage = getter.getImage();
+        byte[] decodedByteArray = Base64.decode(eventImage, Base64.URL_SAFE | Base64.NO_WRAP);
+        Bitmap image = BitmapFactory.decodeByteArray(decodedByteArray, 0, decodedByteArray.length);
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        image.compress(Bitmap.CompressFormat.JPEG, 50, byteArrayOutputStream);
+        byte[] byteArray = byteArrayOutputStream.toByteArray();
+        String encodedString = Base64.encodeToString(byteArray, Base64.URL_SAFE | Base64.NO_WRAP);
+        return new HabitEvent(comment, encodedString, location, date, title, userAccount.getId().toString());
     }
 
-    /**
-     * Given a supplied filePath and directory, retrieves the stored bitmap
-     * @param directory the directory where the bitmap is saved
-     * @param filePath the file name of the image
-     * @return a bitmap of the retrieved image
-     */
-    private Bitmap getBitmapFromFilePath(String directory, String filePath) {
-        File image = new File(directory, filePath);
-        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-        return BitmapFactory.decodeFile(image.getAbsolutePath(),bmOptions);
-    }
 
     /**
      * Checks if this particular habit type has been completed today

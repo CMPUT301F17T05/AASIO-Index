@@ -1,6 +1,7 @@
 package com.cmput301.t05.habilect;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -8,11 +9,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.Spinner;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
@@ -31,6 +36,7 @@ public class HistoryFilterFragment extends Fragment {
     ArrayList<HabitEvent> allHabitEvents;
     SearchView searchView;
     Spinner filterSpinner;
+    ImageButton mapButton;
 
     @Override
     public View onCreateView(LayoutInflater inflater,
@@ -58,6 +64,9 @@ public class HistoryFilterFragment extends Fragment {
         allHabitTypes = userAccount.getHabits();
         allHabitEvents = new ArrayList<>();
         loadAllHabitEvents();
+
+
+        Collections.sort(allHabitEvents, (event, t1) -> t1.getCompletionDate().compareTo(event.getCompletionDate()));
 
         HabitEventListAdapter eventListAdapter = new HabitEventListAdapter(allHabitEvents, rootView.getContext());
         fragmentHabitTypeOptionsListView.setAdapter(eventListAdapter);
@@ -95,6 +104,18 @@ public class HistoryFilterFragment extends Fragment {
                         break;
                 }
                 return false;
+            }
+        });
+
+        mapButton = rootView.findViewById(R.id.historyFilterMapButton);
+        mapButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("Events", eventListAdapter.getAllEvents());
+                Intent intent = new Intent(view.getContext(), MapsActivity.class);
+                intent.putExtras(bundle);
+                view.getContext().startActivity(intent);
             }
         });
 
