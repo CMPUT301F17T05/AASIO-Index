@@ -120,27 +120,10 @@ public class InitActivity extends AppCompatActivity {
 
         // Create a new user account, with a unique ID
         UserAccount user = new UserAccount();
-        /*ContextWrapper cw = new ContextWrapper(context.getApplicationContext());
-        File directory = cw.getDir("userData", Context.MODE_PRIVATE);
-        File path = new File(directory, "LocalUserAccount.sav");
-        path.delete();*/
         UserAccount.verifySettings();
         user.load(context);
-        user = UserAccount.fromId(user.getId());
         // TODO
         if (user.Exists) {
-            //user.removeFollowee(UUID.fromString("c7d513cf-db2b-4e15-95c8-f4f8bd0bb142"));
-            user.addFollowee(UUID.fromString("33ae2bf6-ef63-40f1-9671-6eb1ecae5445"));
-            //remote.removeFollower(UUID.fromString("e06459d4-27f1-49de-b8e8-85ab5b3469ef"));
-            UserAccount remote = UserAccount.fromId(UUID.fromString("33ae2bf6-ef63-40f1-9671-6eb1ecae5445"));
-            remote.addFollower(UUID.fromString("16b0a753-b680-4ecd-9d1b-21ea7a65b676"));
-            remote.addFollowee(UUID.fromString("16b0a753-b680-4ecd-9d1b-21ea7a65b676"));
-            //remote.getHabits().get(1).setShared(true);
-            //user.save(context);
-            //remote.sync(context);
-            //remote.getHabits().get(0).setShared(true);
-            //remote.sync(context);
-            //user.save(context);
             user.sync(context);
 
             Intent intent = new Intent(context, HomeActivity.class);
