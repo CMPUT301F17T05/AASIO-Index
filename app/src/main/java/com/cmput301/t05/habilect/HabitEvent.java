@@ -119,7 +119,7 @@ class HabitEvent implements Parcelable {
         this.location = location;
     }
     public void setCompletionDate(Date completion_date) {
-        if (completion_date == null || completion_date.after(Calendar.getInstance().getTime())) {
+        if (completion_date == null) {
             throw new IllegalArgumentException();
         } else {
             this.completionDate = completion_date;

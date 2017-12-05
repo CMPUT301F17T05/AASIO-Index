@@ -371,12 +371,11 @@ public class HabitTypeActivity extends AppCompatActivity {
                     highestPoint = dataPoint.getY();
                 }
             };
-            if (highestPoint>25) {
-                graph.getViewport().setMaxY(highestPoint);
+            int possible_day_count = 0;
+            for (boolean day : habit_type.getWeeklyPlan()) {
+                possible_day_count = possible_day_count+1;
             }
-            else {
-                graph.getViewport().setMaxY(25);
-            }
+            graph.getViewport().setMaxY(possible_day_count);
 
             graph.getGridLabelRenderer().setPadding(100);
 

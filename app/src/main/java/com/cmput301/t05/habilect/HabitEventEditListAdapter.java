@@ -121,7 +121,7 @@ public class HabitEventEditListAdapter extends BaseAdapter implements ListAdapte
                         // removes the old event from the habit type list and adds in the new one
                         relatedHabitType.removeHabitEvent(event);
                         relatedHabitType.addHabitEvent(newEvent);
-                        userAccount.setHabits(habitTypeList);
+                        //userAccount.setHabits(habitTypeList);
                         userAccount.save(context);
                         userAccount.sync(context);
                         notifyDataSetChanged();

@@ -1,12 +1,14 @@
 package com.cmput301.t05.habilect;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -27,6 +29,7 @@ public class SocialFeedFragment extends Fragment {
     private Context context;
     private ArrayList<FeedEvent> feedEventList;
     ListView feedListView;
+    ImageButton mapButton;
 
     @Override
     public View onCreateView(LayoutInflater inflater,
@@ -45,8 +48,10 @@ public class SocialFeedFragment extends Fragment {
         user.load(mContext);
 
         feedListView = rootView.findViewById(R.id.socialActivityFeedListView);
+        mapButton = rootView.findViewById(R.id.socialMapButton);
 
         feedEventList = new ArrayList<>();
+        List<HabitEvent> mostRecentEvents = new ArrayList<HabitEvent>();
         List<UserAccount> followees = user.getFollowees();
         for (UserAccount followee : followees) {
             if (followee!=null) {
@@ -75,6 +80,7 @@ public class SocialFeedFragment extends Fragment {
                             }
                             if (mostRecent!=null) {
                                 FeedEvent feedEvent = new FeedEvent(followee, mostRecent);
+                                mostRecentEvents.add(mostRecent);
                                 feedEventList.add(feedEvent);
                             }
                         //}
@@ -96,6 +102,17 @@ public class SocialFeedFragment extends Fragment {
         });
         SocialFeedAdapter feedAdapter = new SocialFeedAdapter(feedEventList, context, mContext);
         feedListView.setAdapter(feedAdapter);
+
+        mapButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("Events", (ArrayList<HabitEvent>)mostRecentEvents);
+                Intent intent = new Intent(view.getContext(), MapsActivity.class);
+                intent.putExtras(bundle);
+                view.getContext().startActivity(intent);
+            }
+        });
 
         return rootView;
 
