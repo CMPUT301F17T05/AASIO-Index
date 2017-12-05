@@ -1,5 +1,6 @@
 package com.cmput301.t05.habilect;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -23,13 +24,15 @@ import java.util.ArrayList;
  */
 
 public class SocialAddFriendAdapter extends BaseAdapter implements ListAdapter {
+    private Dialog dialog;
     private ArrayList<UserAccount> accountList = new ArrayList<>();
     private Context context;
     private ImageView profileImageView;
     private TextView profileNameTextView;
     private Button selectButton;
 
-    SocialAddFriendAdapter(ArrayList<UserAccount> accountList, Context context) {
+    SocialAddFriendAdapter(Dialog dialog, ArrayList<UserAccount> accountList, Context context) {
+        this.dialog = dialog;
         this.accountList = accountList;
         this.context = context;
     }
@@ -75,7 +78,12 @@ public class SocialAddFriendAdapter extends BaseAdapter implements ListAdapter {
         selectButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO: do what you need
+                UserAccount localUser = new UserAccount();
+                localUser.load(context);
+                localUser.addFollowee(userAccount.getId());
+                localUser.save(context);
+                localUser.sync(context);
+                dialog.dismiss();
             }
         });
 

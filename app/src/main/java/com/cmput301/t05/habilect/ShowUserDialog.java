@@ -24,7 +24,7 @@ public class ShowUserDialog extends DialogFragment {
     private ListView userList;
     private SearchView searchView;
     UserAccount userAccount;
-    ArrayList<UserAccount> userAccountList = new ArrayList<>();
+    static ArrayList<UserAccount> userAccountList = new ArrayList<>();
 
     @Override
     public void onStart() {
@@ -48,14 +48,15 @@ public class ShowUserDialog extends DialogFragment {
         context = getContext();
 
         userList = view.findViewById(R.id.showUserDialogListView);
-        SocialAddFriendAdapter adapter = new SocialAddFriendAdapter(userAccountList, context);
+        SocialAddFriendAdapter adapter = new SocialAddFriendAdapter(dialog, userAccountList, context);
         userList.setAdapter(adapter);
 
         searchView = view.findViewById(R.id.showUserDialogSearchView);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
-                userAccountList = (ArrayList<UserAccount>) UserAccount.findSimilarDisplayNames(s);
+                userAccountList.clear();
+                userAccountList.addAll(UserAccount.findSimilarDisplayNames(s));
                 adapter.notifyDataSetChanged();
                 return false;
             }
