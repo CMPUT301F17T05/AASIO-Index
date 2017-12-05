@@ -2,7 +2,6 @@ package com.cmput301.t05.habilect;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
@@ -21,15 +20,12 @@ import android.widget.ListAdapter;
 import android.widget.TextView;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
-
-import static com.cmput301.t05.habilect.UserProfile.HABILECT_USER_INFO;
 
 /**
  * This allows a habit event to be displayed in a ListView. It also includes edit and

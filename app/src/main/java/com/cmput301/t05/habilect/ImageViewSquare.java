@@ -2,7 +2,6 @@ package com.cmput301.t05.habilect;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.widget.ImageView;
 
 /**
  * Created by Ian on 2017-11-06.

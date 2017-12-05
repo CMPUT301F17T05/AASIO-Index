@@ -1,9 +1,9 @@
 package com.cmput301.t05.habilect;
 
+import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 
 /**
  * This activity handles the social fragments

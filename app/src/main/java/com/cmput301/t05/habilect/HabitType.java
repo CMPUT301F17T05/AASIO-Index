@@ -1,13 +1,8 @@
 package com.cmput301.t05.habilect;
 
-import android.util.Log;
-
-import com.jjoe64.graphview.series.DataPoint;
-
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;

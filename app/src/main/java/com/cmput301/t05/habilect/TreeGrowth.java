@@ -1,7 +1,6 @@
 package com.cmput301.t05.habilect;
 
 import java.util.Calendar;
-import java.util.Date;
 
 /**
  * Class that is responsible for tree growth to track nutrient level and also the last rank up tier.
@@ -48,6 +47,7 @@ public class TreeGrowth {
         this.nutrientLevel += amount;
     }
 
+    // nutrient level should never decrease below zero
     public void decreaseNutrientLevel(int amount) {
         this.nutrientLevel -= amount;
         if (this.nutrientLevel < 0) {
