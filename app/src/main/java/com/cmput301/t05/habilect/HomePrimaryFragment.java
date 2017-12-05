@@ -2,37 +2,30 @@ package com.cmput301.t05.habilect;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.util.Log;
 import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.lang.reflect.Array;
-import java.net.ConnectException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
-
-import static com.cmput301.t05.habilect.UserProfile.HABILECT_USER_INFO;
 
 /**
  * Shows a list of habit types that can be completed today, allows the user to navigate to
@@ -298,6 +291,14 @@ public class HomePrimaryFragment extends Fragment {
         Locale locale = new Locale("English", "Canada");
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEEE',' MMMM d',' yyyy", locale);
         String currentDate = simpleDateFormat.format(new Date());
+        Calendar calendar = Calendar.getInstance();
+        int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
+        if(dayOfWeek == 1) {
+            dayOfWeek = 8;
+        }
+        if(!habit.getWeeklyPlan()[dayOfWeek-2]) {
+            return true;
+        }
         for (HabitEvent event : eventList) {
             if (currentDate.equals(event.getCompletionDateString())) {
                 return true;

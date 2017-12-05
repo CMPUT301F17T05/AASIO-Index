@@ -1,13 +1,8 @@
 package com.cmput301.t05.habilect;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.SharedPreferences;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.SurfaceTexture;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
@@ -24,23 +19,12 @@ import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Base64;
-import android.util.Log;
 import android.view.TextureView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
-
-import java.io.ByteArrayOutputStream;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-
-import static com.cmput301.t05.habilect.UserProfile.HABILECT_USER_INFO;
-import static com.cmput301.t05.habilect.UserProfile.HABILECT_USER_PREVIOUS_NUTRIENT_LEVEL_TIER_RANK_UP;
 
 /**
  * This activity display the app users profile and their progress tree

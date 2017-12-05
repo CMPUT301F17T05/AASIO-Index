@@ -4,8 +4,6 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.ContextWrapper;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.SurfaceTexture;
@@ -47,15 +45,10 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
-
-import static com.cmput301.t05.habilect.UserProfile.HABILECT_USER_INFO;
 
 /**
  * This dialog facilitates the creation of habit events. If creating an event outside of a habit type
@@ -324,8 +317,6 @@ public class AddHabitEventDialog extends DialogFragment {
 
                 nutrientLevel += 1;
                 userTreeGrowth.setNutrientLevel(nutrientLevel);
-                userAccount.save(context);
-                userAccount.sync(context);
 
                 Log.i("NUTRIENTLEVEL: ", "" + userAccount.getTreeGrowth().getNutrientLevel());
 

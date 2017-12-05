@@ -1,18 +1,14 @@
 package com.cmput301.t05.habilect;
 
 import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 /**
  * This list adapter allows habit types to be displayed in a list view
@@ -28,16 +24,25 @@ public class HabitTypeListAdapter extends BaseAdapter implements ListAdapter {
         this.context = context;
     }
 
+    /**
+     * Returns an integer representing the size of the habit type list
+     */
     @Override
     public int getCount() {
         return typeList.size();
     }
 
+    /**
+     * Returns an Object item at a particular specified index
+     */
     @Override
     public Object getItem(int i) {
         return typeList.get(i);
     }
 
+    /**
+     * Returns a Long at a particular specified index
+     */
     @Override
     public long getItemId(int i) {
         return 0;

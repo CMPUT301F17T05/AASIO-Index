@@ -4,7 +4,6 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.ContextWrapper;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -48,9 +47,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -416,6 +412,10 @@ public class EditHabitEventDialog extends DialogFragment {
         }
     }
 
+    /**
+     *
+     * @return a String representing the comment if there is one
+     */
     private String getCommentFromBundle() {
         try {
             return getArguments().getString("Comment");
@@ -438,6 +438,10 @@ public class EditHabitEventDialog extends DialogFragment {
         }
     }
 
+    /**
+     *
+     * @return a String representing the date if there is one
+     */
     private String getDateFromBundle() {
         try {
             return getArguments().getString("Date");
@@ -447,6 +451,10 @@ public class EditHabitEventDialog extends DialogFragment {
         }
     }
 
+    /**
+     *
+     * @return a Bitmap representing the event image if there is one
+     */
     private Bitmap getEventBitmapFromBundle() {
         try {
             String imageString = getArguments().getString("Image");
@@ -459,6 +467,9 @@ public class EditHabitEventDialog extends DialogFragment {
         }
     }
 
+    /**
+     * Gets the last location
+     */
     @SuppressWarnings("MissingPermission")
     private void getLastLocation() {
         fusedLocationClient.getLastLocation()

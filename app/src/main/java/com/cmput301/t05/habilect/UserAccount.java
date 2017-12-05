@@ -2,43 +2,31 @@ package com.cmput301.t05.habilect;
 
 import android.content.Context;
 import android.content.ContextWrapper;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
 
-import com.google.common.collect.Multiset;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.reflect.TypeToken;
 import com.searchly.jestdroid.DroidClientConfig;
 import com.searchly.jestdroid.JestClientFactory;
 import com.searchly.jestdroid.JestDroidClient;
 
-import org.json.JSONObject;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -46,21 +34,22 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
 
-import io.searchbox.annotations.JestId;
 import io.searchbox.core.DocumentResult;
 import io.searchbox.core.Index;
 import io.searchbox.core.Search;
 import io.searchbox.core.SearchResult;
 import io.searchbox.core.Update;
 
-import static org.apache.commons.lang3.StringUtils.split;
-
+/**
+ * Class that tracks everything that has to do with the user
+ */
 public class UserAccount {
     private static JestDroidClient client;
 
+    /**
+     * Initialize and setup objects if needed
+     */
     public static void verifySettings() {
         if (client == null) {
             DroidClientConfig.Builder builder = new DroidClientConfig.Builder("http://cmput301.softwareprocess.es:8080/cmput301f17t05_habilect");
@@ -88,6 +77,9 @@ public class UserAccount {
         verifySettings();
     }
 
+    /**
+     * Syncs all property data with Elastic Search
+     */
     public static class syncTask extends AsyncTask<UserAccount, Void, Void> {
         @Override
         protected Void doInBackground(UserAccount... userAccounts) {
@@ -156,6 +148,9 @@ public class UserAccount {
         }
     }
 
+    /**
+     * Initialize User Properties
+     */
     public void init() {
         Id = UUID.randomUUID();
         Followees = new ArrayList<UUID>();
@@ -164,6 +159,9 @@ public class UserAccount {
         treeGrowth = new TreeGrowth();
     }
 
+    /**
+     * Save user property data locally to file
+     */
     public UserAccount save(Context context) {
         ContextWrapper cw = new ContextWrapper(context.getApplicationContext());
         File directory = cw.getDir("userData", Context.MODE_PRIVATE);
@@ -185,6 +183,9 @@ public class UserAccount {
         return this;
     }
 
+    /**
+     * Loads user property data through file and deserializes with gson
+     */
     public UserAccount load(Context context) {
         ContextWrapper cw = new ContextWrapper(context.getApplicationContext());
         File directory = cw.getDir("userData", Context.MODE_PRIVATE);
@@ -339,12 +340,17 @@ public class UserAccount {
         }
     }
 
-
-    public UserAccount sync (Context context){
+    /**
+     * Execute sync task
+     */
+    public UserAccount sync(Context context) {
         new syncTask().execute(this);
         return this;
     }
 
+    /**
+     * Search task from user id
+     */
     private static class fromIdTask extends AsyncTask<UUID, Void, SearchResult> {
         @Override
         protected SearchResult doInBackground(UUID... uuids) {
@@ -365,6 +371,9 @@ public class UserAccount {
         }
     }
 
+    /**
+     * Gets and assigns the property values
+     */
     public static UserAccount fromId(UUID id) {
         SearchResult result = null;
         try {
@@ -463,14 +472,23 @@ public class UserAccount {
         return null;
     }
 
+    /**
+     * Sets the Id to a passed in UUID
+     */
     public void setId(UUID id) {
         Id = id;
     }
 
+    /**
+     * Sets the display name to a specified string
+     */
     public void setDisplayName(String displayName) {
         DisplayName = displayName;
     }
 
+    /**
+     * Sets the profile picture to a specified image
+     */
     public void setProfilePicture(Bitmap profilePicture) {
         if (profilePicture!=null) {
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -481,14 +499,26 @@ public class UserAccount {
         }
     }
 
+    /**
+     *
+     * @return the user id
+     */
     public UUID getId() {
         return Id;
     }
 
+    /**
+     *
+     * @return the user's display name
+     */
     public String getDisplayName() {
         return DisplayName;
     }
 
+    /**
+     *
+     * @return the user's profile picture
+     */
     public Bitmap getProfilePicture() {
         if (ProfilePicture!=null) {
             byte[] decodedByteArray = Base64.decode(ProfilePicture, Base64.URL_SAFE | Base64.NO_WRAP);
@@ -497,6 +527,10 @@ public class UserAccount {
         return null;
     }
 
+    /**
+     *
+     * @return a list of followees
+     */
     public List<UserAccount> getFollowees() {
         List<UserAccount> followees = new ArrayList<UserAccount>();
         for (UUID id : Followees) {
@@ -508,6 +542,10 @@ public class UserAccount {
         return followees;
     }
 
+    /**
+     *
+     * @return a list of followers
+     */
     public List<UserAccount> getFollowers() {
         List<UserAccount> followers = new ArrayList<UserAccount>();
         for (UUID id : Followers) {
@@ -519,37 +557,61 @@ public class UserAccount {
         return followers;
     }
 
+    /**
+     * Adds a followee by their user id
+     */
     public void addFollowee(UUID id) {
         if (!Followees.contains(id)) {
             this.Followees.add(id);
         }
     }
 
+    /**
+     * Adds a follower by their user id
+     */
     public void addFollower(UUID id) {
         if (!Followers.contains(id)) {
             this.Followers.add(id);
         }
     }
 
+    /**
+     * Removes a followee by their user id
+     */
     public void removeFollowee(UUID id) {
         if (Followees.contains(id)) {
             this.Followees.remove(id);
         }
     }
 
+    /**
+     * Removes a follower by their user id
+     */
     public void removeFollower(UUID id) {
         if (Followers.contains(id)) {
             this.Followers.remove(id);
         }
     }
 
+    /**
+     * Sets the habits based on a passed in list of habit types
+     */
     public void setHabits(List<HabitType> habits) {
         Habits = habits;
     }
 
+    /**
+     *
+     * @return a list of habit types
+     */
     public List<HabitType> getHabits() {
         return Habits;
     }
+
+    /**
+     *
+     * @return a TreeGrowth object
+     */
     public TreeGrowth getTreeGrowth() {
         return treeGrowth;
     }

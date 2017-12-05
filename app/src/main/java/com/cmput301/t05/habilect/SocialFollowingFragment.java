@@ -48,7 +48,7 @@ public class SocialFollowingFragment extends Fragment {
         socialFriendFindFriendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                
+
                 List<UserAccount> users = UserAccount.findSimilarDisplayNames("Andrea");
             }
         });

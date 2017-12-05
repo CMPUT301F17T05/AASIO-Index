@@ -71,6 +71,10 @@ public class AddHabitEventDialogInformationGetter {
         return null;
     }
 
+    /**
+     *
+     * @return the image from the bundle
+     */
     public String getImage() {
         String image = bundle.getString("Image");
         return image == null ? "" : image ;

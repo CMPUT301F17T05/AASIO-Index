@@ -1,15 +1,12 @@
 package com.cmput301.t05.habilect;
 
-import android.content.Context;
 import android.util.Log;
 
 import com.jjoe64.graphview.series.DataPoint;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 /**
  * @author amwhitta

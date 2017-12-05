@@ -2,7 +2,6 @@ package com.cmput301.t05.habilect;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
@@ -21,15 +20,12 @@ import android.widget.ListAdapter;
 import android.widget.TextView;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
-
-import static com.cmput301.t05.habilect.UserProfile.HABILECT_USER_INFO;
 
 /**
  * This allows a habit event to be displayed in a ListView. It also includes edit and
@@ -60,16 +56,25 @@ public class HabitEventEditListAdapter extends BaseAdapter implements ListAdapte
         this.eventList = relatedHabitType.getHabitEvents();
     }
 
+    /**
+     * Gets the size of the event list
+     */
     @Override
     public int getCount() {
         return eventList.size();
     }
 
+    /**
+     * Gets a particular event item at a specified index
+     */
     @Override
     public Object getItem(int i) {
         return eventList.get(i);
     }
 
+    /**
+     * Gets the event id of a specified index
+     */
     @Override
     public long getItemId(int i) {
         return 0;
@@ -125,7 +130,7 @@ public class HabitEventEditListAdapter extends BaseAdapter implements ListAdapte
                         // removes the old event from the habit type list and adds in the new one
                         relatedHabitType.removeHabitEvent(event);
                         relatedHabitType.addHabitEvent(newEvent);
-                        userAccount.setHabits(habitTypeList);
+                        //userAccount.setHabits(habitTypeList);
                         userAccount.save(context);
                         userAccount.sync(context);
                         notifyDataSetChanged();

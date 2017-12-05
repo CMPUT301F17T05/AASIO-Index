@@ -7,6 +7,7 @@ import android.os.Message;
 import static java.lang.Thread.sleep;
 
 /**
+ * This class is used for smooth transition animations
  * Created by Ian on 2017-11-08.
  */
 

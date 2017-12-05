@@ -23,15 +23,10 @@ import android.os.HandlerThread;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Size;
-import android.util.SparseIntArray;
-import android.view.Display;
 import android.view.Surface;
 import android.view.TextureView;
-import android.view.WindowManager;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -344,18 +339,30 @@ class Camera {
         return sizes[0];
     }
 
+    /**
+     * Returns the camera sesssion start time
+     */
     long getCameraSessionStartTime() {
         return mCameraSessionStartTime;
     }
 
+    /**
+     * Sets the camera session start time
+     */
     void setCameraSessionStartTime(long mCameraSessionStartTime) {
         this.mCameraSessionStartTime = mCameraSessionStartTime;
     }
 
+    /**
+     * Returns the texture view
+     */
     TextureView getTextureView() {
         return this.mTextureView;
     }
 
+    /**
+     * Returns the camera state
+     */
     int getCameraState() {
         return mCameraState;
     }
