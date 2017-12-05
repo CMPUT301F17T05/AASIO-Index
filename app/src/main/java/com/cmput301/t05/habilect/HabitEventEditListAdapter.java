@@ -179,7 +179,6 @@ public class HabitEventEditListAdapter extends BaseAdapter implements ListAdapte
                 Intent intent = new Intent(view.getContext(), ViewHabitEventActivity.class);
                 intent.putExtras(bundle);
                 view.getContext().startActivity(intent);
-
             }
         });
 

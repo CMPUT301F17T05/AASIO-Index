@@ -133,5 +133,6 @@ class HabitEvent implements Parcelable {
         parcel.writeString(eventPicture);
         parcel.writeParcelable(location, i);
         parcel.writeString(habitType);
+        parcel.writeString(userId);
     }
 }
