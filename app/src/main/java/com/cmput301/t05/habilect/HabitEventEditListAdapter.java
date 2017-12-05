@@ -258,7 +258,7 @@ public class HabitEventEditListAdapter extends BaseAdapter implements ListAdapte
         eventImage.compress(Bitmap.CompressFormat.JPEG, 50, byteArrayOutputStream);
         byte[] byteArray = byteArrayOutputStream.toByteArray();
         String encodedString = Base64.encodeToString(byteArray, Base64.URL_SAFE | Base64.NO_WRAP);
-        return new HabitEvent(comment, encodedString, location, date, title);
+        return new HabitEvent(comment, encodedString, location, date, title, userAccount.getId().toString());
     }
 
     /**

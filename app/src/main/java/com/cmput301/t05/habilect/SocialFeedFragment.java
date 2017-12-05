@@ -65,7 +65,7 @@ public class SocialFeedFragment extends Fragment {
                             List<HabitEvent> events = habit.getHabitEvents();
                             for (HabitEvent event : events) {
                                 if (event.getCompletionDate()!=null & event.getHabitType()!=null) {
-                                    HabitEvent feedHabitEvent = new HabitEvent(event.getComment(), event.getEventPicture(), event.getLocation(), event.getCompletionDate(), event.getHabitType());
+                                    HabitEvent feedHabitEvent = new HabitEvent(event.getComment(), event.getEventPicture(), event.getLocation(), event.getCompletionDate(), event.getHabitType(), user.getId().toString());
                                     FeedEvent feedEvent = new FeedEvent(followee, feedHabitEvent);
                                     feedEventList.add(feedEvent);
                                 }

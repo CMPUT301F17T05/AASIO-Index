@@ -31,6 +31,7 @@ class HabitEvent implements Parcelable {
     private Location location;
     private Date completionDate;
     private String habitType;
+    private String userId;
 
     /**
      * Creates a new habit event
@@ -40,12 +41,13 @@ class HabitEvent implements Parcelable {
      * @param completionDate Date object of the event
      * @param habitType The associated habitType for the event
      */
-    public HabitEvent(String comment, String eventPicture, Location location, Date completionDate, String habitType) {
+    public HabitEvent(String comment, String eventPicture, Location location, Date completionDate, String habitType, String userId) {
         this.setComment(comment);
         this.setEventPicture(eventPicture);
         this.setLocation(location);
         this.setCompletionDate(completionDate);
         this.setHabitType(habitType);
+        this.userId = userId;
     }
 
     protected HabitEvent(Parcel in) {
@@ -53,6 +55,7 @@ class HabitEvent implements Parcelable {
         eventPicture = in.readString();
         location = in.readParcelable(Location.class.getClassLoader());
         habitType = in.readString();
+        userId = in.readString();
     }
 
     public static final Creator<HabitEvent> CREATOR = new Creator<HabitEvent>() {
@@ -86,6 +89,7 @@ class HabitEvent implements Parcelable {
         return simpleDateFormat.format(this.completionDate);
     }
     public String getHabitType() { return habitType; }
+    public String getUserId() { return userId; }
 
     // Setters
     public void setComment(String comment) {
@@ -115,6 +119,8 @@ class HabitEvent implements Parcelable {
             this.completionDate = completion_date;
         }
     }
+
+    public void setUserId(String userId) { this.userId = userId; }
 
     @Override
     public int describeContents() {
